@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlissDezign | Product Designer Portfolio</title>
+    <meta name="description"
+        content="Portfolio of BlissDezign, a Product Designer focused on designing products users trust.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Sen:wght@400;700;800&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="nav-container">
+                <div class="logo">
+                    <img src="assets/kre8mind logo (2).png" alt="Kre8mind Logo">
+                    <span class="logo-text">BlissDezign</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#work">Work</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-sun-moon">
+                            <path d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="m4.93 4.93 1.41 1.41" />
+                            <path d="m17.66 17.66 1.41 1.41" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                            <path d="m6.34 17.66-1.41 1.41" />
+                            <path d="m19.07 4.93-1.41 1.41" />
+                        </svg>
+                    </button>
+                    <a href="#contact" class="btn btn-primary desktop-btn">Work with me</a>
+                    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay">
+        <ul class="mobile-nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact" class="btn btn-primary" style="margin-top: 10px;">Work with me</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <span class="badge">Available for hire</span>
+                    <h1>Designing Products <br> <span class="text-light-gray" style="color: var(--text-muted); background: none; -webkit-text-fill-color: currentcolor;">Users Trust</span></h1>
+                    <p>Hi, I’m Emmanuel Bliss, a Product Designer & no-code dev that simplify complex workflows, reduce user drop-off, and improve retention.</p>
+                    <div class="hero-actions">
+                        <a href="#contact" class="btn btn-primary">Work with me</a>
+                        <a href="#work" class="btn btn-secondary">Portfolio ↗</a>
+                    </div>
+                </div>
+                <div class="hero-image-container">
+                    <div class="image-wrapper">
+                        <img src="assets/Main profile.png" alt="BlissDezign Profile" class="profile-img">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Gallery (Horizontal Marquee) -->
+        <section class="portfolio-gallery">
+            <div class="marquee">
+                <div class="marquee-content" id="marquee-content">
+                    <!-- Set 1 -->
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Desktop - 10.png" alt="Project">
+                    </div>
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Frame 12.png" alt="Project">
+                    </div>
+                    <div class="marquee-card">
+                        <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline></video>
+                    </div>
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Frame 43730.png" alt="Project">
+                    </div>
+                    <div class="marquee-card">
+                        <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline></video>
+                    </div>
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Frame 43731.png" alt="Project">
+                    </div>
+                </div>
+                <!-- Set 2 (for infinite loop - separated for GPU memory limit fix) -->
+                <div class="marquee-content" aria-hidden="true">
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Desktop - 10.png" alt="Project">
+                    </div>
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Frame 12.png" alt="Project">
+                    </div>
+                    <div class="marquee-card">
+                        <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline></video>
+                    </div>
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Frame 43730.png" alt="Project">
+                    </div>
+                    <div class="marquee-card">
+                        <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline></video>
+                    </div>
+                    <div class="marquee-card">
+                        <img src="assets/Maquee Images/Frame 43731.png" alt="Project">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How I Can Help Section -->
+        <section id="services" class="services">
+            <div class="container">
+                <h2 class="section-title text-center">How I can help your brands move forward</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-card-top">
+                            <img src="assets/icon1.png" alt="Clarity icon">
+                        </div>
+                        <div class="service-card-content">
+                            <h3>Clarity before execution</h3>
+                            <p>I help teams define what to build and what not to so time and money aren’t wasted on
+                                unclear ideas.</p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-card-top">
+                            <img src="assets/icon2.png" alt="User focused icon">
+                        </div>
+                        <div class="service-card-content">
+                            <h3>User-focused product design</h3>
+                            <p>I design web and mobile experiences that are intuitive, usable, and aligned with real
+                                user behavior.</p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-card-top">
+                            <img src="assets/icon3.png" alt="Scalable icon">
+                        </div>
+                        <div class="service-card-content">
+                            <h3>Scalable UI systems</h3>
+                            <p>I create consistent design foundations that support growth without constant redesign.</p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-card-top">
+                            <img src="assets/icon4.png" alt="Prototyping icon">
+                        </div>
+                        <div class="service-card-content">
+                            <h3>Prototyping & validation</h3>
+                            <p>Ideas are turned into interactive prototypes that can be tested, pitched, or improved
+                                before development.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Selected Projects Section -->
+        <section id="work" class="selected-projects">
+            <div class="container projects-layout">
+                <aside class="sticky-sidebar">
+                    <h2 class="section-title">Selected Projects</h2>
+                    <a href="#work" class="btn btn-primary btn-with-icon">
+                        See More 
+                        <span class="icon-circle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 17 10-10"/><path d="M7 7h10v10"/></svg>
+                        </span>
+                    </a>
+                </aside>
+                <div class="projects-masonry">
+                    <div class="masonry-card masonry-large">
+                        <div class="masonry-image">
+                            <img src="assets/Selected Project/nURAKICK.png" alt="NEURA Kicks">
+                        </div>
+                        <div class="masonry-info">
+                            <h3>NEURA Kicks</h3>
+                            <div class="masonry-tags">
+                                <span>AI Product</span>
+                                <span>Mobile App</span>
+                                <span>E-commerce</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="masonry-card">
+                        <div class="masonry-image">
+                            <img src="assets/Selected Project/sWYCHR.png" alt="Swychr Fintech App">
+                        </div>
+                        <div class="masonry-info">
+                            <h3>Swychr Fintech App</h3>
+                            <div class="masonry-tags">
+                                <span>Fintech</span>
+                                <span>Mobile App</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="masonry-card">
+                        <div class="masonry-image">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/Selected Project/SKIN-CARE-GERO.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="masonry-info">
+                            <h3>Skin & Soul Redesign</h3>
+                            <div class="masonry-tags">
+                                <span>Beauty</span>
+                                <span>Hero Section</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="masonry-card">
+                        <div class="masonry-image">
+                            <img src="assets/Selected Project/Hevy.png" alt="Hevy App Redesign">
+                        </div>
+                        <div class="masonry-info">
+                            <h3>Hevy App Redesign</h3>
+                            <div class="masonry-tags">
+                                <span>Fitness</span>
+                                <span>Mobile App</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="masonry-card">
+                        <div class="masonry-image">
+                            <img src="assets/Selected Project/rICKI ai.png" alt="Riki-Ai Saas Landing Page">
+                        </div>
+                        <div class="masonry-info">
+                            <h3>Riki-Ai Saas Landing Page</h3>
+                            <div class="masonry-tags">
+                                <span>Saas</span>
+                                <span>Landing Page</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="experience">
+            <div class="container experience-grid">
+                <div class="experience-intro">
+                    <h2>My Work Experience</h2>
+                    <p>A snapshot of the teams and products I've helped shape through clear, user-focused design.</p>
+                    <a href="#" class="btn btn-primary" style="border-radius: 50px;">My Resume ↗</a>
+                </div>
+                <div class="experience-cards">
+                    <div class="experience-card">
+                        <div class="exp-top">
+                            <span class="exp-company">SWYCHR Tech Africa</span>
+                            <svg class="exp-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </div>
+                        <p class="exp-desc">Worked on improving the SWYCHR product ...</p>
+                        <p class="exp-date-label">Oct 2025 - Present</p>
+                    </div>
+                    <div class="experience-card">
+                        <div class="exp-top">
+                            <span class="exp-company">NuraKicks Ecoms AI</span>
+                            <svg class="exp-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </div>
+                        <p class="exp-desc">Designed an AI-driven e-commerce experience focused on improving product discovery,......</p>
+                        <p class="exp-date-label">Sept 2025 - Nov 2025</p>
+                    </div>
+                    <div class="experience-card">
+                        <div class="exp-top">
+                            <span class="exp-company">Starr Power Technology USA</span>
+                            <svg class="exp-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </div>
+                        <p class="exp-desc">Strengthened the company's digital presence through clearer visual communication......</p>
+                        <p class="exp-date-label">Aug 2022 — Feb 2025</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section class="tools">
+            <div class="container experience-grid">
+                <div class="experience-intro">
+                    <h2 style="margin-bottom: 20px;">My Design tools you should know</h2>
+                    <p style="font-size: 1.15rem;">I use a mix of design, build, and AI tools to move from idea to usable product faster without losing clarity or intention.</p>
+                </div>
+                <div class="tools-interactive-container">
+                    <div class="dotted-canvas" id="canvas-container">
+                        <!-- Floating Items -->
+                        <div class="floating-pill-wrapper" style="top: 45%; left: 30%;" data-orig-top="45%" data-orig-left="30%">
+                            <div class="floating-pill" style="transform: rotate(-5deg);">Product Design</div>
+                        </div>
+                        <div class="floating-pill-wrapper" style="top: 65%; left: 80%;" data-orig-top="65%" data-orig-left="80%">
+                            <div class="floating-pill" style="transform: rotate(35deg);">Prototyping</div>
+                        </div>
+                        <div class="floating-pill-wrapper" style="top: 70%; left: 55%;" data-orig-top="70%" data-orig-left="55%">
+                            <div class="floating-pill" style="transform: rotate(-5deg);">UX Strategy</div>
+                        </div>
+                        <div class="floating-pill-wrapper" style="top: 75%; left: 20%;" data-orig-top="75%" data-orig-left="20%">
+                            <div class="floating-pill" style="transform: rotate(-40deg);">AI tools</div>
+                        </div>
+                        <div class="floating-pill-wrapper" style="top: 85%; left: 40%;" data-orig-top="85%" data-orig-left="40%">
+                            <div class="floating-pill" style="transform: rotate(-5deg);">Framer</div>
+                        </div>
+                        <div class="floating-pill-wrapper" style="top: 85%; left: 75%;" data-orig-top="85%" data-orig-left="75%">
+                            <div class="floating-pill" style="transform: rotate(5deg);">Figma</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials">
+            <div class="container">
+                <h2 class="section-title text-center">Words from clients and collaborators</h2>
+                
+                <div class="stats-container reveal-on-scroll">
+                    <div class="stat-item">
+                        <h3 class="stat-number">10<span class="stat-plus">+</span></h3>
+                        <p class="stat-label">Projects Delivered</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="stat-number">90<span class="stat-plus">%</span></h3>
+                        <p class="stat-label">Client Satisfaction</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="stat-number">3<span class="stat-plus">+</span></h3>
+                        <p class="stat-label">Years Experience</p>
+                    </div>
+                </div>
+
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+                        <p class="testimonial-text">"I like the section of "WHO IS Riki-AI for?" and "supported platforms" because attract people by the first page then user scroll down and see who exactly is the target. Users can think oh, it matches me"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><img src="assets/Hatake.jpg" alt="Hatake" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+                            <div class="author-info">
+                                <h4>はたけやま Hatake</h4>
+                                <span>Founder of Riki-Ai</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+                        <p class="testimonial-text">"I had a great experience collaborating with Emmanuel Bliss. He is thoughtful in his approach, communicated clearly throughout the project, and brought strong design thinking to the table. What stood out most was his ability to translate ideas into clean, well-structured visuals while staying open to feedback and iteration. I’d confidently recommend him to anyone looking for a reliable, skilled designer and would be happy to collaborate again."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><img src="assets/favour.avif" alt="Favour Augustine" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+                            <div class="author-info">
+                                <h4>Favour Augustine</h4>
+                                <span>UI/UX Designer</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+                        <p class="testimonial-text">"Emmanuel is a great designer always ready to argu so that he gives what is the best for users"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><img src="assets/Aaron.png" alt="Aaron Monga" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+                            <div class="author-info">
+                                <h4>Aaron Monga</h4>
+                                <span>CEO Swychr</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact">
+            <div class="container contact-grid">
+                <div class="contact-text">
+                    <h2>Need a better <br> <span class="gradient-text-gray">product experience?</span></h2>
+                    <p>I'm currently available for freelance work and new opportunities.</p>
+                    <div class="contact-links">
+                        <a href="mailto:blissstudio44@gmail.com">blissstudio44@gmail.com</a>
+                        <p>+2348164702370</p>
+                    </div>
+                </div>
+                <form class="contact-form" action="https://formspree.io/f/mdaponpp" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Tell me about your project" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Send Message ↗</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <div class="logo">
+                     <img src="assets/kre8mind logo (2).png" alt="Kre8mind Logo">
+                     <span class="logo-text">BlissDezign</span>
+                </div>
+                <p class="footer-desc">I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
+                <div class="footer-socials">
+                    <a href="#" aria-label="LinkedIn">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" aria-label="Behance">
+                        <i class="fa-brands fa-behance"></i>
+                    </a>
+                    <a href="#" aria-label="X (Twitter)">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                    <a href="#" aria-label="Contra">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </a>
+                    <a href="#" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="#" aria-label="TikTok">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="#home">Home</a>
+                <a href="#work">Work</a>
+                <a href="#services">Services</a>
+                <a href="#blog">Blog</a>
+            </div>
+
+            <div class="footer-newsletter">
+                <h3>Stay updated</h3>
+                <p>Join my newsletter for the latest design insights and articles.</p>
+                <form class="newsletter-form" action="YOUR_MAILCHIMP_URL_HERE" method="POST" target="_blank" novalidate>
+                    <input type="email" name="EMAIL" placeholder="Your email address" required>
+                    <!-- Anti-bot hidden field -->
+                    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_placeholder" tabindex="-1" value=""></div>
+                    <button type="submit" name="subscribe" class="btn btn-primary" style="padding: 12px;">Subscribe ↗</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="container footer-bottom">
+            <p>© 2026 BlissDezign. All rights reserved.</p>
+            <p>Designed with intentionally minimal clarity.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll To Top Button -->
+    <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
