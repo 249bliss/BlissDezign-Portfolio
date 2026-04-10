@@ -1211,7 +1211,21 @@ header.scrolled .nav-container {
     /* Headings */
     h1 { font-size: 2.2rem; }
     h2 { font-size: 1.8rem; }
-    h3 { font-size: 1.3rem; }
+    .logo-text {
+        font-size: 1.1rem;
+    }
+
+    .logo {
+        gap: 8px;
+    }
+
+    .logo img {
+        height: 30px;
+    }
+
+    .nav-actions {
+        gap: 12px;
+    }
     
     .experience-intro h2 {
         font-size: 2rem;
