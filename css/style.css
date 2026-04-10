@@ -140,27 +140,6 @@ h3 { font-size: 1.5rem; }
     box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
 }
 
-.btn-black {
-    background: #000000;
-    color: #ffffff;
-    border: none;
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="dark"] .btn-black {
-    background: #ffffff;
-    color: #000000;
-    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
-}
-
-.btn-black:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="dark"] .btn-black:hover {
-    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
-}
 
 .btn-secondary {
     background: transparent;
