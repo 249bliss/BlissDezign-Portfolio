@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Scroll Animations (Reveal on scroll)
-    const revealElements = document.querySelectorAll('.service-card, .stats-container, .masonry-card, .experience-card, .testimonial-card, .section-title, .contact-text, .contact-form, .tools-section .container, .portfolio-gallery');
+    const revealElements = document.querySelectorAll('.service-card, .stats-container, .masonry-card, .experience-card, .testimonial-card, .section-title, .contact-text, .contact-form, .tools-section .container, .portfolio-gallery, .reveal-on-scroll');
     
     const observerOptions = {
         threshold: 0.1,
