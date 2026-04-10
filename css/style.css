@@ -1479,3 +1479,37 @@ header.scrolled .nav-container {
         text-align: center;
     }
 }
+
+/* Contact Email Enhancement */
+.contact-email-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 5px;
+}
+
+.contact-email-link:hover {
+    color: var(--accent-purple);
+    transform: translateX(5px);
+}
+
+.email-arrow {
+    font-size: 1rem;
+    color: var(--accent-purple);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: rotate(-45deg); /* Pointing up-left by default */
+}
+
+.contact-email-link:hover .email-arrow {
+    transform: rotate(90deg); /* Pointing 'straight' right */
+}
+
+.contact-links p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
