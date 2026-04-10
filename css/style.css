@@ -1865,7 +1865,15 @@ form select option {
 
     /* Contact Page/Form Refinements */
     .contact-form-block {
-        padding: 25px 20px; /* Reduce internal padding to give field more room */
+        padding: 30px 20px; /* Adjust padding to give more room */
+    }
+
+    /* Remove redundant inner stroke from the form element itself */
+    .contact-form-block .contact-form {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
     }
 
     .contact-form input,
@@ -1874,9 +1882,10 @@ form select option {
         width: 100% !important;
         font-size: 1rem;
         padding: 16px;
-        border: none !important; /* Remove inner stroke as requested */
-        background: var(--bg-soft-purple); /* Subtle background for contrast */
+        border: 1px solid var(--border-color) !important; /* Restore stroke as requested */
+        background: var(--bg-main) !important; /* Use main background for consistency */
         margin-bottom: 20px;
+        border-radius: 12px;
     }
 
     /* Full width button */
@@ -1889,7 +1898,7 @@ form select option {
     .contact-form input::placeholder,
     .contact-form textarea::placeholder,
     form select::placeholder {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
 }
 
