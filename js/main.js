@@ -242,3 +242,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Project Gallery Filtering Logic (for work.html)
+document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectItems = document.querySelectorAll('.filter-item');
+
+    if (filterButtons.length > 0 && projectItems.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+
+                // Update active button state
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Filter projects
+                projectItems.forEach(item => {
+                    item.classList.add('hidden'); // Start by hiding all
+
+                    // If 'all' or specific category matches
+                    if (filter === 'all' || item.classList.contains(filter)) {
+                        // Small delay for smooth exit animation of others
+                        setTimeout(() => {
+                            item.classList.remove('hidden');
+                            
+                            // Re-trigger reveal animation if it hasn't been seen yet
+                            if (!item.classList.contains('visible')) {
+                                item.classList.add('visible');
+                            }
+                        }, 100);
+                    }
+                });
+            });
+        });
+    }
+});

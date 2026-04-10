@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | BlissDezign</title>
+    <title>Work | BlissDezign</title>
     <meta name="description"
-        content="Get in touch with BlissDezign for detailed project inquiries, collaborations, and product design services.">
+        content="Explore the portfolio of BlissDezign, featuring selected projects in SaaS, Fintech, Mobile Apps, and E-commerce.">
     <link rel="icon" type="image/png" href="assets/kre8mind logo (2).png">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,9 +32,9 @@
                 </div>
                 <ul class="nav-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="work.html">Work</a></li>
+                    <li><a href="work.html" class="active">Work</a></li>
                     <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html" class="active">Contact</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
                 <div class="nav-actions">
                     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
@@ -75,71 +75,97 @@
     </div>
 
     <main>
-        <section class="contact-page-hero">
+        <section class="work-hero">
             <div class="container text-center reveal-on-scroll">
-                <span class="badge">Let's Connect</span>
-                <h1>Let’s build something <br> <span class="gradient-text-gray">truly intentional.</span></h1>
-                <p class="hero-sub">Have a project in mind? Fill out the form below or book a discovery call to get started.</p>
+                <span class="badge">Portfolio</span>
+                <h1>Selected <span class="gradient-text-gray">Work</span></h1>
+                <p class="hero-sub">Exploring the intersection of intentionality, usability, and visual excellence across digital products.</p>
             </div>
         </section>
 
-        <section class="contact-main">
-            <div class="container contact-page-grid">
-                <div class="contact-info-block reveal-on-scroll">
-                    <div class="info-item">
-                        <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
-                        <div class="info-details">
-                            <h3>Email Me</h3>
-                            <a href="mailto:blissstudio44@gmail.com" class="contact-email-link">
-                                blissstudio44@gmail.com
-                                <i class="fa-solid fa-arrow-up email-arrow"></i>
-                            </a>
+        <section class="work-gallery">
+            <div class="container">
+                <!-- Filter Tabs -->
+                <div class="filter-tabs reveal-on-scroll">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="saas">SaaS Product</button>
+                    <button class="filter-btn" data-filter="fintech">Fintech</button>
+                    <button class="filter-btn" data-filter="mobile">Mobile Apps</button>
+                    <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
+                </div>
+
+                <div class="projects-masonry">
+                    <!-- Project 1: NEURA Kicks -->
+                    <div class="masonry-card masonry-large filter-item mobile ecommerce" data-reveal>
+                        <div class="masonry-image">
+                            <img src="assets/Selected Project/nURAKICK.png" alt="NEURA Kicks">
+                        </div>
+                        <div class="masonry-info">
+                            <h3>NEURA Kicks</h3>
+                            <div class="masonry-tags">
+                                <span>AI Product</span>
+                                <span>Mobile App</span>
+                                <span>E-commerce</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
-                        <div class="info-details">
-                            <h3>Call Me</h3>
-                            <p>+2348164702370</p>
+                    
+                    <!-- Project 2: Swychr Fintech -->
+                    <div class="masonry-card filter-item fintech mobile" data-reveal>
+                        <div class="masonry-image">
+                            <img src="assets/Selected Project/sWYCHR.png" alt="Swychr Fintech App">
+                        </div>
+                        <div class="masonry-info">
+                            <h3>Swychr Fintech App</h3>
+                            <div class="masonry-tags">
+                                <span>Fintech</span>
+                                <span>Mobile App</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon"><i class="fa-solid fa-calendar"></i></div>
-                        <div class="info-details">
-                            <h3>Discovery Call</h3>
-                            <p>Prefer a face-to-face chat? Let's talk strategy.</p>
-                            <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="text-link">Book a Call ↗</a>
+
+                    <!-- Project 3: Skin & Soul -->
+                    <div class="masonry-card filter-item ecommerce" data-reveal>
+                        <div class="masonry-image">
+                            <video autoplay loop muted playsinline>
+                                <source src="assets/Selected Project/SKIN-CARE-GERO.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="masonry-info">
+                            <h3>Skin & Soul Redesign</h3>
+                            <div class="masonry-tags">
+                                <span>Beauty</span>
+                                <span>Hero Section</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 4: Hevy App -->
+                    <div class="masonry-card filter-item saas mobile" data-reveal>
+                        <div class="masonry-image">
+                            <img src="assets/Selected Project/Hevy.png" alt="Hevy App Redesign">
+                        </div>
+                        <div class="masonry-info">
+                            <h3>Hevy App Redesign</h3>
+                            <div class="masonry-tags">
+                                <span>SaaS Product</span>
+                                <span>Fitness</span>
+                                <span>Mobile App</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="contact-form-block reveal-on-scroll">
-                    <form class="contact-form" action="https://formspree.io/f/mreowldn" method="POST">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" placeholder="John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="john@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="project-type">Project Type (Optional)</label>
-                            <select id="project-type" name="project_type">
-                                <option value="" disabled selected>Select a product type</option>
-                                <option value="SaaS Product">SaaS Product</option>
-                                <option value="Mobile App">Mobile App</option>
-                                <option value="Web Application">Web Application</option>
-                                <option value="Dashboard/Internal Tool">Dashboard / Internal Tool</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" placeholder="Tell me about your project, goals, and timeline" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-full" style="height: 60px;">Send Message ↗</button>
-                    </form>
+        <!-- Vision CTA -->
+        <section class="vision-cta-section">
+            <div class="container text-center reveal-on-scroll">
+                <h2>Have a project in mind?</h2>
+                <p>Let’s collaborate to build products that solve real problems.</p>
+                <div class="hero-actions" style="justify-content: center; margin-top: 40px;">
+                    <a href="contact.html" class="btn btn-primary">Let's Talk ↗</a>
+                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-secondary">Book a Call</a>
                 </div>
             </div>
         </section>
@@ -178,7 +204,7 @@
             <div class="footer-links">
                 <h3>Quick Links</h3>
                 <a href="index.html#home">Home</a>
-                <a href="index.html#work">Work</a>
+                <a href="work.html" class="active">Work</a>
                 <a href="index.html#services">Services</a>
                 <a href="index.html#blog">Blog</a>
             </div>
