@@ -1883,7 +1883,7 @@ form select option {
         font-size: 1rem;
         padding: 16px;
         border: 1px solid var(--border-color) !important; /* Restore stroke as requested */
-        background: var(--bg-main) !important; /* Use main background for consistency */
+        background-color: var(--bg-main) !important; /* Preserves background-images like the arrow icon */
         margin-bottom: 20px;
         border-radius: 12px;
     }
