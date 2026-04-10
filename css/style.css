@@ -1775,6 +1775,41 @@ header.scrolled .nav-container {
     }
 }
 
+/* Full Image Case Study Styles */
+.cs-full-image-container {
+    width: 100%;
+    background: var(--bg-main);
+    padding: 0;
+}
+
+.cs-full-image-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #000; /* Backdrop for the design image */
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+}
+
+.cs-full-image-inner img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 1400px) {
+    .cs-full-image-inner {
+        max-width: 100%;
+    }
+}
+
+/* Update hero and stats when followed by a full image */
+.case-study-template .cs-hero {
+    padding-bottom: 40px;
+}
+
+.case-study-template .cs-stats {
+    margin-bottom: 40px;
+}
+
 /* About Page Specific Styles */
 .about-hero {
     padding-top: 180px;
