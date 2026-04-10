@@ -1497,12 +1497,16 @@ header.scrolled .nav-container {
     border-radius: 40px;
     overflow: hidden;
     aspect-ratio: 4/5;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    display: flex; /* Ensures image fills correctly */
 }
 
 .about-hero-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: inherit; /* Perfectly matches the wrapper */
 }
 
 .about-hero-content h1 {
