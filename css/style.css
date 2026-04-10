@@ -1851,6 +1851,34 @@ form select option {
     transform: rotate(90deg); /* Pointing 'straight' right */
 }
 
+/* Mobile Overrides for Contact Elements */
+@media (max-width: 768px) {
+    .contact-email-link {
+        font-size: 0.95rem; /* Reduced for mobile */
+        gap: 8px;
+        flex-wrap: nowrap; /* Keep arrow aligned */
+    }
+
+    .email-arrow {
+        font-size: 0.85rem;
+    }
+
+    /* Fix shrinking/wrapping placeholder text */
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder,
+    form select::placeholder {
+        font-size: 0.85rem;
+    }
+    
+    /* Ensure inputs don't feel too cramped */
+    .contact-form input,
+    .contact-form textarea,
+    form select {
+        font-size: 0.95rem;
+        padding: 14px 16px;
+    }
+}
+
 .contact-links p {
     color: var(--text-muted);
     font-size: 1.1rem;
