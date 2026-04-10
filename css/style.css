@@ -1236,6 +1236,23 @@ header.scrolled .nav-container {
         height: 45px;
         font-size: 1rem;
     }
+
+    /* Marquee Optimization */
+    .marquee, .marquee-content {
+        gap: 20px;
+    }
+
+    .marquee-card {
+        min-width: 260px;
+        height: 320px;
+        border-radius: 24px;
+        padding: 15px;
+    }
+
+    @keyframes scroll {
+        0% { transform: translateX(0) translateZ(0); }
+        100% { transform: translateX(calc(-100% - 20px)) translateZ(0); }
+    }
 }
 
 /* Mobile Navigation Overlay */
