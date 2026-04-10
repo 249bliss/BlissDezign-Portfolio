@@ -117,27 +117,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Form submission (UI only)
+    // Form submission handling
     const form = document.querySelector('.contact-form');
     if (form) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = form.querySelector('button');
             const originalText = btn.innerText;
+            const formData = new FormData(form);
+            
+            // UI Loading state
             btn.innerText = 'Sending...';
             btn.disabled = true;
-            
-            setTimeout(() => {
-                btn.innerText = 'Message Sent! ✓';
-                btn.style.background = '#22c55e';
-                form.reset();
-                
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Success UI
+                    btn.innerText = 'Message Sent! ✓';
+                    btn.style.background = '#22c55e';
+                    form.reset();
+                } else {
+                    // Server error response
+                    const data = await response.json();
+                    if (Object.hasOwn(data, 'errors')) {
+                        btn.innerText = 'Error! ✗';
+                        btn.style.background = '#ef4444';
+                        console.error('Submission errors:', data.errors.map(error => error.message).join(", "));
+                    } else {
+                        throw new Error('Oops! There was a problem submitting your form');
+                    }
+                }
+            } catch (error) {
+                // Network error
+                btn.innerText = 'Error! ✗';
+                btn.style.background = '#ef4444';
+                console.error('Submission error:', error);
+            } finally {
+                // Return button to original state after delay
                 setTimeout(() => {
                     btn.innerText = originalText;
                     btn.style.background = '';
                     btn.disabled = false;
                 }, 3000);
-            }, 1500);
+            }
         });
     }
     // Floating Pills Drag and Drop Logic
