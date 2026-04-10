@@ -1253,6 +1253,22 @@ header.scrolled .nav-container {
         0% { transform: translateX(0) translateZ(0); }
         100% { transform: translateX(calc(-100% - 20px)) translateZ(0); }
     }
+
+    .hero-actions {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 /* Mobile Navigation Overlay */
