@@ -9,7 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle: 'AI-Powered E-Commerce App',
             heroImage: 'assets/Selected Project/nURAKICK.webp',
             layoutType: 'full-image',
-            fullImage: 'assets/Nurakick%20CASE%20STUDY.jpg',
+            fullImage: [
+                'assets/Nurakick_slice_0.jpg',
+                'assets/Nurakick_slice_1.jpg',
+                'assets/Nurakick_slice_2.jpg',
+                'assets/Nurakick_slice_3.jpg'
+            ],
             stats: {
                 role: 'Product Designer',
                 duration: '4 Weeks',
@@ -59,8 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 </section>
 
                 <section class="cs-full-image-container">
-                    <div class="cs-full-image-inner reveal-on-scroll">
-                        <img src="${data.fullImage}" alt="${data.title} Full Case Study">
+                    <div class="cs-full-image-inner reveal-on-scroll" style="display: flex; flex-direction: column;">
+                        ${Array.isArray(data.fullImage) 
+                            ? data.fullImage.map(img => `<img src="${img}" alt="${data.title} Full Case Study" style="width: 100%; display: block; border: none; margin: 0; padding: 0;">`).join('')
+                            : `<img src="${data.fullImage}" alt="${data.title} Full Case Study" style="width: 100%; display: block;">`
+                        }
                     </div>
                 </section>
 
