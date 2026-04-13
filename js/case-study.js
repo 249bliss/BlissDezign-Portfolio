@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Observe newly injected dynamic content so they aren't stuck at opacity:0
         const dynamicRevealElements = container.querySelectorAll('.reveal-on-scroll');
         const observerOptions = {
-            threshold: 0.1,
+            threshold: 0,
             rootMargin: '0px 0px -50px 0px'
         };
         const dynamicObserver = new IntersectionObserver((entries, observer) => {
