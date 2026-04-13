@@ -224,22 +224,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Video Performance Optimization (Play only when in viewport)
-    const marqueeVideos = document.querySelectorAll('.marquee-card video');
-    if (marqueeVideos.length > 0) {
+    // ─── Video Performance: Lazy-load + play-only-when-visible ───────────────
+    // Step 1: For Set-2 duplicate videos (aria-hidden), defer src loading
+    // by storing it in data-lazy-src and only assigning it on intersection.
+    // This halves the initial video download weight.
+    document.querySelectorAll('.marquee-card--video-placeholder video').forEach(video => {
+        const src = video.getAttribute('src');
+        if (src) {
+            video.setAttribute('data-lazy-src', src);
+            video.removeAttribute('src'); // prevent eager download
+        }
+    });
+
+    // Step 2: Watch ALL videos — play when visible, pause when not, and
+    // trigger deferred src load for Set-2 videos on first intersection.
+    const allMarqueeVideos = document.querySelectorAll('.marquee-card video');
+    if (allMarqueeVideos.length > 0) {
         const videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                const video = entry.target;
                 if (entry.isIntersecting) {
-                    entry.target.play().catch(e => console.log("Autoplay prevented", e));
+                    // Lazy-load deferred src on first sight
+                    const lazySrc = video.getAttribute('data-lazy-src');
+                    if (lazySrc) {
+                        video.src = lazySrc;
+                        video.removeAttribute('data-lazy-src');
+                    }
+                    video.play().catch(e => console.log('Autoplay prevented', e));
                 } else {
-                    entry.target.pause();
+                    video.pause();
                 }
             });
         }, { threshold: 0.1 });
 
-        marqueeVideos.forEach(video => {
-            videoObserver.observe(video);
-        });
+        allMarqueeVideos.forEach(video => videoObserver.observe(video));
     }
 });
 

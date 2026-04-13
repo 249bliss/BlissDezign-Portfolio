@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle: 'AI-Powered E-Commerce App',
             heroImage: 'assets/Selected Project/nURAKICK.png',
             layoutType: 'full-image',
-            fullImage: 'assets/Nurakick CASE STUDY.png',
+            fullImage: 'assets/Nurakick%20CASE%20STUDY.png',
             stats: {
                 role: 'Product Designer',
                 duration: '4 Weeks',

@@ -403,6 +403,10 @@ header.scrolled .nav-container {
 /* Services */
 .services {
     padding: var(--section-padding);
+    /* content-visibility: skip browser paint/layout for off-screen sections
+       until they approach the viewport — major rendering performance win */
+    content-visibility: auto;
+    contain-intrinsic-size: 0 700px;
 }
 
 .section-title {
@@ -482,15 +486,18 @@ header.scrolled .nav-container {
 }
 
 [data-theme="dark"] .service-card {
-    background: rgba(20, 20, 20, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    /* Removed backdrop-filter: blur() — it forces GPU compositing on all 4 cards
+       simultaneously during scroll, causing frame drops on mid-range devices.
+       A solid background achieves the same visual with zero compositing cost. */
+    background: rgba(12, 12, 12, 0.95);
 }
 
 /* Selected Projects */
 .selected-projects {
     padding: var(--section-padding);
     background: var(--bg-section);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 900px;
 }
 
 .projects-layout {
@@ -642,6 +649,8 @@ header.scrolled .nav-container {
 /* Experience Section Refined */
 .experience {
     padding: var(--section-padding);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 600px;
 }
 
 /* Glass Card Global */
@@ -761,6 +770,8 @@ header.scrolled .nav-container {
 .tools {
     padding: 80px 0;
     background: var(--bg-main);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 550px;
 }
 
 /* Interactive Tools Canvas */
@@ -836,6 +847,8 @@ header.scrolled .nav-container {
 /* Testimonials */
 .testimonials {
     padding: var(--section-padding);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 700px;
 }
 
 .stats-container {
