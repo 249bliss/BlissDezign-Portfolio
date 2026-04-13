@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'neura': {
             title: 'NEURA Kicks',
             subtitle: 'AI-Powered E-Commerce App',
-            heroImage: 'assets/Selected Project/nURAKICK.png',
+            heroImage: 'assets/Selected Project/nURAKICK.webp',
             layoutType: 'full-image',
-            fullImage: 'assets/Nurakick%20CASE%20STUDY.png',
+            fullImage: 'assets/Nurakick%20CASE%20STUDY.webp',
             stats: {
                 role: 'Product Designer',
                 duration: '4 Weeks',
@@ -166,8 +166,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         container.innerHTML = content;
         
-        // Re-trigger scroll reveal for dynamic content
-        window.dispatchEvent(new Event('scroll'));
+        // Observe newly injected dynamic content so they aren't stuck at opacity:0
+        const dynamicRevealElements = container.querySelectorAll('.reveal-on-scroll');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        const dynamicObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        dynamicRevealElements.forEach(el => dynamicObserver.observe(el));
     }
 
     function renderComingSoon(id) {
