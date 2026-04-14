@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Analytics: Track Page View ---
+    if (typeof supabaseClient !== 'undefined') {
+        supabaseClient.from('analytics').insert([
+            { page_path: window.location.pathname, event_type: 'view' }
+        ]).then(({ error }) => { if (error) console.error('Analytics Error:', error); });
+    }
+
     // Theme Toggle Logic
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
@@ -139,6 +146,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
+                // --- Analytics: Save Message to Supabase ---
+                if (typeof supabaseClient !== 'undefined') {
+                    const name = formData.get('name') || formData.get('Full Name');
+                    const email = formData.get('email') || formData.get('Email Address');
+                    const msg = formData.get('message') || formData.get('Message');
+                    
+                    await supabaseClient.from('messages').insert([{ name, email, message: msg }]);
+                    await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'message' }]);
+                }
+
                 if (response.ok) {
                     // Success UI
                     btn.innerText = 'Message Sent! ✓';
@@ -168,6 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.disabled = false;
                 }, 3000);
             }
+
+    // Newsletter Form Handling
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', async () => {
+            const emailInput = newsletterForm.querySelector('input[type="email"]');
+            if (emailInput && emailInput.value && typeof supabaseClient !== 'undefined') {
+                await supabaseClient.from('subscribers').upsert([{ email: emailInput.value }]);
+                await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'subscribe' }]);
+            }
+        });
+    }
         });
     }
     // Floating Pills Drag and Drop Logic

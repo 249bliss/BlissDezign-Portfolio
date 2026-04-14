@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | BlissDezign CMS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-theme="dark">
+
+    <!-- Loading Overlay -->
+    <div class="uploading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p style="margin-top:20px; color:#fff;" id="loading-text">Processing...</p>
+    </div>
+
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="admin-container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <img src="assets/kre8mind logo (2).webp" alt="Logo" width="50" style="margin-bottom: 15px;">
+                <h2 id="auth-title">Welcome Back</h2>
+                <p id="auth-subtitle">Login to manage your portfolio</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" placeholder="admin@blissdezign.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                        <i class="fa-solid fa-eye-slash toggle-password" data-target="login-password"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Secure Login</button>
+                <div class="auth-toggle">
+                    Don't have an account? <span id="show-signup">Create one</span>
+                </div>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup-form" class="auth-form">
+                <div style="background: rgba(223, 0, 255, 0.05); border: 1px solid rgba(223, 0, 255, 0.2); padding: 15px; border-radius: 12px; margin-bottom: 25px; font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--accent-purple); margin-right: 8px;"></i>
+                    Create an Admin Account to manage your portfolio content.
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Emmanuel Bliss" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="signup-email" placeholder="admin@blissdezign.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="signup-password" placeholder="Minimum 6 characters" required minlength="6">
+                        <i class="fa-solid fa-eye-slash toggle-password" data-target="signup-password"></i>
+                    </div>
+                    <div class="strength-meter">
+                        <div class="strength-bar" id="password-strength-bar"></div>
+                    </div>
+                    <p id="password-strength-text" style="font-size: 0.75rem; margin-top: 5px; color: var(--text-muted);"></p>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Register Admin</button>
+                <div class="auth-toggle">
+                    Already have an account? <span id="show-login">Login here</span>
+                </div>
+            </form>
+            
+            <p id="auth-error" style="color: #ef4444; margin-top: 20px; text-align: center; display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; font-size: 0.9rem;"></p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-screen" style="display: none;">
+        <div class="app-layout">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
+                <div class="sidebar-header">
+                    <img src="assets/kre8mind logo (2).webp" alt="Logo" width="40">
+                    <span class="logo-text" style="font-style: italic; font-weight: 700; font-family: 'Sen', sans-serif;">BlissDezign</span>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <div class="nav-item active" data-target="insights-panel">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="nav-item" data-target="manage-projects-panel">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <span>Projects</span>
+                    </div>
+                    <div class="nav-item" data-target="manage-reviews-panel">
+                        <i class="fa-solid fa-star"></i>
+                        <span>Testimonials</span>
+                    </div>
+                    <div class="nav-item" data-target="add-project-panel">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>New Project</span>
+                    </div>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="theme-switch-wrapper">
+                        <i class="fa-solid fa-moon"></i>
+                        <span>Dark Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="admin-theme-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <button id="logout-btn" class="sidebar-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <header class="admin-topbar">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search analytics, date frames...">
+                    </div>
+                    <div class="topbar-actions">
+                        <div class="topbar-date">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span id="current-date-range">...</span>
+                        </div>
+                        <div class="topbar-user">
+                            <span id="user-display"></span>
+                            <div class="user-avatar">EB</div>
+                        </div>
+                        <button id="mobile-logout-btn" class="mobile-only-btn" title="Logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="admin-panel-container">
+
+            <!-- Panel: Insights & Leads -->
+            <div id="insights-panel" class="admin-panel active">
+                <div class="metrics-grid">
+                    <div class="metric-card premium">
+                        <span class="metric-label">Daily Reach</span>
+                        <h3 id="stat-traffic" class="metric-value">0</h3>
+                        <div class="mini-chart"><div class="bar" style="height:40%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:90%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">New Leads</span>
+                        <h3 id="stat-messages" class="metric-value">0</h3>
+                        <span class="metric-trend">Contact Requests</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Community</span>
+                        <h3 id="stat-subscribers" class="metric-value">0</h3>
+                        <span class="metric-trend">Subscribers</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Conversion</span>
+                        <h3 id="stat-conversion" class="metric-value">0%</h3>
+                        <span class="metric-trend">Total engagement</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid-2">
+                    <div class="insights-box main-chart-box">
+                        <div class="box-header">
+                            <h3>Engagement Analytics</h3>
+                            <div class="chart-legend">
+                                <span class="dot views"></span> Views
+                                <span class="dot leads"></span> Leads
+                            </div>
+                        </div>
+                        <div class="chart-container-main">
+                            <canvas id="analytics-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="insights-box sessions-box">
+                        <div class="box-header">
+                            <h3>Session by Category</h3>
+                        </div>
+                        <div id="category-sessions-list" class="session-list">
+                            <!-- Categories with progress bars -->
+                            <p style="color:var(--text-muted); text-align:center;">Loading stats...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insights-row grid-2" style="margin-top: 30px;">
+                    <div class="insights-box">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Recent Messages</h3>
+                            <button class="btn btn-secondary" onclick="fetchLeads()" style="padding: 5px 12px; font-size: 0.75rem;">Refresh</button>
+                        </div>
+                        <div id="messages-activity-feed" class="activity-feed">
+                            <p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading leads...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="insights-box">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Newsletter Subscribers</h3>
+                        </div>
+                        <div id="subscribers-activity-feed" class="activity-feed">
+                            <p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading community...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Panel: Manage Projects -->
+            <div id="manage-projects-panel" class="admin-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h2>Portfolio Projects</h2>
+                    <button class="btn btn-primary" onclick="document.querySelector('[data-target=\'add-project-panel\']').click()">+ New Project</button>
+                </div>
+                
+                <div id="projects-grid" class="projects-grid">
+                    <!-- Projects loaded via JS as cards -->
+                    <p style="color: var(--text-muted); text-align: center; padding: 40px; width: 100%;">Loading your library...</p>
+                </div>
+            </div>
+
+            <!-- Panel: Add/Edit Project -->
+            <div id="add-project-panel" class="admin-panel">
+                <h2 id="project-form-title" style="margin-bottom: 30px;">Add New Project</h2>
+                <form id="projects-form" class="form-card">
+                    <input type="hidden" id="edit-proj-original-id">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Project ID (URL Slug, e.g. 'neura')</label>
+                            <input type="text" id="proj-id" required pattern="[A-Za-z0-9-]+" title="Letters, numbers and hyphens only">
+                        </div>
+                        <div class="form-group">
+                            <label>Project Title</label>
+                            <input type="text" id="proj-title" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subtitle / One-line Description</label>
+                        <input type="text" id="proj-subtitle" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categories (Comma separated)</label>
+                        <input type="text" id="proj-tags" required placeholder="Mobile App, Fintech, AI">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Card Preview Image (Square/Portrait for Masonry)</label>
+                        <input type="file" id="proj-hero" accept="image/*">
+                        <div id="hero-preview-box" class="live-preview-box" style="display: none; margin-top: 15px;">
+                            <img id="hero-preview-img" src="" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <p style="font-size: 0.75rem; color: var(--accent-purple); margin-top: 5px;"><i class="fa-solid fa-check-circle"></i> Image Selected</p>
+                        </div>
+                        <p id="hero-current-url" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: none;"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 15px; background: rgba(223, 0, 255, 0.05); border: 1px dashed var(--accent-purple); border-radius: 12px;">
+                            <input type="checkbox" id="has-case-study" style="width:20px; height: 20px; margin: 0;">
+                            <span>Enable Full Case Study page for this project</span>
+                        </label>
+                    </div>
+
+                    <div id="case-study-fields" style="display: none; padding-left: 20px; border-left: 3px solid var(--accent-purple); margin-top: 20px;">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Role</label>
+                                <input type="text" id="cs-role" placeholder="e.g. Lead Designer">
+                            </div>
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <input type="text" id="cs-duration" placeholder="e.g. 3 Months">
+                            </div>
+                            <div class="form-group">
+                                <label>Tools</label>
+                                <input type="text" id="cs-tools" placeholder="e.g. Figma, Adobe XD">
+                            </div>
+                            <div class="form-group">
+                                <label>Industry</label>
+                                <input type="text" id="cs-industry" placeholder="e.g. Fintech">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Full Case Study Image (Huge Scrolling Image)</label>
+                            <input type="file" id="cs-full-image" accept="image/*">
+                            <div id="cs-preview-box" class="live-preview-box" style="display: none; margin-top: 15px;">
+                                <img id="cs-preview-img" src="" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <p style="font-size: 0.75rem; color: var(--accent-purple); margin-top: 5px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Chopper is ready to slice this image.</p>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Chopper will slice large images for optimal performance.
+                            </p>
+                            <div id="chopper-preview"></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button type="submit" id="submit-proj-btn" class="btn btn-primary" style="flex: 2;">Publish Project</button>
+                        <button type="button" id="cancel-proj-btn" class="btn btn-secondary" style="flex: 1; display: none;">Cancel Edit</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Panel: Manage Reviews -->
+            <div id="manage-reviews-panel" class="admin-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h2>Client Testimonials</h2>
+                    <button class="btn btn-primary" onclick="document.querySelector('[data-target=\'add-review-panel\']').click()" style="padding: 10px 20px; font-size: 0.85rem;">+ New Review</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Author</th>
+                            <th>Role / Company</th>
+                            <th>Text Preview</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reviews-list">
+                        <!-- Reviews loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Panel: Add/Edit Review -->
+            <div id="add-review-panel" class="admin-panel">
+                <h2 id="review-form-title" style="margin-bottom: 30px;">Add New Testimonial</h2>
+                <form id="reviews-form" class="form-card">
+                    <input type="hidden" id="edit-rev-id">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Client Name</label>
+                            <input type="text" id="rev-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Role / Company</label>
+                            <input type="text" id="rev-role" required placeholder="e.g. CEO at TechCorp">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Review Content</label>
+                        <textarea id="rev-text" rows="5" required placeholder="Paste the testimonial here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Client Avatar</label>
+                        <input type="file" id="rev-avatar" accept="image/*">
+                        <p id="avatar-current-url" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: none;"></p>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button type="submit" id="submit-rev-btn" class="btn btn-primary" style="flex: 2;">Publish Testimonial</button>
+                        <button type="button" id="cancel-rev-btn" class="btn btn-secondary" style="flex: 1; display: none;">Cancel Edit</button>
+                    </div>
+                </form>
+            </div>
+                </div> <!-- End admin-panel-container -->
+            </main>
+        </div> <!-- End app-layout -->
+        
+        <!-- Mobile Bottom Navigation Bar -->
+        <nav class="mobile-bottom-nav">
+            <div class="m-nav-item active" data-target="insights-panel">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Insights</span>
+            </div>
+            <div class="m-nav-item" data-target="manage-projects-panel">
+                <i class="fa-solid fa-briefcase"></i>
+                <span>Projects</span>
+            </div>
+            <div class="m-nav-item" data-target="manage-reviews-panel">
+                <i class="fa-solid fa-star"></i>
+                <span>Reviews</span>
+            </div>
+            <div class="m-nav-item" data-target="add-project-panel">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Add</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/admin.js"></script>
+    
+    <!-- Custom UI Components -->
+    <div id="admin-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-icon"></div>
+            <h3 id="modal-title">Confirm</h3>
+            <p id="modal-message">Description goes here...</p>
+            <div id="modal-options" class="modal-options"></div>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="modal-confirm" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+</body>
+</html>
