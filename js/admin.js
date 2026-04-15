@@ -671,8 +671,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Case Study Status
             const csStatus = document.getElementById('cs-current-status');
-            if (project.is_case_study && existingCaseStudy) {
-                const count = (existingCaseStudy.full_image_chunks || []).length;
+            if (project.is_case_study && caseStudy) {
+                const count = (caseStudy.full_image_chunks || []).length;
                 csStatus.innerHTML = `<i class="fa-solid fa-layer-group"></i> Current Case Study: ${count} Assets Uploaded`;
                 csStatus.style.display = 'inline-flex';
             } else {
