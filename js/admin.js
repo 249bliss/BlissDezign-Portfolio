@@ -1080,7 +1080,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                                     document.getElementById('cs-selection-grid').style.display = 'none';
                                 } else {
                                     // Normal image, add to gallery
-                                    activeCaseStudyGallery.push({ type: 'file', content: file });
+                                    activeCaseStudyGallery.push({ 
+                                        type: 'file', 
+                                        content: file,
+                                        previewUrl: URL.createObjectURL(file)
+                                    });
                                     renderCaseStudyGallery();
                                 }
                             };
@@ -1092,11 +1096,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 // Add all files to the gallery
-                files.forEach(f => {
-                    activeCaseStudyGallery.push({ type: 'file', content: f });
-                });
-                renderCaseStudyGallery();
-                // Clear the input so the same file can be added again if needed
+                try {
+                    files.forEach(f => {
+                        activeCaseStudyGallery.push({ 
+                            type: 'file', 
+                            content: f,
+                            previewUrl: URL.createObjectURL(f) // Pre-generate URL
+                        });
+                    });
+                    renderCaseStudyGallery();
+                } catch (err) {
+                    console.error("Error adding to gallery:", err);
+                }
+                
+                // Always clear the input so the same file can be added again
                 csInput.value = '';
             });
         }
@@ -1254,12 +1267,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Switch off single-image preview box if we have a gallery
         if (previewBox) previewBox.style.display = 'none';
 
+        // Update status badge first to ensure feedback
+        status.innerHTML = `<i class="fa-solid fa-layer-group"></i> Total Assets: ${activeCaseStudyGallery.length} / Sorted & Ready`;
+        status.style.display = 'inline-flex';
+        grid.style.display = 'grid';
+
         grid.innerHTML = activeCaseStudyGallery.map((item, idx) => {
             const isVid = item.type === 'url' 
-                ? item.content.match(/\.(mp4|webm|ogg|mov)$/i)
-                : item.content.type.startsWith('video/');
+                ? (item.content || "").match(/\.(mp4|webm|ogg|mov)$/i)
+                : (item.content?.type || "").startsWith('video/');
             
-            const src = item.type === 'url' ? item.content : URL.createObjectURL(item.content);
+            const src = item.type === 'url' ? item.content : item.previewUrl;
 
             return `
                 <div class="selection-thumb" data-index="${idx}">
@@ -1272,12 +1290,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
         }).join('');
 
-        grid.style.display = 'grid';
-        status.innerHTML = `<i class="fa-solid fa-layer-group"></i> Total Assets: ${activeCaseStudyGallery.length} / Sorted & Ready`;
-        status.style.display = 'inline-flex';
-
-        // Initialize Sortable if not already done
-        if (!window.csSortable) {
+        // Initialize Sortable if library is available
+        if (typeof Sortable !== 'undefined' && !window.csSortable) {
             window.csSortable = new Sortable(grid, {
                 animation: 250,
                 ghostClass: 'sortable-ghost',
