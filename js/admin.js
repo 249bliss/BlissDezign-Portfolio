@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Tag Manager State ---
     let activeTags = [];
+    let activeCaseStudyGallery = []; // [{ type: 'url'|'file', content: string|File }]
     
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
@@ -669,30 +670,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 heroImg.style.display = 'block';
             }
 
-            // Case Study Status & Preview Grid
-            const csStatus = document.getElementById('cs-current-status');
-            const csGrid = document.getElementById('cs-selection-grid');
-            
+            // Case Study Status & Gallery State
             if (project.is_case_study && caseStudy) {
                 const chunks = caseStudy.full_image_chunks || [];
-                csStatus.innerHTML = `<i class="fa-solid fa-layer-group"></i> Current Case Study: ${chunks.length} Assets Uploaded`;
-                csStatus.style.display = 'inline-flex';
-                
-                if (chunks.length > 0) {
-                    csGrid.innerHTML = chunks.map((url, index) => {
-                        const isVid = url.match(/\.(mp4|webm|ogg|mov|mov)/i);
-                        return `
-                            <div class="selection-thumb">
-                                <div class="thumb-index">${index + 1}</div>
-                                ${isVid ? `<video src="${url}" muted loop playsinline></video>` : `<img src="${url}">`}
-                            </div>
-                        `;
-                    }).join('');
-                    csGrid.style.display = 'grid';
-                }
+                activeCaseStudyGallery = chunks.map(url => ({ type: 'url', content: url }));
+                renderCaseStudyGallery();
             } else {
-                csStatus.style.display = 'none';
-                csGrid.style.display = 'none';
+                activeCaseStudyGallery = [];
+                renderCaseStudyGallery();
             }
 
             hasCaseStudyCheckbox.checked = !!project.is_case_study;
@@ -740,9 +725,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         hasCaseStudyCheckbox.checked = false;
         isFeaturedCheckbox.checked = false;
         document.getElementById('chopper-preview').innerHTML = '';
-        document.getElementById('cs-selection-grid').innerHTML = '';
-        document.getElementById('cs-selection-grid').style.display = 'none';
-        document.getElementById('cs-current-status').style.display = 'none';
+        activeCaseStudyGallery = [];
+        renderCaseStudyGallery();
         document.querySelector('[data-target="manage-projects-panel"]').click();
     }
 
@@ -816,29 +800,34 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const tools = document.getElementById('cs-tools').value;
                 const industry = document.getElementById('cs-industry').value;
                 
-                const csFiles = Array.from(document.getElementById('cs-full-image').files);
-                let chunks = [];
-                
-                if (csFiles.length > 0) {
-                    if (csFiles.length === 1) {
-                        // Single large file - use chopper
-                        chunks = await chopAndUploadImage(csFiles[0]);
-                    } else {
-                        // Multiple files - upload each sequentially
-                        setLoading(true, `Uploading ${csFiles.length} files...`);
-                        for (let i = 0; i < csFiles.length; i++) {
-                            setLoading(true, `Uploading ${i+1}/${csFiles.length}...`);
-                            const url = await uploadImage(csFiles[i], 'case_studies');
-                            chunks.push(url);
+                let finalChunks = [];
+
+                const csBox = document.getElementById('cs-preview-box');
+                const csFilesInput = document.getElementById('cs-full-image').files;
+
+                if (csBox.style.display === 'block' && csFilesInput.length === 1) {
+                    // Scenario A: Single giant image (Auto-Chopper used)
+                    finalChunks = await chopAndUploadImage(csFilesInput[0]);
+                } else if (activeCaseStudyGallery.length > 0) {
+                    // Scenario B: Gallery Manager (Multi-files, dragging, deleting)
+                    setLoading(true, `Processing gallery (${activeCaseStudyGallery.length} items)...`);
+                    for (let item of activeCaseStudyGallery) {
+                        if (item.type === 'file') {
+                            const url = await uploadImage(item.content, 'case_studies');
+                            finalChunks.push(url);
+                        } else {
+                            finalChunks.push(item.content);
                         }
                     }
                 } else if (isEdit && existingCaseStudy) {
-                    chunks = existingCaseStudy.full_image_chunks || [];
+                    // Fallback: Preserve existing if nothing new added/changed
+                    finalChunks = existingCaseStudy.full_image_chunks || [];
                 }
 
-                const csData = { id, role, duration, tools, industry, full_image_chunks: chunks };
+                const csData = { id, role, duration, tools, industry, full_image_chunks: finalChunks };
                 
-                await supabaseClient.from('case_studies').upsert([csData]);
+                const { error: csSaveErr } = await supabaseClient.from('case_studies').upsert([csData]);
+                if (csSaveErr) throw csSaveErr;
 
                 // If ID changed, cleanup old case study record
                 if (isEdit && id !== originalId) {
@@ -1073,32 +1062,42 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (csInput) {
             csInput.addEventListener('change', (e) => {
                 const files = Array.from(e.target.files);
-                const csBox = document.getElementById('cs-preview-box');
-                const csImg = document.getElementById('cs-preview-img');
-                const csGrid = document.getElementById('cs-selection-grid');
-                
-                if (files.length > 0) {
-                    if (files.length === 1) {
-                        // Single file - hide grid, show auto-chopper preview
-                        csGrid.style.display = 'none';
-                        csImg.src = URL.createObjectURL(files[0]);
-                        csBox.style.display = 'block';
-                    } else {
-                        // Multiple files - show grid, hide auto-chopper preview
-                        csBox.style.display = 'none';
-                        csGrid.innerHTML = files.map((file, index) => {
-                            const url = URL.createObjectURL(file);
-                            const isVid = file.type.startsWith('video/');
-                            return `
-                                <div class="selection-thumb">
-                                    <div class="thumb-index">${index + 1}</div>
-                                    ${isVid ? `<video src="${url}" muted loop playsinline></video>` : `<img src="${url}">`}
-                                </div>
-                            `;
-                        }).join('');
-                        csGrid.style.display = 'grid';
+                if (files.length === 1) {
+                    // Check if it's potentially an auto-chopper candidate (image only)
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (re) => {
+                            const img = new Image();
+                            img.onload = () => {
+                                if (img.height > 8000) {
+                                    // Huge image detected - handle via chopper instead of gallery
+                                    activeCaseStudyGallery = []; // Clear gallery for chopper use
+                                    const csBox = document.getElementById('cs-preview-box');
+                                    const csImg = document.getElementById('cs-preview-img');
+                                    csImg.src = re.target.result;
+                                    csBox.style.display = 'block';
+                                    document.getElementById('cs-selection-grid').style.display = 'none';
+                                } else {
+                                    // Normal image, add to gallery
+                                    activeCaseStudyGallery.push({ type: 'file', content: file });
+                                    renderCaseStudyGallery();
+                                }
+                            };
+                            img.src = re.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                        return;
                     }
                 }
+
+                // Add all files to the gallery
+                files.forEach(f => {
+                    activeCaseStudyGallery.push({ type: 'file', content: f });
+                });
+                renderCaseStudyGallery();
+                // Clear the input so the same file can be added again if needed
+                csInput.value = '';
             });
         }
     }
@@ -1237,6 +1236,71 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // --- 9. Advanced Gallery Manager (Drag & Drop + Delete) ---
+    function renderCaseStudyGallery() {
+        const grid = document.getElementById('cs-selection-grid');
+        const status = document.getElementById('cs-current-status');
+        const previewBox = document.getElementById('cs-preview-box');
+
+        if (!grid) return;
+
+        if (activeCaseStudyGallery.length === 0) {
+            grid.innerHTML = '';
+            grid.style.display = 'none';
+            status.style.display = 'none';
+            return;
+        }
+
+        // Switch off single-image preview box if we have a gallery
+        if (previewBox) previewBox.style.display = 'none';
+
+        grid.innerHTML = activeCaseStudyGallery.map((item, idx) => {
+            const isVid = item.type === 'url' 
+                ? item.content.match(/\.(mp4|webm|ogg|mov)$/i)
+                : item.content.type.startsWith('video/');
+            
+            const src = item.type === 'url' ? item.content : URL.createObjectURL(item.content);
+
+            return `
+                <div class="selection-thumb" data-index="${idx}">
+                    <div class="thumb-index">${idx + 1}</div>
+                    <div class="remove-btn" onclick="window.removeFromGallery(${idx})">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                    ${isVid ? `<video src="${src}" muted loop playsinline></video>` : `<img src="${src}">`}
+                </div>
+            `;
+        }).join('');
+
+        grid.style.display = 'grid';
+        status.innerHTML = `<i class="fa-solid fa-layer-group"></i> Total Assets: ${activeCaseStudyGallery.length} / Sorted & Ready`;
+        status.style.display = 'inline-flex';
+
+        // Initialize Sortable if not already done
+        if (!window.csSortable) {
+            window.csSortable = new Sortable(grid, {
+                animation: 250,
+                ghostClass: 'sortable-ghost',
+                onEnd: () => {
+                    // Update the state array based on the new DOM order
+                    const newOrder = [];
+                    grid.querySelectorAll('.selection-thumb').forEach(el => {
+                        const idx = parseInt(el.getAttribute('data-index'));
+                        newOrder.push(activeCaseStudyGallery[idx]);
+                    });
+                    activeCaseStudyGallery = newOrder;
+                    renderCaseStudyGallery(); // Refresh indices
+                }
+            });
+        }
+    }
+
+    window.removeFromGallery = (index) => {
+        activeCaseStudyGallery.splice(index, 1);
+        renderCaseStudyGallery();
+    };
+
     // Make functions available globally so they can be called by reset/edit
     window.renderTags = renderTags;
+    window.renderCaseStudyGallery = renderCaseStudyGallery;
 });
