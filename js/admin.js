@@ -737,14 +737,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             const displayOrder = parseInt(document.getElementById('proj-order').value) || 0;
             const gridLayout = document.getElementById('proj-layout').value;
 
+            // --- Snapshot current data for preservation ---
+            let existingProject = null;
+            let existingCaseStudy = null;
+            if (isEdit) {
+                const { data: p } = await supabaseClient.from('projects').select('*').eq('id', originalId).single();
+                existingProject = p;
+                const { data: cs } = await supabaseClient.from('case_studies').select('*').eq('id', originalId).single();
+                existingCaseStudy = cs;
+            }
+
             let heroUrl = null;
             const heroFile = document.getElementById('proj-hero').files[0];
             if (heroFile) {
                 heroUrl = await uploadImage(heroFile, 'projects');
-            } else if (isEdit) {
-                // Keep the old image if editing and no new file selected
-                const { data } = await supabaseClient.from('projects').select('hero_image').eq('id', originalId).single();
-                heroUrl = data.hero_image;
+            } else if (isEdit && existingProject) {
+                heroUrl = existingProject.hero_image;
             } else {
                 throw new Error('Hero image is required for new projects.');
             }
@@ -783,18 +791,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 if (csFile) {
                     chunks = await chopAndUploadImage(csFile);
-                } else if (isEdit) {
-                    // Keep existing chunks if no new file
-                    const { data } = await supabaseClient.from('case_studies').select('full_image_chunks').eq('id', originalId).single();
-                    if (data) chunks = data.full_image_chunks;
+                } else if (isEdit && existingCaseStudy) {
+                    chunks = existingCaseStudy.full_image_chunks || [];
                 }
 
                 const csData = { id, role, duration, tools, industry, full_image_chunks: chunks };
                 
-                if (isEdit) {
-                    await supabaseClient.from('case_studies').upsert([csData]);
-                } else {
-                    await supabaseClient.from('case_studies').insert([csData]);
+                await supabaseClient.from('case_studies').upsert([csData]);
+
+                // If ID changed, cleanup old case study record
+                if (isEdit && id !== originalId) {
+                    await supabaseClient.from('case_studies').delete().eq('id', originalId);
                 }
             } else if (isEdit) {
                 // If it was a case study and now it's not, delete the record
