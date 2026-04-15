@@ -234,10 +234,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             let subQuery = supabaseClient.from('subscribers').select('created_at');
 
             const now = new Date();
-            let dateLimit = null;
+            let labelText = "Total Reach";
+            let leadsText = "Leads";
+            let communityText = "Community";
 
             if (days > 0) {
-                dateLimit = new Date();
+                const dateLimit = new Date();
                 dateLimit.setDate(dateLimit.getDate() - days);
                 const isoDate = dateLimit.toISOString();
                 
@@ -245,15 +247,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 msgQuery = msgQuery.gte('created_at', isoDate);
                 subQuery = subQuery.gte('created_at', isoDate);
                 
-                let label = `Last ${days} Days`;
-                if (days === 1) label = "Today's Performance";
-                else if (days === 90) label = "Quarterly Review (3M)";
-                else if (days === 180) label = "Semiannual Review (6M)";
+                let rangeLabel = `Last ${days} Days`;
+                if (days === 1) {
+                    rangeLabel = "Today's Performance";
+                    labelText = "Daily Reach";
+                    leadsText = "New Leads";
+                    communityText = "Daily Growth";
+                }
+                else if (days === 90) rangeLabel = "Quarterly Review (3M)";
+                else if (days === 180) rangeLabel = "Semiannual Review (6M)";
                 
-                document.getElementById('current-date-range').innerText = label;
+                document.getElementById('current-date-range').innerText = rangeLabel;
             } else {
                 document.getElementById('current-date-range').innerText = "All Time Performance";
+                labelText = "Total Reach";
+                leadsText = "Total Leads";
+                communityText = "Community";
             }
+
+            // Update Labels
+            document.getElementById('label-traffic').innerText = labelText;
+            document.getElementById('label-messages').innerText = leadsText;
+            document.getElementById('label-subscribers').innerText = communityText;
 
             const [{ data: traffic }, { data: messages }, { data: subs }] = await Promise.all([
                 trafficQuery,
@@ -298,30 +313,48 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             traffic.forEach(t => {
                 const hour = new Date(t.created_at).getHours();
-                const idx = Math.floor(hour / 4);
+                const idx = Math.min(6, Math.floor(hour / 4));
                 viewData[idx]++;
             });
             leads.forEach(l => {
                 const hour = new Date(l.created_at).getHours();
-                const idx = Math.floor(hour / 4);
+                const idx = Math.min(6, Math.floor(hour / 4));
                 leadData[idx]++;
             });
-        } else if (days <= 30 && days > 0) {
+        } else if (days > 0 && days <= 30) {
             // Daily view
             for (let i = days; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
-                labels.push(d.toLocaleDateString([], { month: 'short', day: 'numeric' }));
+                const dStr = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                labels.push(dStr);
                 
-                const dStr = d.toDateString();
-                viewData.push(traffic.filter(t => new Date(t.created_at).toDateString() === dStr).length);
-                leadData.push(leads.filter(l => new Date(l.created_at).toDateString() === dStr).length);
+                const dayMatch = d.toDateString();
+                viewData.push(traffic.filter(t => new Date(t.created_at).toDateString() === dayMatch).length);
+                leadData.push(leads.filter(l => new Date(l.created_at).toDateString() === dayMatch).length);
             }
         } else {
-            // Monthly or general view
-            labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
-            viewData = [traffic.length / 6, traffic.length / 4, traffic.length / 2, traffic.length / 3, traffic.length / 2, traffic.length];
-            leadData = [leads.length / 6, leads.length / 5, leads.length / 3, leads.length / 4, leads.length / 2, leads.length];
+            // Monthly view (for 3M, 6M, or All Time)
+            const monthsToShow = days === 90 ? 3 : 6;
+            for (let i = monthsToShow - 1; i >= 0; i--) {
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
+                const mLabel = d.toLocaleString('default', { month: 'short' });
+                labels.push(mLabel);
+                
+                const m = d.getMonth();
+                const y = d.getFullYear();
+                
+                viewData.push(traffic.filter(t => {
+                    const dt = new Date(t.created_at);
+                    return dt.getMonth() === m && dt.getFullYear() === y;
+                }).length);
+                
+                leadData.push(leads.filter(l => {
+                    const dt = new Date(l.created_at);
+                    return dt.getMonth() === m && dt.getFullYear() === y;
+                }).length);
+            }
         }
 
         return { labels, views: viewData, leads: leadData };
