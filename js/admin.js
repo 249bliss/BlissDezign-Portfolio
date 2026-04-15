@@ -685,7 +685,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderTags();
         document.getElementById('edit-proj-original-id').value = '';
         document.getElementById('project-form-title').innerText = 'Add New Project';
-        document.getElementById('submit-proj-btn').innerText = 'Publish Project';
+        const submitBtn = document.getElementById('submit-proj-btn');
+        submitBtn.innerText = 'Publish Project';
+        submitBtn.disabled = false;
         document.getElementById('cancel-proj-btn').style.display = 'none';
         document.getElementById('hero-current-url').style.display = 'none';
         document.getElementById('proj-order').value = 0;
@@ -702,6 +704,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const originalId = document.getElementById('edit-proj-original-id').value;
         const isEdit = !!originalId;
         
+        const submitBtn = document.getElementById('submit-proj-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = isEdit ? 'Updating...' : 'Publishing...';
+
         setLoading(true, isEdit ? 'Updating project...' : 'Creating project...');
         
         try {
@@ -784,6 +790,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } catch (err) {
             showAlert('Error saving project: ' + err.message);
+            const submitBtn = document.getElementById('submit-proj-btn');
+            submitBtn.disabled = false;
+            submitBtn.innerText = !!document.getElementById('edit-proj-original-id').value ? 'Update Project' : 'Publish Project';
         } finally {
             setLoading(false);
         }
@@ -856,7 +865,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         reviewsForm.reset();
         document.getElementById('edit-rev-id').value = '';
         document.getElementById('review-form-title').innerText = 'Add New Testimonial';
-        document.getElementById('submit-rev-btn').innerText = 'Publish Testimonial';
+        const submitBtn = document.getElementById('submit-rev-btn');
+        submitBtn.innerText = 'Publish Testimonial';
+        submitBtn.disabled = false;
         document.getElementById('cancel-rev-btn').style.display = 'none';
         document.getElementById('avatar-current-url').style.display = 'none';
         document.querySelector('[data-target="manage-reviews-panel"]').click();
@@ -866,6 +877,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         const editId = document.getElementById('edit-rev-id').value;
         const isEdit = !!editId;
+
+        const submitBtn = document.getElementById('submit-rev-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = isEdit ? 'Updating...' : 'Saving...';
 
         setLoading(true, isEdit ? 'Updating review...' : 'Saving review...');
         try {
@@ -897,6 +912,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             fetchReviews();
         } catch (err) {
             showAlert(err.message);
+            const submitBtn = document.getElementById('submit-rev-btn');
+            submitBtn.disabled = false;
+            submitBtn.innerText = !!document.getElementById('edit-rev-id').value ? 'Update Review' : 'Publish Testimonial';
         } finally {
             setLoading(false);
         }
