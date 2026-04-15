@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Scroll Animations (Reveal on scroll)
-    const revealElements = document.querySelectorAll('.service-card, .stats-container, .masonry-card, .experience-card, .testimonial-card, .section-title, .contact-text, .contact-form, .tools-section .container, .portfolio-gallery, .reveal-on-scroll');
+    const revealElements = document.querySelectorAll('.service-card, .stats-container, .masonry-card, .experience-card, .testimonial-marquee, .section-title, .contact-text, .contact-form, .tools-section .container, .portfolio-gallery, .reveal-on-scroll');
     
     const observerOptions = {
         threshold: 0.1,
@@ -109,6 +109,19 @@ document.addEventListener('DOMContentLoaded', () => {
         el.classList.add('reveal-on-scroll');
         revealOnScroll.observe(el);
     });
+
+    // Testimonial Marquee: Toggle pause on click/tap for mobile
+    const testimonialMarquee = document.querySelector('.testimonial-marquee');
+    if (testimonialMarquee) {
+        testimonialMarquee.addEventListener('click', () => {
+            const contents = testimonialMarquee.querySelectorAll('.testimonial-marquee-content');
+            contents.forEach(content => {
+                const currentPlayState = window.getComputedStyle(content).animationPlayState;
+                content.style.animationPlayState = currentPlayState === 'paused' ? 'running' : 'paused';
+            });
+            testimonialMarquee.classList.toggle('is-paused');
+        });
+    }
 
     // Smooth navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
