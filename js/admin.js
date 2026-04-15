@@ -655,7 +655,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const isVideo = project.hero_image.match(/\.(mp4|webm|ogg|mov)$/i);
             
             heroUrlDisplay.innerText = "Current Media: " + project.hero_image.split('/').pop();
-            heroUrlDisplay.style.display = 'block';
+            heroUrlDisplay.innerHTML = `<i class="fa-solid fa-cloud-check"></i> Current: ${project.hero_image.split('/').pop()}`;
+            heroUrlDisplay.style.display = 'inline-flex';
             heroBox.style.display = 'block';
             
             if (isVideo) {
@@ -666,6 +667,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 heroVid.style.display = 'none';
                 heroImg.src = project.hero_image;
                 heroImg.style.display = 'block';
+            }
+
+            // Case Study Status
+            const csStatus = document.getElementById('cs-current-status');
+            if (project.is_case_study && existingCaseStudy) {
+                const count = (existingCaseStudy.full_image_chunks || []).length;
+                csStatus.innerHTML = `<i class="fa-solid fa-layer-group"></i> Current Case Study: ${count} Assets Uploaded`;
+                csStatus.style.display = 'inline-flex';
+            } else {
+                csStatus.style.display = 'none';
             }
 
             hasCaseStudyCheckbox.checked = !!project.is_case_study;
@@ -713,6 +724,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         hasCaseStudyCheckbox.checked = false;
         isFeaturedCheckbox.checked = false;
         document.getElementById('chopper-preview').innerHTML = '';
+        document.getElementById('cs-selection-grid').innerHTML = '';
+        document.getElementById('cs-selection-grid').style.display = 'none';
+        document.getElementById('cs-current-status').style.display = 'none';
         document.querySelector('[data-target="manage-projects-panel"]').click();
     }
 
@@ -786,11 +800,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const tools = document.getElementById('cs-tools').value;
                 const industry = document.getElementById('cs-industry').value;
                 
-                const csFile = document.getElementById('cs-full-image').files[0];
+                const csFiles = Array.from(document.getElementById('cs-full-image').files);
                 let chunks = [];
                 
-                if (csFile) {
-                    chunks = await chopAndUploadImage(csFile);
+                if (csFiles.length > 0) {
+                    if (csFiles.length === 1) {
+                        // Single large file - use chopper
+                        chunks = await chopAndUploadImage(csFiles[0]);
+                    } else {
+                        // Multiple files - upload each sequentially
+                        setLoading(true, `Uploading ${csFiles.length} files...`);
+                        for (let i = 0; i < csFiles.length; i++) {
+                            setLoading(true, `Uploading ${i+1}/${csFiles.length}...`);
+                            const url = await uploadImage(csFiles[i], 'case_studies');
+                            chunks.push(url);
+                        }
+                    }
                 } else if (isEdit && existingCaseStudy) {
                     chunks = existingCaseStudy.full_image_chunks || [];
                 }
@@ -1031,10 +1056,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (csInput) {
             csInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    csImg.src = URL.createObjectURL(file);
-                    csBox.style.display = 'block';
+                const files = Array.from(e.target.files);
+                const csBox = document.getElementById('cs-preview-box');
+                const csImg = document.getElementById('cs-preview-img');
+                const csGrid = document.getElementById('cs-selection-grid');
+                
+                if (files.length > 0) {
+                    if (files.length === 1) {
+                        // Single file - hide grid, show auto-chopper preview
+                        csGrid.style.display = 'none';
+                        csImg.src = URL.createObjectURL(files[0]);
+                        csBox.style.display = 'block';
+                    } else {
+                        // Multiple files - show grid, hide auto-chopper preview
+                        csBox.style.display = 'none';
+                        csGrid.innerHTML = files.map((file, index) => {
+                            const url = URL.createObjectURL(file);
+                            const isVid = file.type.startsWith('video/');
+                            return `
+                                <div class="selection-thumb">
+                                    <div class="thumb-index">${index + 1}</div>
+                                    ${isVid ? `<video src="${url}" muted loop playsinline></video>` : `<img src="${url}">`}
+                                </div>
+                            `;
+                        }).join('');
+                        csGrid.style.display = 'grid';
+                    }
                 }
             });
         }
