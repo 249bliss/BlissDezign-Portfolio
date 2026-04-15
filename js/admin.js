@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const authError = document.getElementById('auth-error');
+
+    // --- SECURITY: Master Whitelist ---
+    const WHITELISTED_ADMINS = ['blissstudio44@gmail.com'];
     const logoutBtn = document.getElementById('logout-btn');
     const userDisplay = document.getElementById('user-display');
     
@@ -146,6 +149,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const password = document.getElementById('login-password').value;
         
         authError.style.display = 'none';
+        
+        // --- Security Check ---
+        if (!WHITELISTED_ADMINS.includes(email.toLowerCase().trim())) {
+            authError.innerText = "Access Denied: You are not authorized to access this dashboard.";
+            authError.style.display = 'block';
+            return;
+        }
+
         setLoading(true, 'Authenticating...');
         
         try {
@@ -172,45 +183,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Handle Signup
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        console.log("Signup form submitted");
-        
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        
-        authError.style.display = 'none';
-        setLoading(true, 'Creating account...');
-        
-        try {
-            const name = document.getElementById('signup-name').value.trim();
-            const { data, error } = await supabaseClient.auth.signUp({ 
-                email, 
-                password,
-                options: {
-                    data: {
-                        full_name: name
-                    }
-                }
-            });
-            console.log("Signup Response:", { data, error });
-
-            setLoading(false);
-            if (error) {
-                authError.innerText = error.message;
-                authError.style.display = 'block';
-            } else {
-                showToast('Success! Registration complete. You can now login.', 'success');
-                showLogin.click();
-            }
-        } catch (err) {
-            console.error("Signup unexpected error:", err);
-            setLoading(false);
-            authError.innerText = "Unexpected error: " + err.message;
+    // Signup is disabled for security
+    if (signupForm) {
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            authError.innerText = "Manual registration is disabled for security. Contact the site owner for access.";
             authError.style.display = 'block';
-        }
-    });
+        });
+    }
 
     // Handle Logout with Confirmation
     const handleLogout = () => {
