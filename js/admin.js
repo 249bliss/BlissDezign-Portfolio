@@ -669,14 +669,30 @@ document.addEventListener('DOMContentLoaded', async () => {
                 heroImg.style.display = 'block';
             }
 
-            // Case Study Status
+            // Case Study Status & Preview Grid
             const csStatus = document.getElementById('cs-current-status');
+            const csGrid = document.getElementById('cs-selection-grid');
+            
             if (project.is_case_study && caseStudy) {
-                const count = (caseStudy.full_image_chunks || []).length;
-                csStatus.innerHTML = `<i class="fa-solid fa-layer-group"></i> Current Case Study: ${count} Assets Uploaded`;
+                const chunks = caseStudy.full_image_chunks || [];
+                csStatus.innerHTML = `<i class="fa-solid fa-layer-group"></i> Current Case Study: ${chunks.length} Assets Uploaded`;
                 csStatus.style.display = 'inline-flex';
+                
+                if (chunks.length > 0) {
+                    csGrid.innerHTML = chunks.map((url, index) => {
+                        const isVid = url.match(/\.(mp4|webm|ogg|mov|mov)/i);
+                        return `
+                            <div class="selection-thumb">
+                                <div class="thumb-index">${index + 1}</div>
+                                ${isVid ? `<video src="${url}" muted loop playsinline></video>` : `<img src="${url}">`}
+                            </div>
+                        `;
+                    }).join('');
+                    csGrid.style.display = 'grid';
+                }
             } else {
                 csStatus.style.display = 'none';
+                csGrid.style.display = 'none';
             }
 
             hasCaseStudyCheckbox.checked = !!project.is_case_study;
