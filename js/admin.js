@@ -347,37 +347,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         const subFeed = document.getElementById('subscribers-activity-feed');
         
         // Fetch Messages
-        const { data: messages, error: mErr } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: false }).limit(10);
+        const { data: messages, error: mErr } = await supabaseClient
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(10);
+
         if (mErr) console.error(mErr);
         else {
             msgFeed.innerHTML = messages?.length ? messages.map(msg => `
-                <div class="activity-item">
-                    <div class="activity-icon">✉️</div>
-                    <div class="activity-info">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div class="activity-item vertical">
+                    <div class="activity-header">
+                        <div class="activity-icon-small">✉️</div>
+                        <div class="activity-user-info">
                             <strong>${msg.name}</strong>
-                            <span style="font-size: 0.7rem; color: var(--text-muted);">${new Date(msg.created_at).toLocaleDateString()}</span>
+                            <span class="activity-time">${new Date(msg.created_at).toLocaleDateString()} at ${new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                         </div>
-                        <p style="font-size: 0.8rem; margin: 4px 0;">${msg.email}</p>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); background: rgba(255,255,255,0.03); padding: 8px; border-radius: 4px;">${msg.message}</p>
+                    </div>
+                    <div class="activity-body">
+                        <p class="activity-email">${msg.email}</p>
+                        <div class="activity-message-bubble">${msg.message}</div>
                     </div>
                 </div>
             `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No messages yet.</p>';
         }
 
         // Fetch Subscribers
-        const { data: subs, error: sErr } = await supabaseClient.from('subscribers').select('*').order('created_at', { ascending: false }).limit(10);
+        const { data: subs, error: sErr } = await supabaseClient
+            .from('subscribers')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(10);
+
         if (sErr) console.error(sErr);
         else {
             subFeed.innerHTML = subs?.length ? subs.map(sub => `
-                <div class="activity-item">
-                    <div class="activity-icon">🤝</div>
-                    <div class="activity-info">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div class="activity-item vertical">
+                    <div class="activity-header">
+                        <div class="activity-icon-small">🤝</div>
+                        <div class="activity-user-info">
                             <strong>New Subscriber</strong>
-                            <span style="font-size: 0.7rem; color: var(--text-muted);">${new Date(sub.created_at).toLocaleDateString()}</span>
+                            <span class="activity-time">${new Date(sub.created_at).toLocaleDateString()}</span>
                         </div>
-                        <p style="font-size: 0.85rem; margin-top: 5px;">${sub.email}</p>
+                    </div>
+                    <div class="activity-body">
+                        <p class="activity-email">${sub.email}</p>
                     </div>
                 </div>
             `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No subscribers yet.</p>';
