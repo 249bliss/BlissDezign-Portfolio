@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const projectsList = document.getElementById('projects-list');
     const reviewsList = document.getElementById('reviews-list');
+
+    // --- Tag Manager State ---
+    let activeTags = [];
     
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
@@ -637,7 +640,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('proj-id').value = project.id;
             document.getElementById('proj-title').value = project.title;
             document.getElementById('proj-subtitle').value = project.subtitle;
-            document.getElementById('proj-tags').value = (project.category_tags || []).join(', ');
+            
+            // Handle Tags
+            activeTags = project.category_tags || [];
+            renderTags();
             
             const heroUrlDisplay = document.getElementById('hero-current-url');
             heroUrlDisplay.innerText = "Current Image: " + project.hero_image.split('/').pop();
@@ -673,6 +679,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function resetProjectForm() {
         projectsForm.reset();
+        activeTags = [];
+        renderTags();
         document.getElementById('edit-proj-original-id').value = '';
         document.getElementById('project-form-title').innerText = 'Add New Project';
         document.getElementById('submit-proj-btn').innerText = 'Publish Project';
@@ -1038,4 +1046,71 @@ document.addEventListener('DOMContentLoaded', async () => {
             onSelect(val);
         };
     }
+    // --- 8. Dynamic Tag Manager ---
+    function renderTags() {
+        const tagField = document.getElementById('tag-input-field');
+        const tagContainer = document.getElementById('tag-bubbles-container');
+        const hiddenTagsInput = document.getElementById('proj-tags');
+
+        if (!tagContainer) return;
+        tagContainer.innerHTML = (activeTags || []).map((tag, idx) => `
+            <div class="tag-bubble">
+                <span>${tag}</span>
+                <i class="fa-solid fa-xmark remove-tag" onclick="window.removeTag(${idx})"></i>
+            </div>
+        `).join('');
+        
+        if (hiddenTagsInput) hiddenTagsInput.value = (activeTags || []).join(', ');
+        
+        // Disable input if max tags reached
+        if (tagField) {
+            if (activeTags.length >= 3) {
+                tagField.placeholder = "Max tags reached";
+                tagField.disabled = true;
+            } else {
+                tagField.placeholder = "Add tag (e.g. Mobile App)...";
+                tagField.disabled = false;
+            }
+        }
+    }
+
+    window.removeTag = (index) => {
+        activeTags.splice(index, 1);
+        renderTags();
+    };
+
+    const tagInputEl = document.getElementById('tag-input-field');
+    if (tagInputEl) {
+        tagInputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTagFromInput();
+            }
+        });
+
+        // Handle selection from datalist
+        tagInputEl.addEventListener('input', (e) => {
+            const val = tagInputEl.value;
+            const options = document.querySelectorAll('#tag-suggestions option');
+            for (let opt of options) {
+                if (opt.value === val) {
+                    addTagFromInput();
+                    break;
+                }
+            }
+        });
+    }
+
+    function addTagFromInput() {
+        const tagInputEl = document.getElementById('tag-input-field');
+        const val = tagInputEl.value.trim();
+        if (val && activeTags.length < 3 && !activeTags.includes(val)) {
+            activeTags.push(val);
+            tagInputEl.value = '';
+            renderTags();
+        }
+    }
+
+    // Make functions available globally so they can be called by reset/edit
+    window.renderTags = renderTags;
 });

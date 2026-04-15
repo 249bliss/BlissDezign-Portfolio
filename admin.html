@@ -225,8 +225,24 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Categories (Comma separated)</label>
-                        <input type="text" id="proj-tags" required placeholder="Mobile App, Fintech, AI">
+                        <label>Project Tags (Max 3)</label>
+                        <div class="tag-input-wrapper" id="tag-input-wrapper">
+                            <div id="tag-bubbles-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                            <input type="text" id="tag-input-field" placeholder="Add tag (e.g. Mobile App)..." list="tag-suggestions">
+                        </div>
+                        <datalist id="tag-suggestions">
+                            <option value="Mobile App"></option>
+                            <option value="Web Design"></option>
+                            <option value="Fintech"></option>
+                            <option value="AI / ML"></option>
+                            <option value="Dashboard"></option>
+                            <option value="SaaS"></option>
+                            <option value="Branding"></option>
+                            <option value="UI/UX Strategy"></option>
+                            <option value="E-commerce"></option>
+                            <option value="Portfolio"></option>
+                        </datalist>
+                        <input type="hidden" id="proj-tags" required>
                     </div>
 
                     <div class="form-group">
