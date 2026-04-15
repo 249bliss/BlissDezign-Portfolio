@@ -1791,23 +1791,37 @@ header.scrolled .nav-container {
     padding: 100px 20px;
 }
 
+.cs-coming-soon {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px;
+}
+
 .cs-coming-soon i {
-    font-size: 4rem;
-    color: var(--accent-purple);
+    font-size: 5rem;
     margin-bottom: 30px;
-    opacity: 0.5;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(223, 0, 255, 0.2));
 }
 
 .cs-coming-soon h1 {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
+    font-size: 4.5rem;
+    margin-bottom: 25px;
+    letter-spacing: -2px;
 }
 
 .cs-coming-soon p {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: var(--text-muted);
-    max-width: 500px;
-    margin-bottom: 40px;
+    max-width: 550px;
+    margin-bottom: 45px;
+    line-height: 1.6;
 }
 
 @media (max-width: 992px) {

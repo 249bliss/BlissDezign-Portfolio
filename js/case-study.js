@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (pError || !project) {
             console.error("Project not found:", pError);
-            renderComingSoon(projectId);
+            renderComingSoon("Project");
             return;
         }
 
@@ -28,18 +28,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             .eq('id', projectId)
             .single();
 
+        // --- 2. Check for 'Under Build' State ---
+        // Stricter visuals check: Must have at least one non-empty string URL
+        const visualsArray = caseStudy && Array.isArray(caseStudy.full_image_chunks) ? caseStudy.full_image_chunks : [];
+        const validVisuals = visualsArray.filter(v => typeof v === 'string' && v.trim() !== '');
+        const hasVisuals = validVisuals.length > 0;
+
+        if (!project.is_case_study || !hasVisuals) {
+            renderComingSoon(project.title);
+            return;
+        }
+
         // Prepare data object for rendering
         const data = {
             title: project.title,
             subtitle: project.subtitle,
-            heroImage: project.hero_image,
-            layoutType: 'full-image', // Default for these case studies
-            fullImage: caseStudy ? (caseStudy.full_image_chunks || []) : [],
+            layoutType: 'full-image', 
+            fullImage: validVisuals,
             stats: {
-                role: caseStudy ? caseStudy.role : 'Product Designer',
-                duration: caseStudy ? caseStudy.duration : 'Varies',
-                tools: caseStudy ? caseStudy.tools : 'Figma',
-                industry: caseStudy ? caseStudy.industry : 'Digital Product'
+                role: caseStudy.role || 'Product Designer',
+                duration: caseStudy.duration || 'Varies',
+                tools: caseStudy.tools || 'Figma',
+                industry: caseStudy.industry || 'Digital Product'
             }
         };
 
@@ -47,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (err) {
         console.error("General error loading case study:", err);
-        renderComingSoon(projectId);
+        renderComingSoon("Project");
     }
 
     function renderCaseStudy(data) {
@@ -85,10 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 <section class="cs-full-image-container">
                     <div class="cs-full-image-inner reveal-on-scroll" style="display: flex; flex-direction: column;">
-                        ${Array.isArray(data.fullImage) && data.fullImage.length > 0
-                            ? data.fullImage.map(img => `<img src="${img}" alt="${data.title} Full Case Study" style="width: 100%; display: block; border: none; margin: -1px 0; padding: 0;">`).join('')
-                            : `<div style="padding: 100px; text-align: center; color: var(--text-muted);">No case study visuals uploaded yet.</div>`
-                        }
+                        ${data.fullImage.map(img => `<img src="${img}" alt="${data.title} Full Case Study" style="width: 100%; display: block; border: none; margin: -1px 0; padding: 0;">`).join('')}
                     </div>
                 </section>
 
