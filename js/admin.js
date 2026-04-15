@@ -242,9 +242,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 msgQuery = msgQuery.gte('created_at', isoDate);
                 subQuery = subQuery.gte('created_at', isoDate);
                 
-                document.getElementById('current-date-range').innerText = `Last ${days} Days`;
+                let label = `Last ${days} Days`;
+                if (days === 1) label = "Today's Performance";
+                else if (days === 90) label = "Quarterly Review (3M)";
+                else if (days === 180) label = "Semiannual Review (6M)";
+                
+                document.getElementById('current-date-range').innerText = label;
             } else {
-                document.getElementById('current-date-range').innerText = "All Time";
+                document.getElementById('current-date-range').innerText = "All Time Performance";
             }
 
             const { count: trafficCount } = await trafficQuery;
@@ -280,9 +285,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         let dataLeads = [2, 3, 1, 2, 0, 1, 2];
 
         // Logic to properly aggregate data per day would go here if we had date-series data
-        // For now, we maintain the premium visual with dynamic labeling
-        if (days === 7) labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Today'];
-        if (days === 30) labels = ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4'];
+        if (days === 1) labels = ['12AM', '4AM', '8AM', '12PM', '4PM', '8PM', 'Now'];
+        else if (days === 7) labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Today'];
+        else if (days === 30) labels = ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4'];
+        else if (days === 90) labels = ['Month 1', 'Month 2', 'Last Month'];
+        else if (days === 180) labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
 
         analyticsChart = new Chart(chartCtx, {
             type: 'line',
@@ -918,14 +925,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         modalMessage.innerText = "Choose the period for your analytics display:";
         modalConfirmBtn.style.display = 'none';
         modalCancelBtn.style.display = 'block';
-        modalOptions.style.display = 'flex';
+        modalOptions.style.display = 'grid';
+        modalOptions.style.gridTemplateColumns = '1fr 1fr';
+        modalOptions.style.gap = '10px';
+        
         modalOptions.innerHTML = `
+            <button class="btn btn-secondary" onclick="window.pickDateFrame(1)">Today</button>
             <button class="btn btn-secondary" onclick="window.pickDateFrame(7)">Last 7 Days</button>
             <button class="btn btn-secondary" onclick="window.pickDateFrame(30)">Last 30 Days</button>
+            <button class="btn btn-secondary" onclick="window.pickDateFrame(90)">3 Months</button>
+            <button class="btn btn-secondary" onclick="window.pickDateFrame(180)">6 Months</button>
             <button class="btn btn-primary" onclick="window.pickDateFrame(0)">All Time</button>
         `;
         
         adminModal.classList.add('active');
+        
+        modalCancelBtn.onclick = () => {
+            adminModal.classList.remove('active');
+        };
         
         window.pickDateFrame = (val) => {
             adminModal.classList.remove('active');
