@@ -49,6 +49,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
 
+    function setLoading(isLoading, text = 'Processing...') {
+        if (!loadingOverlay) return;
+        if (isLoading) {
+            loadingText.innerText = text;
+            loadingOverlay.classList.add('active');
+        } else {
+            loadingOverlay.classList.remove('active');
+        }
+    }
+
     // --- Custom UI Constants ---
     const adminModal = document.getElementById('admin-modal');
     const modalTitle = document.getElementById('modal-title');
@@ -228,14 +238,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- 1.6 Insights & Analytics Logic ---
 
     async function fetchInsights(days = 0) {
+        setLoading(true, 'Updating analytics...');
         try {
+            // Clear existing stats briefly to show update
+            document.getElementById('stat-traffic').innerText = '...';
+            document.getElementById('stat-messages').innerText = '...';
+            document.getElementById('stat-subscribers').innerText = '...';
+
             let trafficQuery = supabaseClient.from('analytics').select('created_at').eq('event_type', 'view');
             let msgQuery = supabaseClient.from('messages').select('created_at');
             let subQuery = supabaseClient.from('subscribers').select('created_at');
 
-            const now = new Date();
             let labelText = "Total Reach";
-            let leadsText = "Leads";
+            let leadsText = "Total Leads";
             let communityText = "Community";
 
             if (days > 0) {
@@ -260,9 +275,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('current-date-range').innerText = rangeLabel;
             } else {
                 document.getElementById('current-date-range').innerText = "All Time Performance";
-                labelText = "Total Reach";
-                leadsText = "Total Leads";
-                communityText = "Community";
             }
 
             // Update Labels
@@ -288,14 +300,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const conv = trafficCount > 0 ? ((leadCount / trafficCount) * 100).toFixed(1) : "0.0";
             document.getElementById('stat-conversion').innerText = conv + '%';
 
-            // Aggregate data for chart
             const chartData = processChartData(traffic || [], (messages || []).concat(subs || []), days);
             initChart(chartData.labels, chartData.views, chartData.leads);
             
             renderCategoryStats();
-            fetchLeads();
+            await fetchLeads();
         } catch (err) {
             console.error('Error fetching insights:', err);
+        } finally {
+            setLoading(false);
         }
     }
 
