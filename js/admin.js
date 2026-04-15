@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const projectsForm = document.getElementById('projects-form');
     const reviewsForm = document.getElementById('reviews-form');
     const hasCaseStudyCheckbox = document.getElementById('has-case-study');
+    const isFeaturedCheckbox = document.getElementById('is-featured');
     const caseStudyFields = document.getElementById('case-study-fields');
     
     const projectsList = document.getElementById('projects-list');
@@ -488,6 +489,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="pm-image-wrapper">
                     <img src="${project.hero_image}" class="pm-image" alt="${project.title}">
                     <div class="pm-badge">${project.is_case_study ? 'CASE STUDY' : 'CMS ONLY'}</div>
+                    ${project.is_featured ? '<div class="pm-featured-badge">FEATURED</div>' : ''}
                 </div>
                 <div class="pm-info">
                     <div class="pm-title">${project.title}</div>
@@ -553,7 +555,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             heroUrlDisplay.innerText = "Current Image: " + project.hero_image.split('/').pop();
             heroUrlDisplay.style.display = 'block';
 
-            hasCaseStudyCheckbox.checked = project.is_case_study;
+            hasCaseStudyCheckbox.checked = !!project.is_case_study;
+            isFeaturedCheckbox.checked = !!project.is_featured;
             caseStudyFields.style.display = project.is_case_study ? 'block' : 'none';
 
             if (caseStudy) {
@@ -588,6 +591,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('cancel-proj-btn').style.display = 'none';
         document.getElementById('hero-current-url').style.display = 'none';
         caseStudyFields.style.display = 'none';
+        hasCaseStudyCheckbox.checked = false;
+        isFeaturedCheckbox.checked = false;
         document.getElementById('chopper-preview').innerHTML = '';
         document.querySelector('[data-target="manage-projects-panel"]').click();
     }
@@ -605,6 +610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const subtitle = document.getElementById('proj-subtitle').value.trim();
             const tags = document.getElementById('proj-tags').value.split(',').map(tag => tag.trim()).filter(t => t);
             const isCaseStudy = hasCaseStudyCheckbox.checked;
+            const isFeatured = isFeaturedCheckbox.checked;
 
             let heroUrl = null;
             const heroFile = document.getElementById('proj-hero').files[0];
@@ -624,6 +630,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 subtitle,
                 hero_image: heroUrl,
                 is_case_study: isCaseStudy,
+                is_featured: isFeatured,
                 category_tags: tags
             };
 

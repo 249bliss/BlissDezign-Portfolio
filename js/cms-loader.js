@@ -21,8 +21,9 @@ const CMSLoader = {
         const { data: projects, error } = await supabaseClient
             .from('projects')
             .select('*')
+            .eq('is_featured', true)
             .order('created_at', { ascending: false })
-            .limit(4);
+            .limit(5);
 
         if (error) {
             console.error("Error loading home projects:", error);
