@@ -343,4 +343,25 @@ window.initProjectFilters = () => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', window.initProjectFilters);
+document.addEventListener('DOMContentLoaded', () => {
+    window.initProjectFilters();
+
+    // --- Newsletter Sync to Supabase ---
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm && typeof supabaseClient !== 'undefined') {
+        newsletterForm.addEventListener('submit', async (e) => {
+            const emailInput = newsletterForm.querySelector('input[type="email"]');
+            const email = emailInput ? emailInput.value.trim() : null;
+
+            if (email) {
+                // We fire this silently so as not to block the Mailchimp redirect
+                supabaseClient.from('subscribers').insert([
+                    { email: email }
+                ]).then(({ error }) => {
+                    if (error) console.error('Subscription Sync Error:', error);
+                    else console.log('Subscriber synced to dashboard.');
+                });
+            }
+        });
+    }
+});
