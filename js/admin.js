@@ -1062,54 +1062,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (csInput) {
             csInput.addEventListener('change', (e) => {
                 const files = Array.from(e.target.files);
-                if (files.length === 1) {
-                    // Check if it's potentially an auto-chopper candidate (image only)
+                if (files.length === 1 && files[0].type.startsWith('image/')) {
                     const file = files[0];
-                    if (file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = (re) => {
-                            const img = new Image();
-                            img.onload = () => {
-                                if (img.height > 8000) {
-                                    // Huge image detected - handle via chopper instead of gallery
-                                    activeCaseStudyGallery = []; // Clear gallery for chopper use
-                                    const csBox = document.getElementById('cs-preview-box');
-                                    const csImg = document.getElementById('cs-preview-img');
-                                    csImg.src = re.target.result;
-                                    csBox.style.display = 'block';
-                                    document.getElementById('cs-selection-grid').style.display = 'none';
-                                } else {
-                                    // Normal image, add to gallery
-                                    activeCaseStudyGallery.push({ 
-                                        type: 'file', 
-                                        content: file,
-                                        previewUrl: URL.createObjectURL(file)
-                                    });
-                                    renderCaseStudyGallery();
-                                }
-                            };
-                            img.src = re.target.result;
+                    const reader = new FileReader();
+                    reader.onload = (re) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            if (img.height > 8000) {
+                                // Scenario A: Huge Image -> Use Chopper
+                                activeCaseStudyGallery = [];
+                                renderCaseStudyGallery();
+                                const csBox = document.getElementById('cs-preview-box');
+                                const emptyHint = document.getElementById('cs-empty-hint');
+                                document.getElementById('cs-preview-img').src = re.target.result;
+                                csBox.style.display = 'block';
+                                if (emptyHint) emptyHint.style.display = 'none';
+                            } else {
+                                // Scenario B: Normal Image -> Append to Gallery
+                                activeCaseStudyGallery.push({ 
+                                    type: 'file', 
+                                    content: file,
+                                    previewUrl: URL.createObjectURL(file) 
+                                });
+                                renderCaseStudyGallery();
+                            }
                         };
-                        reader.readAsDataURL(file);
-                        return;
-                    }
-                }
-
-                // Add all files to the gallery
-                try {
+                        img.src = re.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                } else if (files.length > 0) {
+                    // Scenario C: Multiple files or Video -> Add all to Gallery
                     files.forEach(f => {
                         activeCaseStudyGallery.push({ 
                             type: 'file', 
                             content: f,
-                            previewUrl: URL.createObjectURL(f) // Pre-generate URL
+                            previewUrl: URL.createObjectURL(f)
                         });
                     });
                     renderCaseStudyGallery();
-                } catch (err) {
-                    console.error("Error adding to gallery:", err);
                 }
                 
-                // Always clear the input so the same file can be added again
                 csInput.value = '';
             });
         }
@@ -1254,21 +1246,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         const grid = document.getElementById('cs-selection-grid');
         const status = document.getElementById('cs-current-status');
         const previewBox = document.getElementById('cs-preview-box');
+        const emptyHint = document.getElementById('cs-empty-hint');
 
-        if (!grid) return;
+        if (!grid || !status) return;
 
         if (activeCaseStudyGallery.length === 0) {
             grid.innerHTML = '';
             grid.style.display = 'none';
             status.style.display = 'none';
+            // When empty, hide any one-off chopper previews
+            if (previewBox) previewBox.style.display = 'none'; 
+            if (emptyHint) emptyHint.style.display = 'flex';
             return;
         }
 
-        // Switch off single-image preview box if we have a gallery
+        // Hide hints once gallery items are being managed
         if (previewBox) previewBox.style.display = 'none';
+        if (emptyHint) emptyHint.style.display = 'none';
 
-        // Update status badge first to ensure feedback
-        status.innerHTML = `<i class="fa-solid fa-layer-group"></i> Total Assets: ${activeCaseStudyGallery.length} / Sorted & Ready`;
+        status.innerHTML = `<i class="fa-solid fa-layer-group"></i> ${activeCaseStudyGallery.length} Items Sorted`;
         status.style.display = 'inline-flex';
         grid.style.display = 'grid';
 
