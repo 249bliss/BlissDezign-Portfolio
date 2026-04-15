@@ -22,8 +22,8 @@ const CMSLoader = {
             .from('projects')
             .select('*')
             .eq('is_featured', true)
-            .order('created_at', { ascending: false })
-            .limit(5);
+            .order('display_order', { ascending: true })
+            .limit(10);
 
         if (error) {
             console.error("Error loading home projects:", error);
@@ -36,7 +36,7 @@ const CMSLoader = {
         }
 
         container.innerHTML = projects.map((project, index) => {
-            const isLarge = index === 0;
+            const isLarge = project.grid_layout === 'large';
             return `
                 <a href="case-study.html?project=${project.id}" class="masonry-card ${isLarge ? 'masonry-large' : ''} reveal-on-scroll">
                     <div class="masonry-image">
@@ -64,7 +64,7 @@ const CMSLoader = {
         const { data: projects, error } = await supabaseClient
             .from('projects')
             .select('*')
-            .order('created_at', { ascending: false });
+            .order('display_order', { ascending: true });
 
         if (error) {
             console.error("Error loading all projects:", error);
@@ -77,7 +77,7 @@ const CMSLoader = {
         }
 
         container.innerHTML = projects.map((project, index) => {
-            const isLarge = index === 0;
+            const isLarge = project.grid_layout === 'large';
             const filterClass = (project.category_tags || [])
                 .map(t => t.toLowerCase().replace(/\s+/g, '-'))
                 .join(' ');

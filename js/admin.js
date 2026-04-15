@@ -640,6 +640,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('proj-id').value = project.id;
             document.getElementById('proj-title').value = project.title;
             document.getElementById('proj-subtitle').value = project.subtitle;
+            document.getElementById('proj-order').value = project.display_order || 0;
+            document.getElementById('proj-layout').value = project.grid_layout || 'standard';
             
             // Handle Tags
             activeTags = project.category_tags || [];
@@ -686,6 +688,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('submit-proj-btn').innerText = 'Publish Project';
         document.getElementById('cancel-proj-btn').style.display = 'none';
         document.getElementById('hero-current-url').style.display = 'none';
+        document.getElementById('proj-order').value = 0;
+        document.getElementById('proj-layout').value = 'standard';
         caseStudyFields.style.display = 'none';
         hasCaseStudyCheckbox.checked = false;
         isFeaturedCheckbox.checked = false;
@@ -707,6 +711,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tags = document.getElementById('proj-tags').value.split(',').map(tag => tag.trim()).filter(t => t);
             const isCaseStudy = hasCaseStudyCheckbox.checked;
             const isFeatured = isFeaturedCheckbox.checked;
+            const displayOrder = parseInt(document.getElementById('proj-order').value) || 0;
+            const gridLayout = document.getElementById('proj-layout').value;
 
             let heroUrl = null;
             const heroFile = document.getElementById('proj-hero').files[0];
@@ -727,7 +733,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 hero_image: heroUrl,
                 is_case_study: isCaseStudy,
                 is_featured: isFeatured,
-                category_tags: tags
+                category_tags: tags,
+                display_order: displayOrder,
+                grid_layout: gridLayout
             };
 
             if (isEdit) {

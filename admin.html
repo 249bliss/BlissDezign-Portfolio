@@ -245,6 +245,20 @@
                         <input type="hidden" id="proj-tags" required>
                     </div>
 
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Display Order (Priority)</label>
+                            <input type="number" id="proj-order" value="0" min="0" placeholder="0 = Last">
+                        </div>
+                        <div class="form-group">
+                            <label>Frame Type (Grid Size)</label>
+                            <select id="proj-layout" class="form-select" style="width: 100%; padding: 12px; border-radius: 12px; background: var(--bg-section); border: 1px solid var(--border-color); color: var(--text-color);">
+                                <option value="standard">Standard Frame</option>
+                                <option value="large">Big Frame (Wide)</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Card Preview Image (Square/Portrait for Masonry)</label>
                         <input type="file" id="proj-hero" accept="image/*">
