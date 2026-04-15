@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- 2. Navigation & Themes ---
     
-    function switchPanel(target) {
+    window.switchPanel = function(target) {
         // Sync Sidebar
         tabs.forEach(t => {
             t.classList.toggle('active', t.getAttribute('data-target') === target);
@@ -526,11 +526,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     tabs.forEach(tab => {
-        tab.addEventListener('click', () => switchPanel(tab.getAttribute('data-target')));
+        tab.addEventListener('click', () => window.switchPanel(tab.getAttribute('data-target')));
     });
 
     mobileTabs.forEach(tab => {
-        tab.addEventListener('click', () => switchPanel(tab.getAttribute('data-target')));
+        tab.addEventListener('click', () => window.switchPanel(tab.getAttribute('data-target')));
     });
 
     // Theme Switcher Logic
@@ -876,6 +876,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </td>
             </tr>
         `).join('') || '<tr><td colspan="5" style="text-align:center; padding: 40px;">No reviews found.</td></tr>';
+
+        // Update counts in UI
+        const reviewCounts = document.querySelectorAll('.review-count-badge');
+        reviewCounts.forEach(badge => {
+            badge.innerText = data.length;
+            badge.style.display = data.length > 0 ? 'inline-block' : 'none';
+        });
     }
 
     window.deleteReview = async (id) => {
@@ -910,7 +917,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('submit-rev-btn').innerText = 'Update Review';
         document.getElementById('cancel-rev-btn').style.display = 'block';
         
-        document.querySelector('[data-target="add-review-panel"]').click();
+        window.switchPanel('add-review-panel');
     };
 
     document.getElementById('cancel-rev-btn').onclick = resetReviewForm;
@@ -924,7 +931,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         submitBtn.disabled = false;
         document.getElementById('cancel-rev-btn').style.display = 'none';
         document.getElementById('avatar-current-url').style.display = 'none';
-        document.querySelector('[data-target="manage-reviews-panel"]').click();
+        window.switchPanel('manage-reviews-panel');
     }
 
     reviewsForm.addEventListener('submit', async (e) => {
@@ -950,7 +957,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const { data } = await supabaseClient.from('reviews').select('avatar_url').eq('id', editId).single();
                 avatar_url = data.avatar_url;
             } else {
-                throw new Error('Avatar is required for new reviews.');
+                // Default fallback avatar if none provided for new review
+                avatar_url = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(author_name) + '&background=DF00FF&color=fff&size=256';
             }
 
             const reviewData = { author_name, author_role, review_text, avatar_url };

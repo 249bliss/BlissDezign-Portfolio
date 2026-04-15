@@ -72,6 +72,7 @@
                     <div class="nav-item" data-target="manage-reviews-panel">
                         <i class="fa-solid fa-star"></i>
                         <span>Testimonials</span>
+                        <span class="review-count-badge" style="display: none;">0</span>
                     </div>
                     <div class="nav-item" data-target="add-project-panel">
                         <i class="fa-solid fa-plus-circle"></i>
@@ -334,7 +335,7 @@
             <div id="manage-reviews-panel" class="admin-panel">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <h2>Client Testimonials</h2>
-                    <button class="btn btn-primary" onclick="document.querySelector('[data-target=\'add-review-panel\']').click()" style="padding: 10px 20px; font-size: 0.85rem;">+ New Review</button>
+                    <button class="btn btn-primary" onclick="window.switchPanel('add-review-panel')" style="padding: 10px 20px; font-size: 0.85rem;">+ New Review</button>
                 </div>
                 <table class="data-table">
                     <thead>
@@ -399,6 +400,7 @@
             <div class="m-nav-item" data-target="manage-reviews-panel">
                 <i class="fa-solid fa-star"></i>
                 <span>Reviews</span>
+                <span class="review-count-badge" style="display: none;">0</span>
             </div>
             <div class="m-nav-item" data-target="add-project-panel">
                 <i class="fa-solid fa-plus-circle"></i>

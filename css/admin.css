@@ -509,13 +509,31 @@ input:checked + .slider:before { transform: translateX(20px); }
 /* Management Refinements */
 .admin-panel {
     display: none;
-    animation: slideUp 0.5s ease;
+    animation: fadeInSlide 0.4s ease;
 }
 
 .admin-panel.active { display: block; }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
+.review-count-badge {
+    margin-left: auto;
+    background: var(--primary-gradient);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(223, 0, 255, 0.3);
+}
+
+.m-nav-item .review-count-badge {
+    position: absolute;
+    top: 5px;
+    right: 20%;
+    margin-left: 0;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
