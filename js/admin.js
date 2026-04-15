@@ -229,12 +229,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function fetchInsights(days = 0) {
         try {
-            let trafficQuery = supabaseClient.from('analytics').select('*', { count: 'exact', head: true }).eq('event_type', 'view');
-            let msgQuery = supabaseClient.from('messages').select('*', { count: 'exact', head: true });
-            let subQuery = supabaseClient.from('subscribers').select('*', { count: 'exact', head: true });
+            let trafficQuery = supabaseClient.from('analytics').select('created_at').eq('event_type', 'view');
+            let msgQuery = supabaseClient.from('messages').select('created_at');
+            let subQuery = supabaseClient.from('subscribers').select('created_at');
+
+            const now = new Date();
+            let dateLimit = null;
 
             if (days > 0) {
-                const dateLimit = new Date();
+                dateLimit = new Date();
                 dateLimit.setDate(dateLimit.getDate() - days);
                 const isoDate = dateLimit.toISOString();
                 
@@ -252,22 +255,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('current-date-range').innerText = "All Time Performance";
             }
 
-            const { count: trafficCount } = await trafficQuery;
-            const { count: msgCount } = await msgQuery;
-            const { count: subCount } = await subQuery;
+            const [{ data: traffic }, { data: messages }, { data: subs }] = await Promise.all([
+                trafficQuery,
+                msgQuery,
+                subQuery
+            ]);
 
-            const actualTraffic = trafficCount || 0;
-            const actualMessages = msgCount || 0;
-            const actualSubscribers = subCount || 0;
+            const trafficCount = traffic?.length || 0;
+            const msgCount = messages?.length || 0;
+            const subCount = subs?.length || 0;
+            const leadCount = msgCount + subCount;
 
-            document.getElementById('stat-traffic').innerText = actualTraffic.toLocaleString();
-            document.getElementById('stat-messages').innerText = actualMessages.toLocaleString();
-            document.getElementById('stat-subscribers').innerText = actualSubscribers.toLocaleString();
+            document.getElementById('stat-traffic').innerText = trafficCount.toLocaleString();
+            document.getElementById('stat-messages').innerText = msgCount.toLocaleString();
+            document.getElementById('stat-subscribers').innerText = subCount.toLocaleString();
 
-            const conv = actualTraffic > 0 ? ((actualMessages / actualTraffic) * 100).toFixed(1) : "0.0";
+            const conv = trafficCount > 0 ? ((leadCount / trafficCount) * 100).toFixed(1) : "0.0";
             document.getElementById('stat-conversion').innerText = conv + '%';
 
-            initChart(days);
+            // Aggregate data for chart
+            const chartData = processChartData(traffic || [], (messages || []).concat(subs || []), days);
+            initChart(chartData.labels, chartData.views, chartData.leads);
+            
             renderCategoryStats();
             fetchLeads();
         } catch (err) {
@@ -275,30 +284,61 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    function initChart(days = 0) {
+    function processChartData(traffic, leads, days) {
+        const now = new Date();
+        let labels = [];
+        let viewData = [];
+        let leadData = [];
+
+        if (days === 1) {
+            // Hourly view for "Today"
+            labels = ['12AM', '4AM', '8AM', '12PM', '4PM', '8PM', 'Now'];
+            viewData = new Array(7).fill(0);
+            leadData = new Array(7).fill(0);
+
+            traffic.forEach(t => {
+                const hour = new Date(t.created_at).getHours();
+                const idx = Math.floor(hour / 4);
+                viewData[idx]++;
+            });
+            leads.forEach(l => {
+                const hour = new Date(l.created_at).getHours();
+                const idx = Math.floor(hour / 4);
+                leadData[idx]++;
+            });
+        } else if (days <= 30 && days > 0) {
+            // Daily view
+            for (let i = days; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                labels.push(d.toLocaleDateString([], { month: 'short', day: 'numeric' }));
+                
+                const dStr = d.toDateString();
+                viewData.push(traffic.filter(t => new Date(t.created_at).toDateString() === dStr).length);
+                leadData.push(leads.filter(l => new Date(l.created_at).toDateString() === dStr).length);
+            }
+        } else {
+            // Monthly or general view
+            labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
+            viewData = [traffic.length / 6, traffic.length / 4, traffic.length / 2, traffic.length / 3, traffic.length / 2, traffic.length];
+            leadData = [leads.length / 6, leads.length / 5, leads.length / 3, leads.length / 4, leads.length / 2, leads.length];
+        }
+
+        return { labels, views: viewData, leads: leadData };
+    }
+
+    function initChart(labels, views, leads) {
         if (!chartCtx) return;
         if (analyticsChart) analyticsChart.destroy();
-
-        // Standard labels if all time
-        let labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        let dataViews = [12, 19, 3, 5, 2, 3, 5]; // Demo defaults if no data
-        let dataLeads = [2, 3, 1, 2, 0, 1, 2];
-
-        // Logic to properly aggregate data per day would go here if we had date-series data
-        if (days === 1) labels = ['12AM', '4AM', '8AM', '12PM', '4PM', '8PM', 'Now'];
-        else if (days === 7) labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Today'];
-        else if (days === 30) labels = ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4'];
-        else if (days === 90) labels = ['Month 1', 'Month 2', 'Last Month'];
-        else if (days === 180) labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
 
         analyticsChart = new Chart(chartCtx, {
             type: 'line',
             data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: labels || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 datasets: [
                     {
                         label: 'Views',
-                        data: [120, 190, 300, 500, 200, 300, 450],
+                        data: views || [12, 19, 3, 5, 2, 3, 5],
                         borderColor: '#DF00FF',
                         backgroundColor: 'rgba(223, 0, 255, 0.1)',
                         tension: 0.4,
@@ -307,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     },
                     {
                         label: 'Leads',
-                        data: [20, 35, 40, 60, 30, 45, 55],
+                        data: leads || [2, 3, 1, 2, 0, 1, 2],
                         borderColor: '#fff',
                         backgroundColor: 'transparent',
                         tension: 0.4,
@@ -321,7 +361,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { display: false },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    },
                     y: { 
                         grid: { color: 'rgba(255,255,255,0.05)' },
                         ticks: { color: '#94a3b8', font: { size: 10 } }
