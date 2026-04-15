@@ -648,8 +648,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderTags();
             
             const heroUrlDisplay = document.getElementById('hero-current-url');
-            heroUrlDisplay.innerText = "Current Image: " + project.hero_image.split('/').pop();
+            const heroBox = document.getElementById('hero-preview-box');
+            const heroImg = document.getElementById('hero-preview-img');
+            const heroVid = document.getElementById('hero-preview-vid');
+            
+            const isVideo = project.hero_image.match(/\.(mp4|webm|ogg|mov)$/i);
+            
+            heroUrlDisplay.innerText = "Current Media: " + project.hero_image.split('/').pop();
             heroUrlDisplay.style.display = 'block';
+            heroBox.style.display = 'block';
+            
+            if (isVideo) {
+                heroImg.style.display = 'none';
+                heroVid.src = project.hero_image;
+                heroVid.style.display = 'block';
+            } else {
+                heroVid.style.display = 'none';
+                heroImg.src = project.hero_image;
+                heroImg.style.display = 'block';
+            }
 
             hasCaseStudyCheckbox.checked = !!project.is_case_study;
             isFeaturedCheckbox.checked = !!project.is_featured;
@@ -985,9 +1002,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (heroInput) {
             heroInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
+                const heroImg = document.getElementById('hero-preview-img');
+                const heroVid = document.getElementById('hero-preview-vid');
+                
                 if (file) {
-                    heroImg.src = URL.createObjectURL(file);
+                    const url = URL.createObjectURL(file);
                     heroBox.style.display = 'block';
+                    
+                    if (file.type.startsWith('video/')) {
+                        heroImg.style.display = 'none';
+                        heroVid.src = url;
+                        heroVid.style.display = 'block';
+                    } else {
+                        heroVid.style.display = 'none';
+                        heroImg.src = url;
+                        heroImg.style.display = 'block';
+                    }
                 }
             });
         }

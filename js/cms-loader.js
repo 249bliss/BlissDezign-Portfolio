@@ -12,6 +12,20 @@ const CMSLoader = {
         }
     },
 
+    // Utility to determine if media is video
+    isMediaVideo: (url) => {
+        if (!url) return false;
+        return url.match(/\.(mp4|webm|ogg|mov)$/i);
+    },
+
+    // Helper to render image or video
+    renderMedia: (url, alt) => {
+        if (CMSLoader.isMediaVideo(url)) {
+            return `<video src="${url}" autoplay muted loop playsinline></video>`;
+        }
+        return `<img src="${url}" alt="${alt}" loading="lazy">`;
+    },
+
     // 1. Fetch Projects for Homepage (Selected Projects)
     loadHomeProjects: async (containerId) => {
         const container = document.getElementById(containerId);
@@ -40,7 +54,7 @@ const CMSLoader = {
             return `
                 <a href="case-study.html?project=${project.id}" class="masonry-card ${isLarge ? 'masonry-large' : ''} reveal-on-scroll">
                     <div class="masonry-image">
-                        <img src="${project.hero_image}" alt="${project.title}" loading="lazy">
+                        ${CMSLoader.renderMedia(project.hero_image, project.title)}
                     </div>
                     <div class="masonry-info">
                         <h3>${project.title}</h3>
@@ -87,7 +101,7 @@ const CMSLoader = {
                    class="masonry-card ${isLarge ? 'masonry-large' : ''} filter-item ${filterClass} reveal-on-scroll" 
                    data-reveal>
                     <div class="masonry-image">
-                        <img src="${project.hero_image}" alt="${project.title}" loading="lazy">
+                        ${CMSLoader.renderMedia(project.hero_image, project.title)}
                     </div>
                     <div class="masonry-info">
                         <h3>${project.title}</h3>
