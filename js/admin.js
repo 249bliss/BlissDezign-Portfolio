@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const logoutBtn = document.getElementById('logout-btn');
     const userDisplay = document.getElementById('user-display');
     
-    if (!loginForm || !signupForm) {
-        console.error("Auth forms not found in the DOM!");
+    if (!loginForm) {
+        console.error("Login form not found in the DOM!");
         return;
     }
 
@@ -124,21 +124,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Toggle between login and signup
-    showSignup.onclick = () => {
-        loginForm.classList.remove('active');
-        signupForm.classList.add('active');
-        document.getElementById('auth-title').innerText = 'Create Admin Account';
-        document.getElementById('auth-subtitle').innerText = 'Set up your master credentials';
-        authError.style.display = 'none';
-    };
+    if (showSignup && signupForm) {
+        showSignup.onclick = () => {
+            loginForm.classList.remove('active');
+            signupForm.classList.add('active');
+            document.getElementById('auth-title').innerText = 'Create Admin Account';
+            document.getElementById('auth-subtitle').innerText = 'Set up your master credentials';
+            authError.style.display = 'none';
+        };
+    }
 
-    showLogin.onclick = () => {
-        signupForm.classList.remove('active');
-        loginForm.classList.add('active');
-        document.getElementById('auth-title').innerText = 'Welcome Back';
-        document.getElementById('auth-subtitle').innerText = 'Login to manage your portfolio';
-        authError.style.display = 'none';
-    };
+    if (showLogin && signupForm) {
+        showLogin.onclick = () => {
+            signupForm.classList.remove('active');
+            loginForm.classList.add('active');
+            document.getElementById('auth-title').innerText = 'Welcome Back';
+            document.getElementById('auth-subtitle').innerText = 'Login to manage your portfolio';
+            authError.style.display = 'none';
+        };
+    }
 
     // Handle Login
     loginForm.addEventListener('submit', async (e) => {
