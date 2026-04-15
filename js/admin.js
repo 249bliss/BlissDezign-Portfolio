@@ -361,12 +361,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         else {
             msgFeed.innerHTML = messages?.length ? messages.map(msg => `
                 <div class="activity-item vertical">
-                    <div class="activity-header">
-                        <div class="activity-icon-small">✉️</div>
-                        <div class="activity-user-info">
-                            <strong>${msg.name}</strong>
-                            <span class="activity-time">${new Date(msg.created_at).toLocaleDateString()} at ${new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                        </div>
+                    <div class="activity-header row">
+                        <strong class="activity-name">${msg.name}</strong>
+                        <span class="activity-time">${new Date(msg.created_at).toLocaleDateString()} at ${new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                     </div>
                     <div class="activity-body">
                         <p class="activity-email">${msg.email}</p>
@@ -387,12 +384,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         else {
             subFeed.innerHTML = subs?.length ? subs.map(sub => `
                 <div class="activity-item vertical">
-                    <div class="activity-header">
-                        <div class="activity-icon-small">🤝</div>
-                        <div class="activity-user-info">
-                            <strong>New Subscriber</strong>
-                            <span class="activity-time">${new Date(sub.created_at).toLocaleDateString()}</span>
-                        </div>
+                    <div class="activity-header row">
+                        <strong class="activity-name">New Subscriber</strong>
+                        <span class="activity-time">${new Date(sub.created_at).toLocaleDateString()}</span>
                     </div>
                     <div class="activity-body">
                         <p class="activity-email">${sub.email}</p>
