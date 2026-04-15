@@ -94,66 +94,8 @@
                     <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
                 </div>
 
-                <div class="projects-masonry">
-                    <!-- Project 1: NEURA Kicks -->
-                    <a href="case-study.html?project=neura" class="masonry-card masonry-large filter-item mobile ecommerce" data-reveal>
-                        <div class="masonry-image">
-                            <img src="assets/Selected Project/nURAKICK.webp" alt="NEURA Kicks" loading="lazy" decoding="async" width="800" height="500">
-                        </div>
-                        <div class="masonry-info">
-                            <h3>NEURA Kicks</h3>
-                            <div class="masonry-tags">
-                                <span>AI Product</span>
-                                <span>Mobile App</span>
-                                <span>E-commerce</span>
-                            </div>
-                        </div>
-                    </a>
-                    
-                    <!-- Project 2: Swychr Fintech -->
-                    <a href="case-study.html?project=swychr" class="masonry-card filter-item fintech mobile" data-reveal>
-                        <div class="masonry-image">
-                            <img src="assets/Selected Project/sWYCHR.webp" alt="Swychr Fintech App">
-                        </div>
-                        <div class="masonry-info">
-                            <h3>Swychr Fintech App</h3>
-                            <div class="masonry-tags">
-                                <span>Fintech</span>
-                                <span>Mobile App</span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <!-- Project 3: Skin & Soul -->
-                    <a href="case-study.html?project=skin-care" class="masonry-card filter-item ecommerce" data-reveal>
-                        <div class="masonry-image">
-                            <video autoplay loop muted playsinline>
-                                <source src="assets/Selected Project/SKIN-CARE-GERO.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                        <div class="masonry-info">
-                            <h3>Skin & Soul Redesign</h3>
-                            <div class="masonry-tags">
-                                <span>Beauty</span>
-                                <span>Hero Section</span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <!-- Project 4: Hevy App -->
-                    <a href="case-study.html?project=hevy" class="masonry-card filter-item saas mobile" data-reveal>
-                        <div class="masonry-image">
-                            <img src="assets/Selected Project/Hevy.webp" alt="Hevy App Redesign">
-                        </div>
-                        <div class="masonry-info">
-                            <h3>Hevy App Redesign</h3>
-                            <div class="masonry-tags">
-                                <span>SaaS Product</span>
-                                <span>Fitness</span>
-                                <span>Mobile App</span>
-                            </div>
-                        </div>
-                    </a>
+                <div class="projects-masonry" id="work-projects-container">
+                    <!-- Dynamic Projects Load Here -->
                 </div>
             </div>
         </section>
@@ -236,6 +178,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/cms-loader.js"></script>
+    <script>
+        // Trigger Dynamic Loading
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof CMSLoader !== 'undefined') {
+                CMSLoader.loadAllProjects('work-projects-container');
+            }
+        });
+    </script>
 </body>
 
 </html>
