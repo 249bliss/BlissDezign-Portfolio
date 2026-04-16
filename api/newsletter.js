@@ -27,8 +27,10 @@ export default async function handler(req, res) {
                 'Authorization': `Bearer ${resendApiKey}`
             },
             body: JSON.stringify({
-                from: 'BlissDezign <onboarding@resend.dev>', // In production, change to your verified domain (e.g. hello@blissdezign.com)
-                to: subscribers,
+                from: 'BlissDezign <onboarding@resend.dev>', 
+                // Since there is no custom domain, Resend ONLY allows sending to the email that registered the account.
+                // We use Test Mode where it only sends a copy to your own email to prove the system works.
+                to: 'kelechik177@gmail.com',
                 subject: `New Insight: ${title}`,
                 html: `
                     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
