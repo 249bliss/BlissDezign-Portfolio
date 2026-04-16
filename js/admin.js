@@ -1162,9 +1162,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             console.log(`Sending newsletter for "${post.title}" to ${subs.length} subscribers...`);
             
-            // Note: Sending via client-side fetch is for demonstration. 
-            // In production, move this to a Supabase Edge Function to protect your API key.
-            const response = await fetch('https://api.resend.com/emails', {
+            // Bypassing CORS for client-side API requests
+            const response = await fetch('https://corsproxy.io/?https://api.resend.com/emails', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

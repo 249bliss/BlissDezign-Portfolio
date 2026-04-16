@@ -207,12 +207,10 @@
             <div class="footer-newsletter">
                 <h3>Stay updated</h3>
                 <p>Join my newsletter for the latest design insights and articles.</p>
-                <form class="newsletter-form" action="https://app.us8.list-manage.com/subscribe/post?u=7bc7cb193543d72ee781e15dc&amp;id=293cd3375f&amp;f_id=006f76e1f0" method="POST" target="_blank" novalidate>
-                    <input type="email" name="EMAIL" placeholder="Your email address" required>
-                    <div style="position: absolute; left: -5000px;" aria-hidden="true">
-                        <input type="text" name="b_7bc7cb193543d72ee781e15dc_293cd3375f" tabindex="-1" value="">
-                    </div>
-                    <button type="submit" name="subscribe" class="btn btn-primary" style="padding: 12px;">Subscribe ↗</button>
+                <form id="newsletter-form" class="newsletter-form">
+                    <input type="email" id="newsletter-email" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn-primary" style="padding: 12px;">Subscribe ↗</button>
+                    <p id="newsletter-message" style="display: none; font-size: 0.85rem; margin-top: 10px;"></p>
                 </form>
             </div>
         </div>

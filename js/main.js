@@ -404,22 +404,47 @@ window.initProjectFilters = () => {
 document.addEventListener('DOMContentLoaded', () => {
     window.initProjectFilters();
 
-    // --- Newsletter Sync to Supabase ---
-    const newsletterForm = document.querySelector('.newsletter-form');
-    if (newsletterForm && typeof supabaseClient !== 'undefined') {
-        newsletterForm.addEventListener('submit', async (e) => {
-            const emailInput = newsletterForm.querySelector('input[type="email"]');
-            const email = emailInput ? emailInput.value.trim() : null;
+    // --- Newsletter Form Submission ---
+    const newsletterForms = document.querySelectorAll('.newsletter-form');
+    if (newsletterForms.length > 0 && typeof supabaseClient !== 'undefined') {
+        newsletterForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Stop page reload since MailChimp is removed
+                
+                const emailInput = form.querySelector('input[type="email"]');
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const messageEl = form.querySelector('#newsletter-message');
+                const email = emailInput ? emailInput.value.trim() : null;
 
-            if (email) {
-                // We fire this silently so as not to block the Mailchimp redirect
-                supabaseClient.from('subscribers').insert([
-                    { email: email }
-                ]).then(({ error }) => {
-                    if (error) console.error('Subscription Sync Error:', error);
-                    else console.log('Subscriber synced to dashboard.');
-                });
-            }
+                if (email) {
+                    const originalBtnText = submitBtn.innerText;
+                    submitBtn.innerText = 'Subscribing...';
+                    submitBtn.disabled = true;
+
+                    // Insert or ignore if duplicate
+                    const { error } = await supabaseClient.from('subscribers').upsert([{ email: email }], { onConflict: 'email' });
+                    
+                    if (!error) {
+                        // Track analytics and show success
+                        await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'subscribe' }]);
+                        messageEl.innerText = "Successfully subscribed! Welcome to the lab.";
+                        messageEl.style.color = "#10b981"; // Success green
+                        messageEl.style.display = "block";
+                        form.reset();
+                    } else {
+                        messageEl.innerText = "Something went wrong. Please try again.";
+                        messageEl.style.color = "#ef4444"; // Error red
+                        messageEl.style.display = "block";
+                        console.error('Subscription Error:', error);
+                    }
+
+                    setTimeout(() => {
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        messageEl.style.display = "none";
+                    }, 4000);
+                }
+            });
         });
     }
 });
