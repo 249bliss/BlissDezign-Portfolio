@@ -427,21 +427,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!error) {
                         // Track analytics and show success
                         await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'subscribe' }]);
-                        messageEl.innerText = "Successfully subscribed! Welcome to the lab.";
-                        messageEl.style.color = "#10b981"; // Success green
-                        messageEl.style.display = "block";
+                        if (messageEl) {
+                            messageEl.innerText = "Successfully subscribed! Welcome to the lab.";
+                            messageEl.style.color = "#10b981"; // Success green
+                            messageEl.style.display = "block";
+                        }
                         form.reset();
                     } else {
-                        messageEl.innerText = "Something went wrong. Please try again.";
-                        messageEl.style.color = "#ef4444"; // Error red
-                        messageEl.style.display = "block";
+                        if (messageEl) {
+                            messageEl.innerText = "Something went wrong. Please try again.";
+                            messageEl.style.color = "#ef4444"; // Error red
+                            messageEl.style.display = "block";
+                        }
                         console.error('Subscription Error:', error);
                     }
 
                     setTimeout(() => {
                         submitBtn.innerText = originalBtnText;
                         submitBtn.disabled = false;
-                        messageEl.style.display = "none";
+                        if (messageEl) messageEl.style.display = "none";
                     }, 4000);
                 }
             });

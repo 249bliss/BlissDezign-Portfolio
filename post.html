@@ -142,9 +142,10 @@
                 <h2>Enjoyed the read?</h2>
                 <p>Subscribe to get my latest insights on design and tech.</p>
                 <div class="footer-newsletter" style="max-width: 500px; margin: 40px auto 0;">
-                    <form class="newsletter-form" action="https://app.us8.list-manage.com/subscribe/post?u=7bc7cb193543d72ee781e15dc&amp;id=293cd3375f&amp;f_id=006f76e1f0" method="POST" target="_blank">
-                        <input type="email" name="EMAIL" placeholder="Your email address" required>
+                    <form id="newsletter-form" class="newsletter-form">
+                        <input type="email" id="newsletter-email" placeholder="Your email address" required>
                         <button type="submit" class="btn btn-primary">Subscribe</button>
+                        <p id="newsletter-message" style="display: none; font-size: 0.85rem; margin-top: 10px;"></p>
                     </form>
                 </div>
             </div>
