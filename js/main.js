@@ -9,19 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme Toggle Logic
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
-    
+
     // Check for saved theme in localStorage
     const savedTheme = localStorage.getItem('theme') || 'light';
     body.setAttribute('data-theme', savedTheme);
-    
+
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const currentTheme = body.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
+
             body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             // Subtle feedback
             themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
             setTimeout(() => {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileBtn.addEventListener('click', () => {
             mobileBtn.classList.toggle('active');
             mobileOverlay.classList.toggle('active');
-            
+
             // Prevent body scrolling when menu is open
             body.style.overflow = mobileOverlay.classList.contains('active') ? 'hidden' : '';
         });
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             header.classList.remove('scrolled');
         }
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     // Initial check
     handleScroll();
@@ -90,12 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Scroll Animations (Reveal on scroll)
     const revealElements = document.querySelectorAll('.service-card, .stats-container, .masonry-card, .experience-card, .testimonial-marquee, .section-title, .contact-text, .contact-form, .tools-section .container, .portfolio-gallery, .reveal-on-scroll');
-    
+
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
+
     const revealOnScroll = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -104,10 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, observerOptions);
-    
+
     // Expose observer globally
     window.revealOnScrollObserver = revealOnScroll;
-    
+
     revealElements.forEach(el => {
         el.classList.add('reveal-on-scroll');
         revealOnScroll.observe(el);
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = form.querySelector('button');
             const originalText = btn.innerText;
             const formData = new FormData(form);
-            
+
             // UI Loading state
             btn.innerText = 'Sending...';
             btn.disabled = true;
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const name = formData.get('name') || formData.get('Full Name');
                     const email = formData.get('email') || formData.get('Email Address');
                     const msg = formData.get('message') || formData.get('Message');
-                    
+
                     await supabaseClient.from('messages').insert([{ name, email, message: msg }]);
                     await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'message' }]);
                 }
@@ -260,17 +260,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 3000);
             }
 
-    // Newsletter Form Handling
-    const newsletterForm = document.querySelector('.newsletter-form');
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', async () => {
-            const emailInput = newsletterForm.querySelector('input[type="email"]');
-            if (emailInput && emailInput.value && typeof supabaseClient !== 'undefined') {
-                await supabaseClient.from('subscribers').upsert([{ email: emailInput.value }]);
-                await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'subscribe' }]);
+            // Newsletter Form Handling
+            const newsletterForm = document.querySelector('.newsletter-form');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async () => {
+                    const emailInput = newsletterForm.querySelector('input[type="email"]');
+                    if (emailInput && emailInput.value && typeof supabaseClient !== 'undefined') {
+                        await supabaseClient.from('subscribers').upsert([{ email: emailInput.value }]);
+                        await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'subscribe' }]);
+                    }
+                });
             }
-        });
-    }
         });
     }
     // Floating Pills Drag and Drop Logic
@@ -285,23 +285,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 isDragging = true;
                 pill.classList.add('dragging');
                 pill.style.transition = 'none';
-                
+
                 startClientX = e.clientX;
                 startClientY = e.clientY;
-                
+
                 startPillLeft = pill.offsetLeft;
                 startPillTop = pill.offsetTop;
-                
+
                 pill.setPointerCapture(e.pointerId);
                 e.preventDefault();
             };
 
             const onPointerMove = (e) => {
                 if (!isDragging) return;
-                
+
                 const deltaX = e.clientX - startClientX;
                 const deltaY = e.clientY - startClientY;
-                
+
                 pill.style.left = `${startPillLeft + deltaX}px`;
                 pill.style.top = `${startPillTop + deltaY}px`;
             };
@@ -310,13 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!isDragging) return;
                 isDragging = false;
                 pill.classList.remove('dragging');
-                
+
                 // Snap back to original position with a spring-like ease
                 pill.style.transition = 'top 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                
+
                 pill.style.top = pill.getAttribute('data-orig-top');
                 pill.style.left = pill.getAttribute('data-orig-left');
-                
+
                 pill.releasePointerCapture(e.pointerId);
             };
 
@@ -374,7 +374,7 @@ window.initProjectFilters = () => {
             // Remove existing listeners to avoid duplicates
             const newBtn = button.cloneNode(true);
             button.parentNode.replaceChild(newBtn, button);
-            
+
             newBtn.addEventListener('click', () => {
                 const filter = newBtn.getAttribute('data-filter');
 
@@ -404,55 +404,22 @@ window.initProjectFilters = () => {
 document.addEventListener('DOMContentLoaded', () => {
     window.initProjectFilters();
 
-    // --- Newsletter Form Submission ---
-    const newsletterForms = document.querySelectorAll('.newsletter-form');
-    if (newsletterForms.length > 0 && typeof supabaseClient !== 'undefined') {
-        newsletterForms.forEach(form => {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault(); // Stop page reload since MailChimp is removed
-                
-                const emailInput = form.querySelector('input[type="email"]');
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const messageEl = form.querySelector('#newsletter-message');
-                const email = emailInput ? emailInput.value.trim() : null;
+    // --- Newsletter Sync to Supabase ---
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm && typeof supabaseClient !== 'undefined') {
+        newsletterForm.addEventListener('submit', async (e) => {
+            const emailInput = newsletterForm.querySelector('input[type="email"]');
+            const email = emailInput ? emailInput.value.trim() : null;
 
-                if (email) {
-                    const originalBtnText = submitBtn.innerText;
-                    submitBtn.innerText = 'Subscribing...';
-                    submitBtn.disabled = true;
-
-                    // Insert or ignore if duplicate
-                    const { error } = await supabaseClient.from('subscribers').upsert([{ email: email }], { onConflict: 'email' });
-                    
-                    // Code 23505 = Unique Violation (already subscribed). Code 42501 = RLS violation (inserted successfully, but blocked from reading back)
-                    const isDuplicate = error && error.code === '23505';
-                    const isRLS = error && error.code === '42501';
-
-                    if (!error || isDuplicate || isRLS) {
-                        // Track analytics and show success
-                        await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'subscribe' }]);
-                        if (messageEl) {
-                            messageEl.innerText = "Successfully subscribed! Welcome to the lab.";
-                            messageEl.style.color = "#10b981"; // Success green
-                            messageEl.style.display = "block";
-                        }
-                        form.reset();
-                    } else {
-                        if (messageEl) {
-                            messageEl.innerText = "Something went wrong. Please try again.";
-                            messageEl.style.color = "#ef4444"; // Error red
-                            messageEl.style.display = "block";
-                        }
-                        console.error('Subscription Error:', error);
-                    }
-
-                    setTimeout(() => {
-                        submitBtn.innerText = originalBtnText;
-                        submitBtn.disabled = false;
-                        if (messageEl) messageEl.style.display = "none";
-                    }, 4000);
-                }
-            });
+            if (email) {
+                // We fire this silently so as not to block the Mailchimp redirect
+                supabaseClient.from('subscribers').insert([
+                    { email: email }
+                ]).then(({ error }) => {
+                    if (error) console.error('Subscription Sync Error:', error);
+                    else console.log('Subscriber synced to dashboard.');
+                });
+            }
         });
     }
 });

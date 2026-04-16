@@ -687,8 +687,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Case Study Status & Gallery State
             if (project.is_case_study && caseStudy) {
                 const chunks = caseStudy.full_image_chunks || [];
-                activeCaseStudyGallery = chunks.map(url => ({ type: 'url', content: url }));
+                activeCaseStudyGallery = chunks.map(url => ({ 
+                    type: 'url', 
+                    content: url,
+                    isSaved: true // Add flag to indicate it's already in DB
+                }));
                 renderCaseStudyGallery();
+                
+                if (chunks.length > 0) {
+                    const status = document.getElementById('cs-current-status');
+                    status.innerHTML = `<i class="fa-solid fa-cloud-check"></i> Found ${chunks.length} Saved Case Study Assets`;
+                    status.style.display = 'inline-flex';
+                }
             } else {
                 activeCaseStudyGallery = [];
                 renderCaseStudyGallery();
@@ -1220,23 +1230,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                         setLoading(true, `Slicing into ${numChunks} chunks...`);
                         for (let i = 0; i < numChunks; i++) {
                             const canvas = document.createElement('canvas');
-                            const chunkHeight = (i === numChunks - 1 && img.height % maxChunkHeight !== 0) 
-                                                ? img.height % maxChunkHeight 
-                                                : maxChunkHeight;
-                            canvas.width = img.width;
-                            canvas.height = chunkHeight;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, i * maxChunkHeight, img.width, chunkHeight, 0, 0, img.width, chunkHeight);
-                            
-                            const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.9));
-                            const chunkFile = new File([blob], `slice_${i}.jpg`, { type: 'image/jpeg' });
-                            
-                            setLoading(true, `Uploading chunk ${i+1}/${numChunks}...`);
-                            const publicUrl = await uploadImage(chunkFile, 'case_studies');
-                            chunks.push(publicUrl);
-                        }
-                        resolve(chunks);
-                    } catch (err) { reject(err); }
+                    const CHUNK_HEIGHT = 8192;
+                    const totalChunks = Math.ceil(img.height / CHUNK_HEIGHT);
+                    
+                    for (let i = 0; i < totalChunks; i++) {
+                        setLoading(true, `Slicing & Uploading section ${i + 1} of ${totalChunks}...`);
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const height = Math.min(CHUNK_HEIGHT, img.height - (i * CHUNK_HEIGHT));
+                        
+                        canvas.width = img.width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, (i * CHUNK_HEIGHT), img.width, height, 0, 0, img.width, height);
+                        
+                        const blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 0.9));
+                        const chunkFile = new File([blob], `chunk_${i}.webp`, { type: 'image/webp' });
+                        const url = await uploadImage(chunkFile, 'case_studies');
+                        chunks.push(url);
+                    }
+                    resolve(chunks);
                 };
                 img.src = e.target.result;
             };
@@ -1494,12 +1506,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const src = item.type === 'url' ? item.content : item.previewUrl;
 
             return `
-                <div class="selection-thumb" data-index="${idx}">
+                <div class="selection-thumb ${item.isSaved ? 'is-persisted' : 'is-new'}" data-index="${idx}">
                     <div class="thumb-index">${idx + 1}</div>
                     <div class="remove-btn" onclick="window.removeFromGallery(${idx})">
                         <i class="fa-solid fa-xmark"></i>
                     </div>
                     ${isVid ? `<video src="${src}" muted loop playsinline></video>` : `<img src="${src}">`}
+                    ${item.isSaved ? '<div class="saved-badge"><i class="fa-solid fa-check"></i></div>' : ''}
                 </div>
             `;
         }).join('');
