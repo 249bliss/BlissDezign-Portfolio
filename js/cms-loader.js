@@ -178,6 +178,101 @@ const CMSLoader = {
             });
             marquee.classList.toggle('is-paused');
         });
+    },
+
+    // 4. Fetch Blog Posts
+    loadBlogPosts: async (containerId) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        console.log("Fetching blog posts...");
+        const { data: posts, error } = await supabaseClient
+            .from('posts')
+            .select('*')
+            .eq('is_published', true)
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error("Error loading blog posts:", error);
+            return;
+        }
+
+        if (!posts || posts.length === 0) {
+            container.innerHTML = '<p class="text-muted" style="text-align:center; width:100%;">No articles found. Stay tuned!</p>';
+            return;
+        }
+
+        container.innerHTML = posts.map(post => `
+            <a href="post.html?slug=${post.slug}" class="masonry-card reveal-on-scroll">
+                <div class="masonry-image">
+                    <img src="${post.cover_image}" alt="${post.title}" loading="lazy">
+                </div>
+                <div class="masonry-info">
+                    <div class="post-date-tag">${new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                    <h3>${post.title}</h3>
+                    <p class="post-excerpt-preview">${post.excerpt}</p>
+                </div>
+            </a>
+        `).join('');
+
+        CMSLoader.triggerReveal(container);
+    },
+
+    // 5. Fetch Single Blog Post
+    loadSinglePost: async (slug) => {
+        const titleEl = document.getElementById('post-title');
+        const dateEl = document.getElementById('post-date');
+        const coverEl = document.getElementById('post-cover');
+        const bodyEl = document.getElementById('post-body');
+
+        if (!titleEl || !bodyEl) return;
+
+        console.log(`Fetching post: ${slug}...`);
+        const { data: post, error } = await supabaseClient
+            .from('posts')
+            .select('*')
+            .eq('slug', slug)
+            .single();
+
+        if (error || !post) {
+            console.error("Error loading post:", error);
+            titleEl.innerText = "Post Not Found";
+            return;
+        }
+
+        // Set metadata
+        document.title = `${post.title} | BlissDezign`;
+        titleEl.innerText = post.title;
+        dateEl.innerText = new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        coverEl.src = post.cover_image;
+        coverEl.alt = post.title;
+
+        // Simple Markdown-ish processing for content (replaces newlines with paragraphs)
+        // In a real app, you might use a library like 'marked'
+        const formattedContent = post.content
+            .split('\n\n')
+            .map(para => {
+                if (para.startsWith('## ')) return `<h2>${para.replace('## ', '')}</h2>`;
+                if (para.startsWith('### ')) return `<h3>${para.replace('### ', '')}</h3>`;
+                if (para.startsWith('> ')) return `<blockquote>${para.replace('> ', '')}</blockquote>`;
+                return `<p>${para.replace(/\n/g, '<br>')}</p>`;
+            })
+            .join('');
+
+        bodyEl.innerHTML = formattedContent;
+
+        // Update share links
+        const tweetBtn = document.getElementById('share-twitter');
+        const linkBtn = document.getElementById('share-linkedin');
+        const currentUrl = encodeURIComponent(window.location.href);
+        const currentTitle = encodeURIComponent(post.title);
+        
+        if (tweetBtn) tweetBtn.href = `https://twitter.com/intent/tweet?text=${currentTitle}&url=${currentUrl}`;
+        if (linkBtn) linkBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
+
+        // Trigger animations
+        const container = document.getElementById('post-content-area');
+        if (container) CMSLoader.triggerReveal(container);
     }
 };
 

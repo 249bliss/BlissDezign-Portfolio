@@ -45,6 +45,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const projectsList = document.getElementById('projects-list');
     const reviewsList = document.getElementById('reviews-list');
+    const postsList = document.getElementById('posts-list');
+    
+    const blogForm = document.getElementById('blog-form');
+    const postIsPublished = document.getElementById('post-is-published');
+    const postNotifySubs = document.getElementById('post-notify-subs');
 
     // --- Tag Manager State ---
     let activeTags = [];
@@ -505,25 +510,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     window.switchPanel = function(target) {
         // Sync Sidebar
-        tabs.forEach(t => {
-            t.classList.toggle('active', t.getAttribute('data-target') === target);
-        });
-        
+        tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-target') === target));
         // Sync Mobile Nav
-        mobileTabs.forEach(t => {
-            t.classList.toggle('active', t.getAttribute('data-target') === target);
-        });
+        mobileTabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-target') === target));
 
         // Toggle Panels
         document.querySelectorAll('.admin-panel').forEach(p => {
             p.classList.toggle('active', p.id === target);
         });
 
-        // Trigger fetches if needed
+        // Trigger fetches
         if (target === 'insights-panel') fetchInsights();
         if (target === 'manage-projects-panel') fetchProjects();
         if (target === 'manage-reviews-panel') fetchReviews();
-    }
+        if (target === 'manage-blog-panel') fetchBlogPosts();
+    };
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => window.switchPanel(tab.getAttribute('data-target')));
@@ -988,7 +989,207 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- 5. Utils & Helpers ---
+    // --- 5. CRUD: Blog ---
+
+    async function fetchBlogPosts() {
+        const { data, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
+        if (error) return console.error(error);
+
+        postsList.innerHTML = data.length ? data.map(post => `
+            <div class="review-manage-card">
+                <div class="rmc-header">
+                    <div class="rmc-avatar-wrapper">
+                        <img src="${post.cover_image}" class="rmc-avatar" style="border-radius: 12px; height: 60px; width: 60px;">
+                    </div>
+                    <div class="rmc-author-info">
+                        <div class="rmc-name">${post.title}</div>
+                        <div class="rmc-role">${post.is_published ? '<span style="color: #10b981;">Published</span>' : '<span style="color: var(--text-muted);">Draft</span>'}</div>
+                    </div>
+                </div>
+                <p class="rmc-text">${post.excerpt}</p>
+                <div class="rmc-actions">
+                    <button class="btn-icon btn-edit" title="Edit" onclick="editBlogPost('${post.id}')">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button class="btn-icon btn-delete" title="Delete" onclick="deleteBlogPost('${post.id}')">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 60px; grid-column: 1/-1;">No blog posts yet. Start writing!</p>';
+    }
+
+    window.deleteBlogPost = async (id) => {
+        showConfirm('Delete this blog post?', async () => {
+            setLoading(true, 'Deleting post...');
+            const { error } = await supabaseClient.from('posts').delete().eq('id', id);
+            setLoading(false);
+            if (error) showAlert(error.message);
+            else {
+                showToast('Post deleted', 'success');
+                fetchBlogPosts();
+            }
+        });
+    };
+
+    window.editBlogPost = async (id) => {
+        setLoading(true, 'Loading post...');
+        const { data: post, error } = await supabaseClient.from('posts').select('*').eq('id', id).single();
+        setLoading(false);
+        if (error) return showAlert(error.message);
+
+        document.getElementById('edit-post-id').value = post.id;
+        document.getElementById('post-title').value = post.title;
+        document.getElementById('post-slug').value = post.slug;
+        document.getElementById('post-excerpt').value = post.excerpt;
+        document.getElementById('post-content').value = post.content;
+        document.getElementById('post-is-published').checked = post.is_published;
+        
+        // Hide newsletter for existing posts to prevent resending unless specifically wanted?
+        // Actually, we'll let them choose.
+        document.getElementById('post-notify-subs').checked = false;
+
+        const imgDisplay = document.getElementById('post-current-url');
+        if (post.cover_image) {
+            imgDisplay.innerText = "Current Image: " + post.cover_image.split('/').pop();
+            imgDisplay.style.display = 'block';
+        }
+
+        document.getElementById('post-form-title').innerText = 'Edit Article';
+        document.getElementById('submit-post-btn').innerText = 'Update Article';
+        document.getElementById('cancel-post-btn').style.display = 'block';
+        
+        window.switchPanel('add-post-panel');
+    };
+
+    document.getElementById('cancel-post-btn').onclick = resetPostForm;
+
+    function resetPostForm() {
+        blogForm.reset();
+        document.getElementById('edit-post-id').value = '';
+        document.getElementById('post-form-title').innerText = 'Add New Article';
+        document.getElementById('submit-post-btn').innerText = 'Publish Post';
+        document.getElementById('cancel-post-btn').style.display = 'none';
+        document.getElementById('post-current-url').style.display = 'none';
+        window.switchPanel('manage-blog-panel');
+    }
+
+    blogForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const editId = document.getElementById('edit-post-id').value;
+        const isEdit = !!editId;
+
+        const title = document.getElementById('post-title').value;
+        const slug = document.getElementById('post-slug').value || title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        const excerpt = document.getElementById('post-excerpt').value;
+        const content = document.getElementById('post-content').value;
+        const isPublished = document.getElementById('post-is-published').checked;
+        const notifySubscribers = document.getElementById('post-notify-subs').checked;
+
+        setLoading(true, isEdit ? 'Updating article...' : 'Publishing article...');
+        
+        try {
+            let cover_image = null;
+            const imgFile = document.getElementById('post-image').files[0];
+            if (imgFile) {
+                cover_image = await uploadImage(imgFile, 'blog');
+            } else if (isEdit) {
+                const { data } = await supabaseClient.from('posts').select('cover_image').eq('id', editId).single();
+                cover_image = data.cover_image;
+            } else {
+                cover_image = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000&auto=format&fit=crop'; // fallback
+            }
+
+            const postData = { 
+                title, 
+                slug, 
+                excerpt, 
+                content, 
+                cover_image, 
+                is_published: isPublished 
+            };
+            
+            if (isPublished && !isEdit) {
+                postData.published_at = new Date().toISOString();
+            }
+
+            let response;
+            if (isEdit) {
+                response = await supabaseClient.from('posts').update(postData).eq('id', editId);
+            } else {
+                response = await supabaseClient.from('posts').insert([postData]);
+            }
+
+            if (response.error) throw response.error;
+
+            // Newsletter Logic via Resend (Simulated Frontend Call)
+            if (isPublished && notifySubscribers) {
+                setLoading(true, 'Broadcasting to subscribers...');
+                await sendNewsletter(postData);
+            }
+
+            showToast('Article saved!', 'success');
+            resetPostForm();
+            fetchBlogPosts();
+        } catch (err) {
+            showAlert(err.message);
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    async function sendNewsletter(post) {
+        try {
+            // 1. Fetch all subscribers
+            const { data: subs } = await supabaseClient.from('subscribers').select('email');
+            if (!subs || subs.length === 0) return;
+
+            // 2. Resend API Details
+            const RESEND_API_KEY = window.resendApiKey || 're_123456789';
+            
+            console.log(`Sending newsletter for "${post.title}" to ${subs.length} subscribers...`);
+            
+            // Note: Sending via client-side fetch is for demonstration. 
+            // In production, move this to a Supabase Edge Function to protect your API key.
+            const response = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${RESEND_API_KEY}`
+                },
+                body: JSON.stringify({
+                    from: 'BlissDezign <onboarding@resend.dev>', // You should change this to your verified domain later
+                    to: subs.map(s => s.email),
+                    subject: `New Insight: ${post.title}`,
+                    html: `
+                        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+                            <img src="${post.cover_image}" style="width: 100%; border-radius: 12px; margin-bottom: 20px;">
+                            <h1 style="color: #DF00FF;">${post.title}</h1>
+                            <p style="font-size: 16px; line-height: 1.6;">${post.excerpt}</p>
+                            <a href="https://blissdezigns.vercel.app/post.html?slug=${post.slug}" 
+                               style="display: inline-block; padding: 12px 24px; background: #DF00FF; color: #fff; text-decoration: none; border-radius: 8px; margin-top: 20px;">
+                               Read Full Article
+                            </a>
+                            <hr style="margin-top: 40px; border: 0; border-top: 1px solid #eee;">
+                            <p style="font-size: 12px; color: #999;">You're receiving this because you subscribed to BlissDezign updates.</p>
+                        </div>
+                    `
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.message || 'Failed to send newsletter');
+            }
+            
+            showToast(`Broadcasted to ${subs.length} subscribers!`, 'success');
+        } catch (err) {
+            console.error('Newsletter error:', err);
+            showAlert('Newsletter failed: ' + err.message);
+        }
+    }
+
+    // --- 6. Utils & Helpers ---
 
     async function uploadImage(file, pathFolder) {
         const fileExt = file.name.split('.').pop();

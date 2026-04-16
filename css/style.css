@@ -2375,3 +2375,65 @@ form select option {
     color: var(--text-muted);
     font-size: 1.1rem;
 }
+
+/* ─── Blog Specific Styles ─── */
+.post-date-tag {
+    font-size: 0.75rem;
+    color: var(--accent-purple);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.post-excerpt-preview {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+.article-body h2 {
+    font-family: 'Sen', sans-serif;
+    font-size: 2rem;
+    background: var(--gradient-gray);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 40px 0 20px;
+}
+
+.article-body h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin: 30px 0 15px;
+}
+
+.article-body p br {
+    display: block;
+    content: "";
+    margin-top: 10px;
+}
+
+.share-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.share-buttons a {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    transition: var(--transition);
+}
+
+.share-buttons a:hover {
+    color: var(--accent-purple);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .article-body {
+        font-size: 1.05rem;
+    }
+}
