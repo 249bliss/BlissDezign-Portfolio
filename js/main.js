@@ -126,6 +126,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ─── Stat Counter Animation ───────────────────────────────────────────────
+    // Animates each .stat-number from 0 to its target value when scrolled into view
+    const animateCounter = (el, target, duration = 1800) => {
+        let start = null;
+        const suffix = el.querySelector('.stat-plus')?.textContent || '';
+        const plus = el.querySelector('.stat-plus');
+
+        // Easing: easeOutExpo for snappy deceleration
+        const easeOutExpo = (t) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+
+        const step = (timestamp) => {
+            if (!start) start = timestamp;
+            const elapsed = timestamp - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = easeOutExpo(progress);
+            const current = Math.round(eased * target);
+
+            // Update only the text node (not the .stat-plus child)
+            el.childNodes.forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    node.textContent = current;
+                }
+            });
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            }
+        };
+
+        requestAnimationFrame(step);
+    };
+
+    const statsContainer = document.querySelector('.stats-container');
+    if (statsContainer) {
+        const statNumbers = statsContainer.querySelectorAll('.stat-number');
+
+        const counterObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    statNumbers.forEach(statEl => {
+                        // Read target from the text node (exclude the suffix span)
+                        let targetValue = 0;
+                        statEl.childNodes.forEach(node => {
+                            if (node.nodeType === Node.TEXT_NODE) {
+                                targetValue = parseInt(node.textContent.trim(), 10) || 0;
+                            }
+                        });
+                        animateCounter(statEl, targetValue);
+                    });
+                    obs.unobserve(entry.target); // Fire only once
+                }
+            });
+        }, { threshold: 0.4 });
+
+        counterObserver.observe(statsContainer);
+    }
+
+
     // Smooth navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

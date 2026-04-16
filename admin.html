@@ -333,24 +333,17 @@
 
             <!-- Panel: Manage Reviews -->
             <div id="manage-reviews-panel" class="admin-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                    <h2>Client Testimonials</h2>
-                    <button class="btn btn-primary" onclick="window.switchPanel('add-review-panel')" style="padding: 10px 20px; font-size: 0.85rem;">+ New Review</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <div>
+                        <h2 style="margin-bottom: 6px;">Client Testimonials</h2>
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">Manage what clients say about your work</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="window.switchPanel('add-review-panel')" style="padding: 12px 22px; font-size: 0.85rem;">+ New Review</button>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Avatar</th>
-                            <th>Author</th>
-                            <th>Role / Company</th>
-                            <th>Text Preview</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reviews-list">
-                        <!-- Reviews loaded via JS -->
-                    </tbody>
-                </table>
+                <div id="reviews-list" class="reviews-card-grid">
+                    <!-- Reviews loaded via JS as cards -->
+                    <p style="color: var(--text-muted); text-align: center; padding: 40px; grid-column: 1/-1;">Loading testimonials...</p>
+                </div>
             </div>
 
             <!-- Panel: Add/Edit Review -->

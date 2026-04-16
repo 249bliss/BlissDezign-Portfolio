@@ -1126,3 +1126,183 @@ input:checked + .slider:before { transform: translateX(20px); }
     font-weight: 600;
     margin-top: 8px;
 }
+
+/* ─── Reviews Card Grid ─────────────────────────────────────── */
+.reviews-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1280px) {
+    .reviews-card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 800px) {
+    .reviews-card-grid { grid-template-columns: 1fr; }
+}
+
+.review-manage-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.review-manage-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--primary-gradient);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.review-manage-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-purple);
+    box-shadow: 0 15px 40px var(--card-glow);
+}
+
+.review-manage-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Card Header: Avatar + Name + Quote icon */
+.rmc-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.rmc-avatar-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.rmc-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    transition: border-color 0.3s;
+}
+
+.review-manage-card:hover .rmc-avatar {
+    border-color: var(--accent-purple);
+}
+
+.rmc-avatar-fallback {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.3rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.rmc-author-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.rmc-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rmc-role {
+    font-size: 0.8rem;
+    color: var(--accent-purple);
+    font-weight: 500;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rmc-quote-icon {
+    color: var(--accent-purple);
+    opacity: 0.3;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    transition: opacity 0.3s;
+}
+
+.review-manage-card:hover .rmc-quote-icon {
+    opacity: 0.7;
+}
+
+/* Review text body */
+.rmc-text {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    flex: 1;
+    margin: 0;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-left: 3px solid var(--accent-purple);
+}
+
+[data-theme='light'] .rmc-text {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+/* Action buttons */
+.rmc-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.rmc-actions .btn-icon {
+    flex: 1;
+    height: 38px;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: 0.3s;
+}
+
+.rmc-actions .btn-edit:hover {
+    border-color: var(--accent-purple);
+    color: #fff;
+    background: rgba(223, 0, 255, 0.12);
+    box-shadow: 0 0 15px var(--card-glow);
+}
+
+.rmc-actions .btn-delete:hover {
+    border-color: #ef4444;
+    color: #fff;
+    background: rgba(239, 68, 68, 0.12);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+}
+

@@ -858,24 +858,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data, error } = await supabaseClient.from('reviews').select('*').order('created_at', { ascending: false });
         if (error) return console.error(error);
 
-        reviewsList.innerHTML = data.map(rev => `
-            <tr>
-                <td><img src="${rev.avatar_url}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;"></td>
-                <td><div style="font-weight: 600;">${rev.author_name}</div></td>
-                <td>${rev.author_role}</td>
-                <td style="font-size: 0.85rem; color: var(--text-muted);">${rev.review_text.substring(0, 50)}...</td>
-                <td>
-                    <div class="action-btns">
-                        <button class="btn-icon btn-edit" title="Edit" onclick="editReview('${rev.id}')">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button class="btn-icon btn-delete" title="Delete" onclick="deleteReview('${rev.id}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+        reviewsList.innerHTML = data.length ? data.map(rev => `
+            <div class="review-manage-card">
+                <div class="rmc-header">
+                    <div class="rmc-avatar-wrapper">
+                        <img src="${rev.avatar_url}" alt="${rev.author_name}" class="rmc-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="rmc-avatar-fallback" style="display:none;">${rev.author_name.charAt(0).toUpperCase()}</div>
                     </div>
-                </td>
-            </tr>
-        `).join('') || '<tr><td colspan="5" style="text-align:center; padding: 40px;">No reviews found.</td></tr>';
+                    <div class="rmc-author-info">
+                        <div class="rmc-name">${rev.author_name}</div>
+                        <div class="rmc-role">${rev.author_role}</div>
+                    </div>
+                    <div class="rmc-quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+                </div>
+                <p class="rmc-text">${rev.review_text.length > 120 ? rev.review_text.substring(0, 120) + '...' : rev.review_text}</p>
+                <div class="rmc-actions">
+                    <button class="btn-icon btn-edit" title="Edit" onclick="editReview('${rev.id}')">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button class="btn-icon btn-delete" title="Delete" onclick="deleteReview('${rev.id}')">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 60px; grid-column: 1/-1; font-size: 1rem;">No testimonials yet. Add your first one!</p>';
 
         // Update counts in UI
         const reviewCounts = document.querySelectorAll('.review-count-badge');
