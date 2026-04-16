@@ -1181,7 +1181,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!response.ok) {
                 const err = await response.json();
-                throw new Error(err.message || 'Failed to send newsletter');
+                // We extract err.error because our Vercel API sends { error: "..." }
+                throw new Error(err.error || 'Failed to send newsletter');
             }
             
             showToast(`Broadcasted to ${subs.length} subscribers!`, 'success');
