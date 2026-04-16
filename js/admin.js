@@ -669,19 +669,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             const isVideo = project.hero_image.match(/\.(mp4|webm|ogg|mov)$/i);
             
-            heroUrlDisplay.innerText = "Current Media: " + project.hero_image.split('/').pop();
-            heroUrlDisplay.innerHTML = `<i class="fa-solid fa-cloud-check"></i> Current: ${project.hero_image.split('/').pop()}`;
-            heroUrlDisplay.style.display = 'inline-flex';
-            heroBox.style.display = 'block';
+            const heroSaved = document.getElementById('hero-saved-status');
             
-            if (isVideo) {
-                heroImg.style.display = 'none';
-                heroVid.src = project.hero_image;
-                heroVid.style.display = 'block';
-            } else {
-                heroVid.style.display = 'none';
-                heroImg.src = project.hero_image;
-                heroImg.style.display = 'block';
+            if (project.hero_image) {
+                heroBox.style.display = 'block';
+                const isVid = project.hero_image.match(/\.(mp4|webm|ogg|mov)$/i);
+                
+                const thumb = heroBox.querySelector('.selection-thumb');
+                if (thumb) {
+                    thumb.classList.remove('is-new');
+                    thumb.classList.add('is-persisted');
+                }
+
+                if (isVid) {
+                    heroImg.style.display = 'none';
+                    heroVid.src = project.hero_image;
+                    heroVid.style.display = 'block';
+                } else {
+                    heroVid.style.display = 'none';
+                    heroImg.src = project.hero_image;
+                    heroImg.style.display = 'block';
+                }
+                if (heroSaved) heroSaved.style.display = 'flex';
             }
 
             // Case Study Status & Gallery State
@@ -742,7 +751,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         submitBtn.innerText = 'Publish Project';
         submitBtn.disabled = false;
         document.getElementById('cancel-proj-btn').style.display = 'none';
-        document.getElementById('hero-current-url').style.display = 'none';
+        
+        // Reset Custom Previews
+        const heroBox = document.getElementById('hero-preview-box');
+        if (heroBox) heroBox.style.display = 'none';
+        
+        const csBox = document.getElementById('cs-preview-box');
+        if (csBox) csBox.style.display = 'none';
+        
+        const csStatus = document.getElementById('cs-current-status');
+        if (csStatus) csStatus.style.display = 'none';
+        
         document.getElementById('proj-order').value = 0;
         document.getElementById('proj-layout').value = 'standard';
         caseStudyFields.style.display = 'none';
@@ -939,12 +958,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('rev-role').value = rev.author_role;
         document.getElementById('rev-text').value = rev.review_text;
         
-        const avatarDisplay = document.getElementById('avatar-current-url');
-        avatarDisplay.innerText = "Current Avatar: " + rev.avatar_url.split('/').pop();
-        avatarDisplay.style.display = 'block';
+        const avatarBox = document.getElementById('avatar-preview-box');
+        const avatarImg = document.getElementById('avatar-preview-img');
+        const avatarSaved = document.getElementById('avatar-saved-status');
 
-        document.getElementById('review-form-title').innerText = 'Edit Review';
-        document.getElementById('submit-rev-btn').innerText = 'Update Review';
+        if (rev.avatar_url) {
+            avatarBox.style.display = 'block';
+            avatarImg.src = rev.avatar_url;
+            if (avatarSaved) avatarSaved.style.display = 'flex';
+            
+            const thumb = avatarBox.querySelector('.selection-thumb');
+            if (thumb) {
+                thumb.classList.remove('is-new');
+                thumb.classList.add('is-persisted');
+            }
+        }
+
+        document.getElementById('review-form-title').innerText = 'Edit Testimonial';
+        document.getElementById('submit-rev-btn').innerText = 'Update Testimonial';
         document.getElementById('cancel-rev-btn').style.display = 'block';
         
         window.switchPanel('add-review-panel');
@@ -956,11 +987,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         reviewsForm.reset();
         document.getElementById('edit-rev-id').value = '';
         document.getElementById('review-form-title').innerText = 'Add New Testimonial';
-        const submitBtn = document.getElementById('submit-rev-btn');
-        submitBtn.innerText = 'Publish Testimonial';
-        submitBtn.disabled = false;
+        document.getElementById('submit-rev-btn').innerText = 'Publish Testimonial';
         document.getElementById('cancel-rev-btn').style.display = 'none';
-        document.getElementById('avatar-current-url').style.display = 'none';
+        
+        const avatarBox = document.getElementById('avatar-preview-box');
+        if (avatarBox) avatarBox.style.display = 'none';
+        
         window.switchPanel('manage-reviews-panel');
     }
 
@@ -1067,15 +1099,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('post-excerpt').value = post.excerpt;
         document.getElementById('post-content').value = post.content;
         document.getElementById('post-is-published').checked = post.is_published;
-        
-        // Hide newsletter for existing posts to prevent resending unless specifically wanted?
-        // Actually, we'll let them choose.
         document.getElementById('post-notify-subs').checked = false;
 
-        const imgDisplay = document.getElementById('post-current-url');
+        const postBox = document.getElementById('post-preview-box');
+        const postImg = document.getElementById('post-preview-img');
+        const postSaved = document.getElementById('post-saved-status');
+
         if (post.cover_image) {
-            imgDisplay.innerText = "Current Image: " + post.cover_image.split('/').pop();
-            imgDisplay.style.display = 'block';
+            postBox.style.display = 'block';
+            postImg.src = post.cover_image;
+            if (postSaved) postSaved.style.display = 'flex';
+            
+            const thumb = postBox.querySelector('.selection-thumb');
+            if (thumb) {
+                thumb.classList.remove('is-new');
+                thumb.classList.add('is-persisted');
+            }
         }
 
         document.getElementById('post-form-title').innerText = 'Edit Article';
@@ -1093,7 +1132,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('post-form-title').innerText = 'Add New Article';
         document.getElementById('submit-post-btn').innerText = 'Publish Post';
         document.getElementById('cancel-post-btn').style.display = 'none';
-        document.getElementById('post-current-url').style.display = 'none';
+        
+        const postBox = document.getElementById('post-preview-box');
+        if (postBox) postBox.style.display = 'none';
+        
         window.switchPanel('manage-blog-panel');
     }
 
@@ -1258,37 +1300,71 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- 6. Live Previews ---
     function setupImagePreviews() {
+        // Universal helper to handle single image preview updates
+        const updateSinglePreview = (input, box, img, vid, savedBadge) => {
+            const file = input.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                box.style.display = 'block';
+                if (savedBadge) savedBadge.style.display = 'none'; // New file -> Hide saved badge
+                
+                const thumb = box.querySelector('.selection-thumb');
+                if (thumb) {
+                    thumb.classList.add('is-new');
+                    thumb.classList.remove('is-persisted');
+                }
+
+                if (file.type.startsWith('video/')) {
+                    if (img) img.style.display = 'none';
+                    if (vid) {
+                        vid.src = url;
+                        vid.style.display = 'block';
+                    }
+                } else {
+                    if (vid) vid.style.display = 'none';
+                    if (img) {
+                        img.src = url;
+                        img.style.display = 'block';
+                    }
+                }
+            }
+        };
+
         const heroInput = document.getElementById('proj-hero');
         const heroBox = document.getElementById('hero-preview-box');
         const heroImg = document.getElementById('hero-preview-img');
-
-        const csInput = document.getElementById('cs-full-image');
-        const csBox = document.getElementById('cs-preview-box');
-        const csImg = document.getElementById('cs-preview-img');
+        const heroVid = document.getElementById('hero-preview-vid');
+        const heroSaved = document.getElementById('hero-saved-status');
 
         if (heroInput) {
-            heroInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const heroImg = document.getElementById('hero-preview-img');
-                const heroVid = document.getElementById('hero-preview-vid');
-                
-                if (file) {
-                    const url = URL.createObjectURL(file);
-                    heroBox.style.display = 'block';
-                    
-                    if (file.type.startsWith('video/')) {
-                        heroImg.style.display = 'none';
-                        heroVid.src = url;
-                        heroVid.style.display = 'block';
-                    } else {
-                        heroVid.style.display = 'none';
-                        heroImg.src = url;
-                        heroImg.style.display = 'block';
-                    }
-                }
+            heroInput.addEventListener('change', () => {
+                updateSinglePreview(heroInput, heroBox, heroImg, heroVid, heroSaved);
             });
         }
 
+        const revInput = document.getElementById('rev-avatar');
+        const revBox = document.getElementById('avatar-preview-box');
+        const revImg = document.getElementById('avatar-preview-img');
+        const revSaved = document.getElementById('avatar-saved-status');
+
+        if (revInput) {
+            revInput.addEventListener('change', () => {
+                updateSinglePreview(revInput, revBox, revImg, null, revSaved);
+            });
+        }
+
+        const postInput = document.getElementById('post-image');
+        const postBox = document.getElementById('post-preview-box');
+        const postImg = document.getElementById('post-preview-img');
+        const postSaved = document.getElementById('post-saved-status');
+
+        if (postInput) {
+            postInput.addEventListener('change', () => {
+                updateSinglePreview(postInput, postBox, postImg, null, postSaved);
+            });
+        }
+
+        const csInput = document.getElementById('cs-full-image');
         if (csInput) {
             csInput.addEventListener('change', (e) => {
                 const files = Array.from(e.target.files);
@@ -1307,6 +1383,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 document.getElementById('cs-preview-img').src = re.target.result;
                                 csBox.style.display = 'block';
                                 if (emptyHint) emptyHint.style.display = 'none';
+                                
+                                // Set chopper thumb as 'new'
+                                const chopperThumb = csBox.querySelector('.selection-thumb');
+                                if (chopperThumb) chopperThumb.classList.add('is-new');
                             } else {
                                 // Scenario B: Normal Image -> Append to Gallery
                                 activeCaseStudyGallery.push({ 
@@ -1321,7 +1401,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     };
                     reader.readAsDataURL(file);
                 } else if (files.length > 0) {
-                    // Scenario C: Multiple files or Video -> Add all to Gallery
                     files.forEach(f => {
                         activeCaseStudyGallery.push({ 
                             type: 'file', 
@@ -1331,7 +1410,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                     renderCaseStudyGallery();
                 }
-                
                 csInput.value = '';
             });
         }

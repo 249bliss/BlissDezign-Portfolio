@@ -274,13 +274,29 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Card Preview (Image or Video)</label>
-                        <input type="file" id="proj-hero" accept="image/*,video/*">
-                        <div id="hero-preview-box" class="live-preview-box" style="display: none; margin-top: 15px;">
-                            <img id="hero-preview-img" src="" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); display: none;">
-                            <video id="hero-preview-vid" autoplay muted loop playsinline style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); display: none;"></video>
-                            <p style="font-size: 0.75rem; color: var(--accent-purple); margin-top: 5px;"><i class="fa-solid fa-check-circle"></i> Media Selected</p>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Project Hero Image/Video (Visible on cards)</label>
+                        
+                        <div class="custom-upload-area" onclick="document.getElementById('proj-hero').click()">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <div class="upload-text">
+                                <strong>Click to Upload Hero Media</strong>
+                                <p>Optimal ratio 16:9 (Min 1280x720)</p>
+                            </div>
+                        </div>
+                        
+                        <input type="file" id="proj-hero" accept="image/*,video/*" style="display: none;">
+                        
+                        <!-- Hero Preview -->
+                        <div id="hero-preview-box" class="media-selection-grid" style="display: none; margin-top: 15px;">
+                            <div class="selection-thumb is-new">
+                                <div class="thumb-index"><i class="fa-solid fa-eye"></i></div>
+                                <img id="hero-preview-img" style="display: none;">
+                                <video id="hero-preview-vid" style="display: none;" muted loop playsinline></video>
+                                <div id="hero-saved-status" class="saved-badge" style="display: none;">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                            </div>
                         </div>
                         <p id="hero-current-url" class="current-status-badge" style="display: none;"></p>
                     </div>
@@ -392,8 +408,26 @@
                     </div>
                     <div class="form-group">
                         <label>Client Avatar</label>
-                        <input type="file" id="rev-avatar" accept="image/*">
-                        <p id="avatar-current-url" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: none;"></p>
+                        
+                        <div class="custom-upload-area" onclick="document.getElementById('rev-avatar').click()" style="padding: 20px;">
+                            <i class="fa-solid fa-user-astronaut"></i>
+                            <div class="upload-text">
+                                <strong>Select Profile Photo</strong>
+                                <p>Square 1:1 ratio works best</p>
+                            </div>
+                        </div>
+                        
+                        <input type="file" id="rev-avatar" accept="image/*" style="display: none;">
+                        
+                        <!-- Avatar Preview -->
+                        <div id="avatar-preview-box" class="media-selection-grid" style="display: none; grid-template-columns: 100px; margin-top: 15px;">
+                            <div class="selection-thumb is-new">
+                                <img id="avatar-preview-img">
+                                <div id="avatar-saved-status" class="saved-badge" style="display: none;">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div style="display: flex; gap: 15px; margin-top: 30px;">
                         <button type="submit" id="submit-rev-btn" class="btn btn-primary" style="flex: 2;">Publish Testimonial</button>
@@ -436,8 +470,26 @@
                         
                         <div class="form-group">
                             <label>Cover Image</label>
-                            <input type="file" id="post-image" accept="image/*">
-                            <p id="post-current-url" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: none;"></p>
+                            
+                            <div class="custom-upload-area" onclick="document.getElementById('post-image').click()" style="padding: 24px;">
+                                <i class="fa-solid fa-newspaper"></i>
+                                <div class="upload-text">
+                                    <strong>Select Post Cover</strong>
+                                    <p>Max 5MB - JPG, WebP, PNG</p>
+                                </div>
+                            </div>
+                            
+                            <input type="file" id="post-image" accept="image/*" style="display: none;">
+                            
+                            <!-- Post Image Preview -->
+                            <div id="post-preview-box" class="media-selection-grid" style="display: none; grid-template-columns: 120px; margin-top: 15px;">
+                                <div class="selection-thumb is-new">
+                                    <img id="post-preview-img">
+                                    <div id="post-saved-status" class="saved-badge" style="display: none;">
+                                        <i class="fa-solid fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
