@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article | Bliss – Product Designer Insights</title>
+    <meta name="description" content="Thoughts and insights on product design, mobile apps, and building digital products with intention.">
+    <link rel="icon" type="image/png" href="assets/kre8mind logo (2).webp">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="post-template">
+    <header>
+        <div class="container">
+            <nav class="nav-container">
+                <div class="logo">
+                     <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+                        <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo">
+                        <span class="logo-text">BlissDezign</span>
+                     </a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="blog.html" class="active">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-sun-moon">
+                            <path d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="m4.93 4.93 1.41 1.41" />
+                            <path d="m17.66 17.66 1.41 1.41" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                            <path d="m6.34 17.66-1.41 1.41" />
+                            <path d="m19.07 4.93-1.41 1.41" />
+                        </svg>
+                    </button>
+                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-primary desktop-btn">Book a Call</a>
+                    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay">
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="work.html">Work</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html" class="active">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-primary" style="margin-top: 10px;">Book a Call</a></li>
+        </ul>
+    </div>
+
+    <main id="post-content-area">
+        <article class="single-post">
+            <!-- Part 1: Hero -->
+            <section class="post-hero reveal-on-scroll">
+                <div class="container narrow">
+                    <div class="post-meta">
+                        <a href="blog.html" class="back-link">← Back to Discourse</a>
+                        <span id="post-date" class="date-badge">Loading...</span>
+                    </div>
+                    <h1 id="post-title" class="reveal-on-scroll">Loading Article...</h1>
+                </div>
+            </section>
+
+            <!-- Part 2: Cover Image -->
+            <section class="post-cover-section reveal-on-scroll">
+                <div class="container narrow">
+                    <div class="post-image-wrapper">
+                        <img id="post-cover" src="" alt="" class="hero-post-img">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Part 3: Body Content -->
+            <section class="post-body-section reveal-on-scroll">
+                <div class="container narrow">
+                    <div id="post-body" class="rich-text-content">
+                        <!-- Dynamic Content -->
+                    </div>
+
+                    <!-- Share Section -->
+                    <div class="post-footer reveal-on-scroll">
+                        <div class="share-box">
+                            <span>Share this insight:</span>
+                            <div class="share-links">
+                                <a id="share-twitter" href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                                <a id="share-linkedin" href="#" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <div class="logo">
+                     <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo">
+                     <span class="logo-text">BlissDezign</span>
+                </div>
+                <p class="footer-desc">I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
+                <div class="footer-socials">
+                    <a href="https://www.linkedin.com/in/emmanuelbliss/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="https://www.behance.net/blissstudionuelly" target="_blank"><i class="fa-brands fa-behance"></i></a>
+                    <a href="https://x.com/BlissDezigns" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                <a href="work.html">Work</a>
+                <a href="blog.html" class="active">Blog</a>
+            </div>
+        </div>
+        
+        <div class="container footer-bottom">
+            <p>© 2026 BlissDezign. All rights reserved. | <a href="admin.html" style="opacity: 0.3; font-size: 0.8rem;">Admin</a></p>
+        </div>
+    </footer>
+
+    <!-- Scroll To Top Button -->
+    <button id="scroll-top-btn" class="scroll-top-btn"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cms-loader.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+            
+            if (slug && typeof CMSLoader !== 'undefined') {
+                CMSLoader.loadSinglePost(slug);
+            } else {
+                window.location.href = 'blog.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

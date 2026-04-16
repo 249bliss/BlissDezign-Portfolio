@@ -2442,3 +2442,142 @@ form select option {
         font-size: 1.05rem;
     }
 }
+
+/* --- Blog Post Detail Page Styling --- */
+.container.narrow {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.post-hero {
+    padding-top: 180px;
+    padding-bottom: 40px;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.back-link {
+    font-size: 0.9rem;
+    color: var(--accent-purple);
+    font-weight: 600;
+}
+
+.date-badge {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.single-post h1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 0;
+}
+
+.post-cover-section {
+    padding: 40px 0;
+}
+
+.post-image-wrapper {
+    width: 100%;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.hero-post-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 600px;
+}
+
+.post-body-section {
+    padding: 60px 0 100px;
+}
+
+.rich-text-content {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--text-main);
+}
+
+.rich-text-content p {
+    margin-bottom: 1.5rem;
+}
+
+.rich-text-content h2 {
+    font-size: 2.25rem;
+    margin: 3rem 0 1.5rem;
+}
+
+.rich-text-content h3 {
+    font-size: 1.75rem;
+    margin: 2.5rem 0 1rem;
+}
+
+.rich-text-content blockquote {
+    border-left: 4px solid var(--accent-purple);
+    padding: 1rem 0 1rem 2rem;
+    margin: 2.5rem 0;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    background: var(--bg-soft-purple);
+    border-radius: 0 16px 16px 0;
+}
+
+.post-footer {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-color);
+}
+
+.share-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.share-box span {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.share-links {
+    display: flex;
+    gap: 15px;
+}
+
+.share-links a {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.share-links a:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+}
+
+@media (max-width: 768px) {
+    .single-post h1 {
+        font-size: 2.5rem;
+    }
+    
+    .rich-text-content {
+        font-size: 1.05rem;
+    }
+}
