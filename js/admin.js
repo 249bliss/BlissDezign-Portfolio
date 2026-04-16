@@ -1162,30 +1162,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             console.log(`Sending newsletter for "${post.title}" to ${subs.length} subscribers...`);
             
-            // Bypassing CORS for client-side API requests
-            const response = await fetch('https://corsproxy.io/?https://api.resend.com/emails', {
+            // Bypassing browser CORS by using a Vercel Serverless Function!
+            // When hosted on Vercel, this automatically acts as a secure backend.
+            const response = await fetch('/api/newsletter', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${RESEND_API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    from: 'BlissDezign <onboarding@resend.dev>', // You should change this to your verified domain later
-                    to: subs.map(s => s.email),
-                    subject: `New Insight: ${post.title}`,
-                    html: `
-                        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
-                            <img src="${post.cover_image}" style="width: 100%; border-radius: 12px; margin-bottom: 20px;">
-                            <h1 style="color: #DF00FF;">${post.title}</h1>
-                            <p style="font-size: 16px; line-height: 1.6;">${post.excerpt}</p>
-                            <a href="https://blissdezigns.vercel.app/post.html?slug=${post.slug}" 
-                               style="display: inline-block; padding: 12px 24px; background: #DF00FF; color: #fff; text-decoration: none; border-radius: 8px; margin-top: 20px;">
-                               Read Full Article
-                            </a>
-                            <hr style="margin-top: 40px; border: 0; border-top: 1px solid #eee;">
-                            <p style="font-size: 12px; color: #999;">You're receiving this because you subscribed to BlissDezign updates.</p>
-                        </div>
-                    `
+                    title: post.title,
+                    excerpt: post.excerpt,
+                    cover_image: post.cover_image,
+                    slug: post.slug,
+                    resendApiKey: RESEND_API_KEY,
+                    subscribers: subs.map(s => s.email)
                 })
             });
 
