@@ -531,7 +531,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('project-form-title').innerText = 'Add New Project';
         }
         if (target === 'add-post-panel' && !document.getElementById('edit-post-id').value) {
-            if (typeof resetPostForm === 'function') resetPostForm();
+            blogForm.reset();
+            document.getElementById('post-form-title').innerText = 'Add New Article';
+            document.getElementById('submit-post-btn').innerText = 'Publish Post';
+            document.getElementById('cancel-post-btn').style.display = 'none';
+            document.getElementById('post-current-url').style.display = 'none';
         }
     };
 
