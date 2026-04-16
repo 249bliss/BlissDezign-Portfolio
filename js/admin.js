@@ -844,13 +844,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const industry = document.getElementById('cs-industry').value;
                 
                 let finalChunks = [];
+                const hugeItem = activeCaseStudyGallery.find(i => i.type === 'huge-file');
 
-                const csBox = document.getElementById('cs-preview-box');
-                const csFilesInput = document.getElementById('cs-full-image').files;
-
-                if (csBox.style.display === 'block' && csFilesInput.length === 1) {
+                if (hugeItem) {
                     // Scenario A: Single giant image (Auto-Chopper used)
-                    finalChunks = await chopAndUploadImage(csFilesInput[0]);
+                    finalChunks = await chopAndUploadImage(hugeItem.content);
                 } else if (activeCaseStudyGallery.length > 0) {
                     // Scenario B: Gallery Manager (Multi-files, dragging, deleting)
                     setLoading(true, `Processing gallery (${activeCaseStudyGallery.length} items)...`);
@@ -1375,18 +1373,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const img = new Image();
                         img.onload = () => {
                             if (img.height > 8000) {
-                                // Scenario A: Huge Image -> Use Chopper
-                                activeCaseStudyGallery = [];
+                                // Scenario A: Huge Image -> Unified Gallery Item
+                                activeCaseStudyGallery = [{ 
+                                    type: 'huge-file', 
+                                    content: file,
+                                    previewUrl: re.target.result 
+                                }];
                                 renderCaseStudyGallery();
-                                const csBox = document.getElementById('cs-preview-box');
-                                const emptyHint = document.getElementById('cs-empty-hint');
-                                document.getElementById('cs-preview-img').src = re.target.result;
-                                csBox.style.display = 'block';
-                                if (emptyHint) emptyHint.style.display = 'none';
-                                
-                                // Set chopper thumb as 'new'
-                                const chopperThumb = csBox.querySelector('.selection-thumb');
-                                if (chopperThumb) chopperThumb.classList.add('is-new');
                             } else {
                                 // Scenario B: Normal Image -> Append to Gallery
                                 activeCaseStudyGallery.push({ 
@@ -1410,7 +1403,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                     renderCaseStudyGallery();
                 }
-                csInput.value = '';
+                // DO NOT clear input value here, it breaks Scenario A submission!
+                // We'll clear it after successful upload/submit.
             });
         }
     }
@@ -1558,20 +1552,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!grid || !status) return;
 
-        if (activeCaseStudyGallery.length === 0) {
-            grid.innerHTML = '';
-            grid.style.display = 'none';
-            status.style.display = 'none';
-            // When empty, hide any one-off chopper previews
-            if (previewBox) previewBox.style.display = 'none'; 
-            if (emptyHint) emptyHint.style.display = 'flex';
+        // Reset visibility
+        if (previewBox) previewBox.style.display = 'none';
+        grid.style.display = 'none';
+        if (emptyHint) emptyHint.style.display = 'flex';
+        status.style.display = 'none';
+
+        if (activeCaseStudyGallery.length === 0) return;
+
+        // If we have at least one item, hide the hint
+        if (emptyHint) emptyHint.style.display = 'none';
+
+        // Check for Scenario A (Huge File)
+        const hugeItem = activeCaseStudyGallery.find(i => i.type === 'huge-file');
+        if (hugeItem && previewBox) {
+            document.getElementById('cs-preview-img').src = hugeItem.previewUrl;
+            previewBox.style.display = 'block';
+            status.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Chopper Ready`;
+            status.style.display = 'inline-flex';
             return;
         }
 
-        // Hide hints once gallery items are being managed
-        if (previewBox) previewBox.style.display = 'none';
-        if (emptyHint) emptyHint.style.display = 'none';
-
+        // Otherwise render standard gallery
         status.innerHTML = `<i class="fa-solid fa-layer-group"></i> ${activeCaseStudyGallery.length} Items Sorted`;
         status.style.display = 'inline-flex';
         grid.style.display = 'grid';

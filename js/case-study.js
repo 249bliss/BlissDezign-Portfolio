@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
+        console.log(`Fetching project and case study for ID: ${projectId}`);
+        
         // --- 1. Fetch Project & Case Study from Supabase ---
         const { data: project, error: pError } = await supabaseClient
             .from('projects')
@@ -17,10 +19,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             .single();
 
         if (pError || !project) {
-            console.error("Project not found:", pError);
+            console.error("Project fetch error:", pError);
             renderComingSoon("Project");
             return;
         }
+
+        console.log("Project data found:", project);
 
         const { data: caseStudy, error: csError } = await supabaseClient
             .from('case_studies')
@@ -28,13 +32,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             .eq('id', projectId)
             .single();
 
+        if (csError) {
+            console.warn("Case study metadata not found or error:", csError);
+        }
+
         // --- 2. Check for 'Under Build' State ---
         // Stricter visuals check: Must have at least one non-empty string URL
         const visualsArray = caseStudy && Array.isArray(caseStudy.full_image_chunks) ? caseStudy.full_image_chunks : [];
         const validVisuals = visualsArray.filter(v => typeof v === 'string' && v.trim() !== '');
         const hasVisuals = validVisuals.length > 0;
 
+        console.log(`Case Study Status - is_case_study: ${project.is_case_study}, chunks found: ${validVisuals.length}`);
+
         if (!project.is_case_study || !hasVisuals) {
+            console.log("Rendering Coming Soon state due to missing case study flag or visuals.");
             renderComingSoon(project.title);
             return;
         }
