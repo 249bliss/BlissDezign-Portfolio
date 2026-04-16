@@ -1197,7 +1197,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             showToast(`Broadcasted to ${subs.length} subscribers!`, 'success');
         } catch (err) {
             console.error('Newsletter error:', err);
-            showAlert('Newsletter failed: ' + err.message);
+            showToast('Post saved, but email broadcast failed (CORS blocked).', 'error');
         }
     }
 
