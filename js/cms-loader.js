@@ -200,7 +200,7 @@ const CMSLoader = {
         if (!posts || posts.length === 0) {
             container.innerHTML = `
                 <div class="empty-blog-state reveal-on-scroll" style="grid-column: 1/-1; padding: 100px 20px; text-align: center; width: 100%;">
-                    <div style="background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.08); padding: 60px 40px; border-radius: 32px; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); max-width: 550px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.12); position: relative; overflow: hidden;">
+                    <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.12); padding: 60px 40px; border-radius: 32px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); max-width: 550px; margin: 0 auto; box-shadow: 0 8px 32px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
                         <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(168, 85, 247, 0.05) 0%, transparent 70%); pointer-events: none;"></div>
                         <i class="fa-solid fa-pen-nib" style="font-size: 3rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 25px;"></i>
                         <h2 style="margin-bottom: 15px;">The lab is brewing.</h2>
