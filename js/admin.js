@@ -1163,8 +1163,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log(`Sending newsletter for "${post.title}" to ${subs.length} subscribers...`);
             
             // Bypassing browser CORS by using a Vercel Serverless Function!
-            // When hosted on Vercel, this automatically acts as a secure backend.
-            const response = await fetch('/api/newsletter', {
+            // We use the absolute live URL so this works even if you are testing the dashboard locally on your computer.
+            const response = await fetch('https://blissdezigns.vercel.app/api/newsletter', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1187,7 +1187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             showToast(`Broadcasted to ${subs.length} subscribers!`, 'success');
         } catch (err) {
             console.error('Newsletter error:', err);
-            showToast('Post saved, but email broadcast failed (CORS blocked).', 'error');
+            showToast(`Post saved, but email broadcast failed: ${err.message}`, 'error');
         }
     }
 
