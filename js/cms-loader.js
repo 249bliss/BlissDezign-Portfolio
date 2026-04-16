@@ -207,6 +207,7 @@ const CMSLoader = {
                     </div>
                 </div>
             `;
+            CMSLoader.triggerReveal(container);
             return;
         }
 
