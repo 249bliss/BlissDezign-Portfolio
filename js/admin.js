@@ -519,11 +519,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             p.classList.toggle('active', p.id === target);
         });
 
-        // Trigger fetches
+        // Trigger fetches & Form Resets
         if (target === 'insights-panel') fetchInsights();
         if (target === 'manage-projects-panel') fetchProjects();
         if (target === 'manage-reviews-panel') fetchReviews();
         if (target === 'manage-blog-panel') fetchBlogPosts();
+        
+        // Reset forms when coming from a 'New' button to clear any previous edit state
+        if (target === 'add-project-panel' && !document.getElementById('edit-proj-original-id').value) {
+            projectsForm.reset();
+            document.getElementById('project-form-title').innerText = 'Add New Project';
+        }
+        if (target === 'add-post-panel' && !document.getElementById('edit-post-id').value) {
+            if (typeof resetPostForm === 'function') resetPostForm();
+        }
     };
 
     tabs.forEach(tab => {
