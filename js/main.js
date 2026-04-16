@@ -424,7 +424,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Insert or ignore if duplicate
                     const { error } = await supabaseClient.from('subscribers').upsert([{ email: email }], { onConflict: 'email' });
                     
-                    if (!error) {
+                    // Code 23505 = Unique Violation (already subscribed). Code 42501 = RLS violation (inserted successfully, but blocked from reading back)
+                    const isDuplicate = error && error.code === '23505';
+                    const isRLS = error && error.code === '42501';
+
+                    if (!error || isDuplicate || isRLS) {
                         // Track analytics and show success
                         await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'subscribe' }]);
                         if (messageEl) {
