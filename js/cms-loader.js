@@ -198,7 +198,15 @@ const CMSLoader = {
         }
 
         if (!posts || posts.length === 0) {
-            container.innerHTML = '<p class="text-muted" style="text-align:center; width:100%;">No articles found. Stay tuned!</p>';
+            container.innerHTML = `
+                <div class="empty-blog-state reveal-on-scroll" style="grid-column: 1/-1; padding: 100px 20px; text-align: center; width: 100%;">
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 50px; border-radius: 30px; backdrop-filter: blur(10px); max-width: 500px; margin: 0 auto; box-shadow: 0 30px 60px rgba(0,0,0,0.2);">
+                        <i class="fa-solid fa-pen-nib" style="font-size: 3rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 25px;"></i>
+                        <h2 style="margin-bottom: 15px;">The lab is brewing.</h2>
+                        <p class="text-muted" style="font-size: 1.1rem; line-height: 1.6;">I'm currently crafting my next set of design insights. Subscribe below to be the first to read them when they drop.</p>
+                    </div>
+                </div>
+            `;
             return;
         }
 
