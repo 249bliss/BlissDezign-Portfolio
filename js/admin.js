@@ -1217,41 +1217,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function chopAndUploadImage(file) {
+        setLoading(true, 'Processing giant image... this may take a moment.');
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 const img = new Image();
-                img.onload = async function() {
-                    const chunks = [];
-                    const maxChunkHeight = 8192; 
-                    const numChunks = Math.ceil(img.height / maxChunkHeight);
-                    
+                img.onload = async () => {
                     try {
-                        setLoading(true, `Slicing into ${numChunks} chunks...`);
-                        for (let i = 0; i < numChunks; i++) {
+                        const chunks = [];
+                        const CHUNK_HEIGHT = 8192;
+                        const totalChunks = Math.ceil(img.height / CHUNK_HEIGHT);
+                        
+                        for (let i = 0; i < totalChunks; i++) {
+                            setLoading(true, `Slicing & Uploading section ${i + 1} of ${totalChunks}...`);
                             const canvas = document.createElement('canvas');
-                    const CHUNK_HEIGHT = 8192;
-                    const totalChunks = Math.ceil(img.height / CHUNK_HEIGHT);
-                    
-                    for (let i = 0; i < totalChunks; i++) {
-                        setLoading(true, `Slicing & Uploading section ${i + 1} of ${totalChunks}...`);
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const height = Math.min(CHUNK_HEIGHT, img.height - (i * CHUNK_HEIGHT));
-                        
-                        canvas.width = img.width;
-                        canvas.height = height;
-                        ctx.drawImage(img, 0, (i * CHUNK_HEIGHT), img.width, height, 0, 0, img.width, height);
-                        
-                        const blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 0.9));
-                        const chunkFile = new File([blob], `chunk_${i}.webp`, { type: 'image/webp' });
-                        const url = await uploadImage(chunkFile, 'case_studies');
-                        chunks.push(url);
+                            const ctx = canvas.getContext('2d');
+                            const height = Math.min(CHUNK_HEIGHT, img.height - (i * CHUNK_HEIGHT));
+                            
+                            canvas.width = img.width;
+                            canvas.height = height;
+                            ctx.drawImage(img, 0, (i * CHUNK_HEIGHT), img.width, height, 0, 0, img.width, height);
+                            
+                            const blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 0.9));
+                            const chunkFile = new File([blob], `chunk_${i}.webp`, { type: 'image/webp' });
+                            const url = await uploadImage(chunkFile, 'case_studies');
+                            chunks.push(url);
+                        }
+                        resolve(chunks);
+                    } catch (err) {
+                        reject(err);
                     }
-                    resolve(chunks);
                 };
+                img.onerror = () => reject(new Error('Image source load failed'));
                 img.src = e.target.result;
             };
+            reader.onerror = () => reject(new Error('FileReader failed'));
             reader.readAsDataURL(file);
         });
     }
