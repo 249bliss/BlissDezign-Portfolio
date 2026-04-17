@@ -243,21 +243,28 @@
                         <label>Project Tags (Max 5)</label>
                         <div class="tag-input-wrapper" id="tag-input-wrapper">
                             <div id="tag-bubbles-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-                            <input type="text" id="tag-input-field" placeholder="Add tag (e.g. Web Apps, Fintech)..." list="tag-suggestions">
+                            <input type="text" id="tag-input-field" placeholder="Add custom tag (e.g. Web Apps, Fintech)...">
                         </div>
-                        <datalist id="tag-suggestions">
-                            <option value="Web Apps"></option>
-                            <option value="Mobile Apps"></option>
-                            <option value="Websites"></option>
-                            <option value="Dashboards"></option>
-                            <option value="Fintech"></option>
-                            <option value="E-commerce"></option>
-                            <option value="SaaS"></option>
-                            <option value="AI / ML"></option>
-                            <option value="Landing Page"></option>
-                            <option value="Branding"></option>
-                            <option value="UI/UX Strategy"></option>
-                        </datalist>
+                        <div id="suggested-tags-container" style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 8px;">
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Web Apps')">Web Apps</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Mobile Apps')">Mobile Apps</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Websites')">Websites</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Dashboards')">Dashboards</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Fintech')">Fintech</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('E-commerce')">E-commerce</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('SaaS')">SaaS</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('AI / ML')">AI / ML</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Landing Page')">Landing Page</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Branding')">Branding</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('UI/UX Strategy')">UI/UX Strategy</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Beauty')">Beauty</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Fitness')">Fitness</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Lifestyle')">Lifestyle</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Health')">Health</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Education')">Education</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Real Estate')">Real Estate</span>
+                            <span class="suggested-tag-pill" onclick="window.addSuggestedTag('Web3 / Crypto')">Web3 / Crypto</span>
+                        </div>
                         <input type="hidden" id="proj-tags" required>
                     </div>
 

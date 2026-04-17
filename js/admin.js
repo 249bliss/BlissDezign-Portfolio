@@ -1545,17 +1545,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Handle selection from datalist
-        tagInputEl.addEventListener('input', (e) => {
-            const val = tagInputEl.value;
-            const options = document.querySelectorAll('#tag-suggestions option');
-            for (let opt of options) {
-                if (opt.value === val) {
-                    addTagFromInput();
-                    break;
-                }
-            }
-        });
+        // Custom tag pills handler exposed globally below
     }
 
     function addTagFromInput() {
@@ -1567,6 +1557,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderTags();
         }
     }
+
+    window.addSuggestedTag = (val) => {
+        if (val && activeTags.length < 5 && !activeTags.includes(val)) {
+            activeTags.push(val);
+            renderTags();
+        }
+    };
 
     // --- 9. Advanced Gallery Manager (Drag & Drop + Delete) ---
     function renderCaseStudyGallery() {

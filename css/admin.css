@@ -1524,3 +1524,22 @@ input:checked + .slider:before { transform: translateX(20px); }
     100% { transform: rotate(360deg); }
 }
 
+/* Suggested Tags Pills */
+.suggested-tag-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.suggested-tag-pill:hover {
+    background: rgba(223, 0, 255, 0.15);
+    border-color: var(--accent-purple);
+    color: #fff;
+    transform: translateY(-2px);
+}
