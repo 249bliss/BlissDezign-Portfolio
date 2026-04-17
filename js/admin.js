@@ -1191,7 +1191,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 is_published: isPublished 
             };
             
-            if (isPublished && !isEdit) {
+            if (isPublished) {
+                // Set publication date to now if it's being published
                 postData.published_at = new Date().toISOString();
             }
 

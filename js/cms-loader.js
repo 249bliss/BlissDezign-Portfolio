@@ -190,6 +190,7 @@ const CMSLoader = {
             .from('posts')
             .select('*')
             .eq('is_published', true)
+            .order('published_at', { ascending: false })
             .order('created_at', { ascending: false });
 
         if (error) {
@@ -218,7 +219,7 @@ const CMSLoader = {
                     <img src="${post.cover_image}" alt="${post.title}" loading="lazy">
                 </div>
                 <div class="masonry-info">
-                    <div class="post-date-tag">${new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                    <div class="post-date-tag">${new Date(post.published_at || post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
                     <h3>${post.title}</h3>
                     <p class="post-excerpt-preview">${post.excerpt}</p>
                 </div>
@@ -259,7 +260,7 @@ const CMSLoader = {
         });
 
         titleEl.innerText = post.title;
-        dateEl.innerText = new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        dateEl.innerText = new Date(post.published_at || post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         coverEl.src = post.cover_image;
         coverEl.alt = post.title;
 
@@ -342,11 +343,9 @@ const CMSLoader = {
                     likedPosts.push(post.id);
                     localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
                     
-                    // Update in Supabase
+                    // Update in Supabase via Atomic Increment (RPC)
                     const { error } = await supabaseClient
-                        .from('posts')
-                        .update({ likes: currentLikes })
-                        .eq('id', post.id);
+                        .rpc('increment_likes', { post_id: post.id });
                         
                     if (error) {
                         console.error("Error updating likes:", error);
