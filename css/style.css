@@ -1876,6 +1876,7 @@ header.scrolled .nav-container {
 @media (max-width: 992px) {
     .cs-stats-grid {
         grid-template-columns: repeat(2, 1fr);
+        text-align: center;
     }
     
     .cs-content-grid {
@@ -1898,9 +1899,19 @@ header.scrolled .nav-container {
     }
     
     .cs-stats-grid {
-        gap: 20px;
+        gap: 30px 15px;
         padding: 40px 0;
         margin-bottom: 60px;
+        grid-template-columns: repeat(2, 1fr);
+        text-align: center;
+    }
+    
+    @media (max-width: 480px) {
+        .cs-stats-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+            padding: 40px 20px;
+        }
     }
 
     .cs-coming-soon h1 {
