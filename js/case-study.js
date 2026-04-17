@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderCaseStudy(data) {
         let content = `
             <section class="cs-hero">
-                <div class="container text-center reveal-on-scroll">
+                <div class="container text-center">
                     <span class="badge">Case Study</span>
                     <h1>${data.title} <br> <span class="gradient-text-gray">${data.subtitle}</span></h1>
                 </div>
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </section>
 
             <section class="cs-full-image-container">
-                <div class="cs-full-image-inner reveal-on-scroll" style="display: flex; flex-direction: column;">
+                <div class="cs-full-image-inner" style="display: flex; flex-direction: column;">
                     ${data.hasVisuals 
                         ? data.fullImage.map(img => `<img src="${img}" alt="${data.title} Full Case Study" style="width: 100%; display: block; border: none; margin: -1px 0; padding: 0;">`).join('')
                         : `
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </section>
 
             <section class="vision-cta-section" style="padding: 100px 0;">
-                <div class="container text-center reveal-on-scroll">
+                <div class="container text-center">
                     <h2>Liked what you saw?</h2>
                     <p>Let's collaborate on your next big project.</p>
                     <div class="hero-actions" style="justify-content: center; margin-top: 40px;">
@@ -130,12 +130,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
 
         container.innerHTML = content;
-        
-        // --- Re-trigger reveal animations ---
-        if (typeof window.revealOnScrollObserver !== 'undefined') {
-            const dynamicRevealElements = container.querySelectorAll('.reveal-on-scroll');
-            dynamicRevealElements.forEach(el => window.revealOnScrollObserver.observe(el));
-        }
     }
 
     function renderComingSoon(id) {
