@@ -538,6 +538,7 @@
                         <button type="submit" id="submit-post-btn" class="btn btn-primary" style="flex: 2; height: 54px;">Publish Post</button>
                         <button type="button" id="cancel-post-btn" class="btn btn-secondary" style="flex: 1; height: 54px; display: none;">Discard Changes</button>
                     </div>
+                    <div id="post-current-url" style="margin-top: 15px; font-size: 0.8rem; color: var(--accent-purple); display: none; text-decoration: underline;"></div>
                 </form>
             </div>
                 </div> <!-- End admin-panel-container -->
@@ -587,5 +588,13 @@
     </div>
 
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- Global Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <p id="loading-text">Saving changes...</p>
+        </div>
+    </div>
 </body>
 </html>

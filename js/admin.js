@@ -1247,14 +1247,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!response.ok) {
                 const err = await response.json();
-                // We extract err.error because our Vercel API sends { error: "..." }
-                throw new Error(err.error || 'Failed to send newsletter');
+                let errorMsg = err.error || 'Failed to send newsletter';
+                
+                // --- Specific Check for Resend Test Mode / Unverified Domain ---
+                if (errorMsg.includes('verify a domain') || errorMsg.includes('own email address')) {
+                    errorMsg = "Resend Error: You need to verify your domain to send to subscribers. Currently, you can only send to your own email address (blissstudio44@gmail.com).";
+                    console.warn("Newsletter blocked by Resend Test Mode restrictions.");
+                }
+
+                throw new Error(errorMsg);
             }
             
             showToast(`Broadcasted to ${subs.length} subscribers!`, 'success');
         } catch (err) {
             console.error('Newsletter error:', err);
-            showToast(`Post saved, but email broadcast failed: ${err.message}`, 'error');
+            // Use a longer timeout for this specific error since it's informational
+            showToast(`Article saved! 🔔 Newsletter failed: ${err.message}`, 'error');
         }
     }
 
