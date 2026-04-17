@@ -103,13 +103,19 @@
                         <!-- Dynamic Content -->
                     </div>
 
-                    <!-- Share Section -->
-                    <div class="post-footer reveal-on-scroll">
+                    <!-- Share & Engagement Section -->
+                    <div class="post-footer reveal-on-scroll" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                        <button id="like-button" class="like-button" aria-label="Like this post">
+                            <i class="fa-regular fa-heart"></i>
+                            <span id="like-count">0</span>
+                        </button>
+                        
                         <div class="share-box">
                             <span>Share this insight:</span>
                             <div class="share-links">
-                                <a id="share-twitter" href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
-                                <a id="share-linkedin" href="#" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                                <a id="share-twitter" href="#" aria-label="Share on X"><i class="fa-brands fa-x-twitter"></i></a>
+                                <a id="share-linkedin" href="#" aria-label="Share on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                                <button id="copy-link-btn" class="copy-link-btn" aria-label="Copy Link"><i class="fa-solid fa-link"></i></button>
                             </div>
                         </div>
                     </div>
@@ -165,6 +171,8 @@
             }
         });
     </script>
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
 </body>
 
 </html>

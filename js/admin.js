@@ -1067,7 +1067,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                     <div class="rmc-author-info">
                         <div class="rmc-name">${post.title}</div>
-                        <div class="rmc-role">${post.is_published ? '<span style="color: #10b981;">Published</span>' : '<span style="color: var(--text-muted);">Draft</span>'}</div>
+                        <div class="rmc-role">
+                            ${post.is_published ? '<span style="color: #10b981;">Published</span>' : '<span style="color: var(--text-muted);">Draft</span>'}
+                            <span style="margin-left: 10px; color: var(--accent-purple); font-weight: 600;">
+                                <i class="fa-solid fa-heart"></i> ${post.likes || 0}
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <p class="rmc-text">${post.excerpt}</p>

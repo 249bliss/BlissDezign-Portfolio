@@ -271,18 +271,112 @@ const CMSLoader = {
 
         bodyEl.innerHTML = formattedContent;
 
-        // Update share links
-        const tweetBtn = document.getElementById('share-twitter');
-        const linkBtn = document.getElementById('share-linkedin');
-        const currentUrl = encodeURIComponent(window.location.href);
-        const currentTitle = encodeURIComponent(post.title);
-        
-        if (tweetBtn) tweetBtn.href = `https://twitter.com/intent/tweet?text=${currentTitle}&url=${currentUrl}`;
-        if (linkBtn) linkBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
+        // Setup Engagement (Likes & Shares)
+        CMSLoader.setupEngagement(post);
 
         // Trigger animations
         const container = document.getElementById('post-content-area');
         if (container) CMSLoader.triggerReveal(container);
+    },
+
+    // 6. Setup Post Engagement
+    setupEngagement: (post) => {
+        // --- Shares ---
+        const tweetBtn = document.getElementById('share-twitter');
+        const linkBtn = document.getElementById('share-linkedin');
+        const copyBtn = document.getElementById('copy-link-btn');
+        const currentUrl = encodeURIComponent(window.location.href);
+        const currentTitle = encodeURIComponent(post.title);
+        
+        if (tweetBtn) {
+            tweetBtn.onclick = (e) => {
+                e.preventDefault();
+                window.open(`https://twitter.com/intent/tweet?text=${currentTitle}&url=${currentUrl}`, '_blank', 'width=600,height=400');
+            };
+        }
+        if (linkBtn) {
+            linkBtn.onclick = (e) => {
+                e.preventDefault();
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`, '_blank', 'width=600,height=400');
+            };
+        }
+        if (copyBtn) {
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    CMSLoader.showToast('Link copied to clipboard!', 'success');
+                });
+            };
+        }
+
+        // --- Likes ---
+        const likeBtn = document.getElementById('like-button');
+        const likeCountEl = document.getElementById('like-count');
+        
+        if (likeBtn && likeCountEl) {
+            // Set initial likes (default to 0 if null/undefined)
+            let currentLikes = post.likes || 0;
+            likeCountEl.innerText = currentLikes;
+            
+            // Check if already liked in local storage
+            const likedPosts = JSON.parse(localStorage.getItem('liked_posts') || '[]');
+            if (likedPosts.includes(post.id)) {
+                likeBtn.classList.add('liked');
+                likeBtn.disabled = true;
+            } else {
+                likeBtn.onclick = async () => {
+                    if (likeBtn.disabled) return;
+                    
+                    // Optimistic update
+                    currentLikes++;
+                    likeCountEl.innerText = currentLikes;
+                    likeBtn.classList.add('liked');
+                    likeBtn.disabled = true;
+                    
+                    // Save to local storage
+                    likedPosts.push(post.id);
+                    localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
+                    
+                    // Update in Supabase
+                    const { error } = await supabaseClient
+                        .from('posts')
+                        .update({ likes: currentLikes })
+                        .eq('id', post.id);
+                        
+                    if (error) {
+                        console.error("Error updating likes:", error);
+                        // Revert on error
+                        currentLikes--;
+                        likeCountEl.innerText = currentLikes;
+                        likeBtn.classList.remove('liked');
+                        likeBtn.disabled = false;
+                        likedPosts.pop();
+                        localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
+                    }
+                };
+            }
+        }
+    },
+    
+    // Toast Notification utility
+    showToast: (message, type = 'success') => {
+        let container = document.getElementById('toast-container');
+        if (!container) return;
+        
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icon = type === 'success' ? '<i class="fa-solid fa-circle-check" style="color: #10b981;"></i>' 
+                                      : '<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>';
+                                      
+        toast.innerHTML = `${icon} <span>${message}</span>`;
+        
+        container.appendChild(toast);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'toastIn 0.3s ease reverse forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 };
 
