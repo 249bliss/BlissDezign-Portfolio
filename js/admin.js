@@ -62,9 +62,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!loadingOverlay) return;
         if (isLoading) {
             loadingText.innerText = text;
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.style.justifyContent = 'center';
+            loadingOverlay.style.alignItems = 'center';
             loadingOverlay.classList.add('active');
         } else {
             loadingOverlay.classList.remove('active');
+            loadingOverlay.style.display = 'none';
         }
     }
 
@@ -500,11 +504,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No subscribers yet.</p>';
         }
     };
-
-    function setLoading(show, text = 'Processing...') {
-        loadingText.innerText = text;
-        loadingOverlay.style.display = show ? 'flex' : 'none';
-    }
 
     // --- 2. Navigation & Themes ---
     
@@ -1165,8 +1164,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isPublished = document.getElementById('post-is-published').checked;
         const notifySubscribers = document.getElementById('post-notify-subs').checked;
 
-        setLoading(true, isEdit ? 'Updating article...' : 'Publishing article...');
+        const submitBtn = document.getElementById('submit-post-btn');
+        const originalBtnText = submitBtn.innerHTML;
         
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${isEdit ? 'Updating...' : 'Publishing...'}`;
+
         try {
             let cover_image = null;
             const imgFile = document.getElementById('post-image').files[0];
@@ -1207,13 +1210,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await sendNewsletter(postData);
             }
 
-            showToast('Article saved!', 'success');
+            showToast(`Article ${isEdit ? 'updated' : 'published'} successfully!`, 'success');
             resetPostForm();
             fetchBlogPosts();
         } catch (err) {
             showAlert(err.message);
         } finally {
             setLoading(false);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
     });
 
