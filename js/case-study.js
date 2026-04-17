@@ -67,6 +67,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         renderCaseStudy(data);
 
+        // --- SEO Enhancement ---
+        document.title = `${project.title} | Case Study by Emmanuel Bliss`;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute('content', project.subtitle + " - A detailed case study on product design, user experience, and mobile app strategy.");
+        }
+        // Update Open Graph tags for better social sharing
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', project.title + " | Case Study");
+        const ogImage = document.querySelector('meta[property="og:image"]');
+        if (ogImage) ogImage.setAttribute('content', project.hero_image);
+
+        // --- Structured Data Update ---
+        const schemaEl = document.getElementById('case-study-schema');
+        if (schemaEl) {
+            try {
+                const schema = JSON.parse(schemaEl.innerHTML);
+                schema.name = project.title;
+                schema.description = project.subtitle;
+                schema.image = project.hero_image;
+                schemaEl.innerHTML = JSON.stringify(schema, null, 2);
+            } catch (e) {
+                console.warn("Schema update failed", e);
+            }
+        }
+
     } catch (err) {
         console.error("General error loading case study:", err);
         renderComingSoon("Project");

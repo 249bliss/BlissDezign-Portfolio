@@ -251,7 +251,13 @@ const CMSLoader = {
         }
 
         // Set metadata
-        document.title = `${post.title} | BlissDezign`;
+        CMSLoader.updateMetaTags({
+            title: `${post.title} | BlissDezign Insights`,
+            description: post.excerpt || post.content.substring(0, 160),
+            image: post.cover_image,
+            url: window.location.href
+        });
+
         titleEl.innerText = post.title;
         dateEl.innerText = new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         coverEl.src = post.cover_image;
@@ -377,6 +383,61 @@ const CMSLoader = {
             toast.style.animation = 'toastIn 0.3s ease reverse forwards';
             setTimeout(() => toast.remove(), 300);
         }, 3000);
+    },
+
+    // 7. SEO Helper: Dynamic Meta Tags
+    updateMetaTags: (metadata) => {
+        const { title, description, image, url } = metadata;
+        
+        // Basic Title
+        document.title = title;
+
+        // Meta Description
+        let descMeta = document.querySelector('meta[name="description"]');
+        if (descMeta) descMeta.setAttribute('content', description);
+
+        // Open Graph
+        const ogTags = {
+            'og:title': title,
+            'og:description': description,
+            'og:image': image,
+            'og:url': url
+        };
+
+        for (const [property, content] of Object.entries(ogTags)) {
+            let tag = document.querySelector(`meta[property="${property}"]`);
+            if (tag) tag.setAttribute('content', content);
+        }
+
+        // Twitter
+        const twitterTags = {
+            'twitter:title': title,
+            'twitter:description': description,
+            'twitter:image': image
+        };
+
+        for (const [name, content] of Object.entries(twitterTags)) {
+            let tag = document.querySelector(`meta[name="${name}"]`);
+            if (tag) tag.setAttribute('content', content);
+        }
+
+        // Canonical
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.setAttribute('href', url);
+
+        // JSON-LD Update
+        const schemaEl = document.getElementById('post-schema');
+        if (schemaEl) {
+            try {
+                const schema = JSON.parse(schemaEl.innerHTML);
+                schema.headline = title;
+                schema.image = image;
+                schema.datePublished = metadata.date || new Date().toISOString();
+                schemaEl.innerHTML = JSON.stringify(schema, null, 2);
+            } catch (e) {
+                console.warn("Failed to update JSON-LD schema", e);
+            }
+        }
     }
 };
 
