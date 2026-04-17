@@ -1521,7 +1521,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Disable input if max tags reached
         if (tagField) {
-            if (activeTags.length >= 3) {
+            if (activeTags.length >= 5) {
                 tagField.placeholder = "Max tags reached";
                 tagField.disabled = true;
             } else {
@@ -1561,7 +1561,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function addTagFromInput() {
         const tagInputEl = document.getElementById('tag-input-field');
         const val = tagInputEl.value.trim();
-        if (val && activeTags.length < 3 && !activeTags.includes(val)) {
+        if (val && activeTags.length < 5 && !activeTags.includes(val)) {
             activeTags.push(val);
             tagInputEl.value = '';
             renderTags();
