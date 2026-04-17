@@ -838,6 +838,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Handle Case Study
             if (isCaseStudy) {
+                console.log("Processing Case Study data...");
                 const role = document.getElementById('cs-role').value;
                 const duration = document.getElementById('cs-duration').value;
                 const tools = document.getElementById('cs-tools').value;
@@ -848,9 +849,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (hugeItem) {
                     // Scenario A: Single giant image (Auto-Chopper used)
+                    console.log("Using Auto-Chopper for huge image...");
                     finalChunks = await chopAndUploadImage(hugeItem.content);
                 } else if (activeCaseStudyGallery.length > 0) {
                     // Scenario B: Gallery Manager (Multi-files, dragging, deleting)
+                    console.log(`Processing gallery: ${activeCaseStudyGallery.length} items to upload...`);
                     setLoading(true, `Processing gallery (${activeCaseStudyGallery.length} items)...`);
                     for (let item of activeCaseStudyGallery) {
                         if (item.type === 'file') {
@@ -862,20 +865,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 } else if (isEdit && existingCaseStudy) {
                     // Fallback: Preserve existing if nothing new added/changed
+                    console.log("No new visuals added, preserving existing case study chunks.");
                     finalChunks = existingCaseStudy.full_image_chunks || [];
                 }
 
+                if (finalChunks.length === 0) {
+                    console.warn("WARNING: Project marked as Case Study but NO visuals/chunks were found or uploaded.");
+                }
+
                 const csData = { id, role, duration, tools, industry, full_image_chunks: finalChunks };
+                console.log("Saving Case Study record:", csData);
                 
                 const { error: csSaveErr } = await supabaseClient.from('case_studies').upsert([csData]);
                 if (csSaveErr) throw csSaveErr;
 
                 // If ID changed, cleanup old case study record
                 if (isEdit && id !== originalId) {
+                    console.log(`ID changed from ${originalId} to ${id}. Deleting old case study record.`);
                     await supabaseClient.from('case_studies').delete().eq('id', originalId);
                 }
             } else if (isEdit) {
                 // If it was a case study and now it's not, delete the record
+                console.log("Project was a case study but is no longer. Deleting record.");
                 await supabaseClient.from('case_studies').delete().eq('id', originalId);
             }
 
@@ -1257,6 +1268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function chopAndUploadImage(file) {
+        console.log(`Starting Auto-Chopper for file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
         setLoading(true, 'Processing giant image... this may take a moment.');
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1267,8 +1279,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const chunks = [];
                         const CHUNK_HEIGHT = 8192;
                         const totalChunks = Math.ceil(img.height / CHUNK_HEIGHT);
+                        console.log(`Image dimensions: ${img.width}x${img.height}. Total chunks to create: ${totalChunks}`);
                         
                         for (let i = 0; i < totalChunks; i++) {
+                            console.log(`Chopping slice ${i + 1} of ${totalChunks}...`);
                             setLoading(true, `Slicing & Uploading section ${i + 1} of ${totalChunks}...`);
                             const canvas = document.createElement('canvas');
                             const ctx = canvas.getContext('2d');
@@ -1278,20 +1292,31 @@ document.addEventListener('DOMContentLoaded', async () => {
                             canvas.height = height;
                             ctx.drawImage(img, 0, (i * CHUNK_HEIGHT), img.width, height, 0, 0, img.width, height);
                             
+                            console.log(`Converting slice ${i + 1} to WebP...`);
                             const blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 0.9));
                             const chunkFile = new File([blob], `chunk_${i}.webp`, { type: 'image/webp' });
+                            
+                            console.log(`Uploading slice ${i + 1} to storage...`);
                             const url = await uploadImage(chunkFile, 'case_studies');
                             chunks.push(url);
                         }
+                        console.log(`Successfully processed and uploaded all ${totalChunks} chunks.`);
                         resolve(chunks);
                     } catch (err) {
+                        console.error("Chopper Error:", err);
                         reject(err);
                     }
                 };
-                img.onerror = () => reject(new Error('Image source load failed'));
+                img.onerror = () => {
+                    console.error("Chopper Error: Failed to load image source.");
+                    reject(new Error('Image source load failed'));
+                };
                 img.src = e.target.result;
             };
-            reader.onerror = () => reject(new Error('FileReader failed'));
+            reader.onerror = () => {
+                console.error("Chopper Error: FileReader failed.");
+                reject(new Error('FileReader failed'));
+            };
             reader.readAsDataURL(file);
         });
     }
