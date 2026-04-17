@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         console.log(`Case Study Status - is_case_study: ${project.is_case_study}, chunks found: ${validVisuals.length}`);
 
-        // If it's NOT marked as a case study at all, show the global "Coming Soon" screen
-        if (!project.is_case_study) {
-            console.log("Rendering Coming Soon state: Project NOT marked as case study.");
+        // If it's NOT marked as a case study at all, or missing data, show the global "Coming Soon" screen
+        if (!project.is_case_study || !caseStudy) {
+            console.log("Rendering Coming Soon state: Project NOT marked as case study or no details saved.");
             renderComingSoon(project.title);
             return;
         }

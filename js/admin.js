@@ -1646,6 +1646,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderCaseStudyGallery();
     };
 
+    // Initialize all media upload previews
+    setupImagePreviews();
+
     // Make functions available globally so they can be called by reset/edit
     window.renderTags = renderTags;
     window.renderCaseStudyGallery = renderCaseStudyGallery;
