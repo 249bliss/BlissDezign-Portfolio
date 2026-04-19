@@ -325,21 +325,42 @@ const CMSLoader = {
             likeCountEl.innerText = currentLikes;
             
             // Check if already liked in local storage
-            const likedPosts = JSON.parse(localStorage.getItem('liked_posts') || '[]');
+            let likedPosts = JSON.parse(localStorage.getItem('liked_posts') || '[]');
             if (likedPosts.includes(post.id)) {
                 likeBtn.classList.add('liked');
-                likeBtn.disabled = true;
-            } else {
-                likeBtn.onclick = async () => {
-                    if (likeBtn.disabled) return;
+            }
+
+            likeBtn.onclick = async () => {
+                const isLiked = likedPosts.includes(post.id);
+                
+                if (isLiked) {
+                    // --- UNLIKE ---
+                    currentLikes = Math.max(0, currentLikes - 1);
+                    likeCountEl.innerText = currentLikes;
+                    likeBtn.classList.remove('liked');
                     
-                    // Optimistic update
+                    // Update local storage
+                    likedPosts = likedPosts.filter(id => id !== post.id);
+                    localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
+                    
+                    // Update in Supabase
+                    const { error } = await supabaseClient.rpc('decrement_likes', { post_id: post.id });
+                    if (error) {
+                        console.error("Error unliking:", error);
+                        // Revert
+                        currentLikes++;
+                        likeCountEl.innerText = currentLikes;
+                        likeBtn.classList.add('liked');
+                        likedPosts.push(post.id);
+                        localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
+                    }
+                } else {
+                    // --- LIKE ---
                     currentLikes++;
                     likeCountEl.innerText = currentLikes;
                     likeBtn.classList.add('liked');
-                    likeBtn.disabled = true;
                     
-                    // Save to local storage
+                    // Update local storage
                     likedPosts.push(post.id);
                     localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
                     
@@ -348,17 +369,16 @@ const CMSLoader = {
                         .rpc('increment_likes', { post_id: post.id });
                         
                     if (error) {
-                        console.error("Error updating likes:", error);
-                        // Revert on error
+                        console.error("Error liking:", error);
+                        // Revert
                         currentLikes--;
                         likeCountEl.innerText = currentLikes;
                         likeBtn.classList.remove('liked');
-                        likeBtn.disabled = false;
-                        likedPosts.pop();
+                        likedPosts = likedPosts.filter(id => id !== post.id);
                         localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
                     }
-                };
-            }
+                }
+            };
         }
     },
     
