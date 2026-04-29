@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function fetchProjects() {
         const grid = document.getElementById('projects-grid');
-        const { data, error } = await supabaseClient.from('projects').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('projects').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false });
         
         if (error) {
             console.error('Error fetching projects:', error);
@@ -597,7 +597,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ${project.is_featured ? '<div class="pm-featured-badge">FEATURED</div>' : ''}
                 </div>
                 <div class="pm-info">
-                    <div class="pm-title">${project.title}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div class="pm-title">${project.title}</div>
+                        <div class="pm-order-tag" title="Display Order">#${project.display_order || 0}</div>
+                    </div>
                     <div class="pm-category">${(project.category_tags || []).join(', ')}</div>
                 </div>
                 <div class="pm-actions">

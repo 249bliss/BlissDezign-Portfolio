@@ -727,6 +727,16 @@ input:checked + .slider:before { transform: translateX(20px); }
     color: var(--text-muted);
 }
 
+.pm-order-tag {
+    font-size: 0.7rem;
+    background: rgba(223, 0, 255, 0.15);
+    color: var(--accent-purple);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    border: 1px solid rgba(223, 0, 255, 0.3);
+}
+
 .pm-actions {
     display: flex;
     gap: 10px;
