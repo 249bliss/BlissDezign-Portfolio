@@ -666,13 +666,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const heroImg = document.getElementById('hero-preview-img');
             const heroVid = document.getElementById('hero-preview-vid');
             
-            const isVideo = project.hero_image.match(/\.(mp4|webm|ogg|mov)$/i);
+            const isVideo = project.hero_image && project.hero_image.split('?')[0].split('#')[0].match(/\.(mp4|webm|ogg|mov)$/i);
             
             const heroSaved = document.getElementById('hero-saved-status');
             
             if (project.hero_image) {
                 heroBox.style.display = 'block';
-                const isVid = project.hero_image.match(/\.(mp4|webm|ogg|mov)$/i);
+                const isVid = project.hero_image && project.hero_image.split('?')[0].split('#')[0].match(/\.(mp4|webm|ogg|mov)$/i);
                 
                 const thumb = heroBox.querySelector('.selection-thumb');
                 if (thumb) {
@@ -683,6 +683,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (isVid) {
                     heroImg.style.display = 'none';
                     heroVid.src = project.hero_image;
+                    heroVid.autoplay = true;
                     heroVid.style.display = 'block';
                 } else {
                     heroVid.style.display = 'none';
@@ -1360,6 +1361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (img) img.style.display = 'none';
                     if (vid) {
                         vid.src = url;
+                        vid.autoplay = true;
                         vid.style.display = 'block';
                     }
                 } else {
@@ -1621,7 +1623,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         grid.innerHTML = activeCaseStudyGallery.map((item, idx) => {
             const isVid = item.type === 'url' 
-                ? (item.content || "").match(/\.(mp4|webm|ogg|mov)$/i)
+                ? (item.content || "").split('?')[0].split('#')[0].match(/\.(mp4|webm|ogg|mov)$/i)
                 : (item.content?.type || "").startsWith('video/');
             
             const src = item.type === 'url' ? item.content : item.previewUrl;
@@ -1632,7 +1634,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="remove-btn" onclick="window.removeFromGallery(${idx})">
                         <i class="fa-solid fa-xmark"></i>
                     </div>
-                    ${isVid ? `<video src="${src}" muted loop playsinline></video>` : `<img src="${src}">`}
+                    ${isVid ? `<video src="${src}" autoplay muted loop playsinline></video>` : `<img src="${src}">`}
                     ${item.isSaved ? '<div class="saved-badge"><i class="fa-solid fa-check"></i></div>' : ''}
                 </div>
             `;

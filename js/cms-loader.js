@@ -15,7 +15,10 @@ const CMSLoader = {
     // Utility to determine if media is video
     isMediaVideo: (url) => {
         if (!url) return false;
-        return url.match(/\.(mp4|webm|ogg|mov)$/i);
+        if (typeof url !== 'string') return false;
+        // Remove query strings and hash before checking extension
+        const cleanUrl = url.split('?')[0].split('#')[0];
+        return cleanUrl.match(/\.(mp4|webm|ogg|mov)$/i) != null;
     },
 
     // Helper to render image or video

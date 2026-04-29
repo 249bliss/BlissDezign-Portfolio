@@ -131,7 +131,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             <section class="cs-full-image-container">
                 <div class="cs-full-image-inner" style="display: flex; flex-direction: column;">
                     ${data.hasVisuals 
-                        ? data.fullImage.map(img => `<img src="${img}" alt="${data.title} Full Case Study" style="width: 100%; display: block; border: none; margin: -1px 0; padding: 0;">`).join('')
+                        ? data.fullImage.map(url => {
+                            const isVideo = typeof url === 'string' && url.split('?')[0].split('#')[0].match(/\.(mp4|webm|ogg|mov)$/i);
+                            if (isVideo) {
+                                return `<video src="${url}" autoplay muted loop playsinline style="width: 100%; display: block; border: none; margin: -1px 0; padding: 0;"></video>`;
+                            }
+                            return `<img src="${url}" alt="${data.title} Full Case Study" style="width: 100%; display: block; border: none; margin: -1px 0; padding: 0;">`;
+                        }).join('')
                         : `
                         <div class="cs-content-placeholder" style="padding: 150px 20px; text-align: center; background: var(--bg-card); border-radius: 32px; border: 1px dashed rgba(223, 0, 255, 0.3); margin: 60px auto; max-width: 800px; box-shadow: 0 0 60px rgba(0,0,0,0.08);">
                             <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 3rem; color: var(--accent-purple); margin-bottom: 25px; opacity: 0.6; display: block;"></i>
