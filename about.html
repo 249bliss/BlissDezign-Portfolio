@@ -150,6 +150,84 @@
             </div>
         </section>
 
+        <!-- Career Journey Section -->
+        <section class="career-journey" id="career-journey">
+            <div class="container">
+                <div class="journey-grid">
+                    <div class="journey-sticky-header">
+                        <span class="badge">Professional Path</span>
+                        <h2 class="section-title">Career <br>Journey</h2>
+                        <p class="text-muted">A timeline of the brands I've helped build and the roles that shaped my expertise.</p>
+                        <div class="cv-download">
+                            <a href="assets/resume.pdf" target="_blank" class="btn btn-secondary" style="margin-top: 20px; border-radius: 50px;">Download Full CV ↗</a>
+                        </div>
+                    </div>
+
+                    <div class="timeline-container">
+                        <!-- Experience 1: SWYCHR -->
+                        <div class="timeline-item reveal-on-scroll">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-date">Oct 2025 — Present</span>
+                                    <h3 class="timeline-company">SWYCHR Tech Africa</h3>
+                                    <p class="timeline-role">Product Designer | Consultant</p>
+                                </div>
+                                <div class="timeline-body">
+                                    <ul class="timeline-bullets">
+                                        <li>Simplified complex fintech workflows by eliminating major friction points in the SWYCHR app, significantly improving task completion rates.</li>
+                                        <li>Conducted research that uncovered overlooked user needs, shaping product decisions and increasing feature adoption.</li>
+                                        <li>Improved retention by redesigning core experience flows, enabling a smoother product journey.</li>
+                                        <li>Accelerated development cycles by building scalable UI components and functional prototypes using AI tools, aligning the product with growth targets.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Experience 2: NuraKicks -->
+                        <div class="timeline-item reveal-on-scroll">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-date">Sept 2025 — Nov 2025</span>
+                                    <h3 class="timeline-company">NuraKicks Ecoms AI</h3>
+                                    <p class="timeline-role">Product Designer | UX Researcher</p>
+                                </div>
+                                <div class="timeline-body">
+                                    <ul class="timeline-bullets">
+                                        <li>Designed an AI-driven e-commerce experience focused on improving product discovery and building user trust in automated recommendations.</li>
+                                        <li>Reduced user drop-off by 33% by identifying onboarding gaps through user research and implementing a new activation flow.</li>
+                                        <li>Refined navigation, search, and checkout experiences to drive stronger repeat purchase behavior.</li>
+                                        <li>Developed a lean design system that improved consistency and accelerated future UI updates.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Experience 3: Starr Power -->
+                        <div class="timeline-item reveal-on-scroll">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-date">Aug 2022 — Feb 2025</span>
+                                    <h3 class="timeline-company">Starr Power Technology USA</h3>
+                                    <p class="timeline-role">Graphics Designer | Brand Strategist</p>
+                                </div>
+                                <div class="timeline-body">
+                                    <ul class="timeline-bullets">
+                                        <li>Improved interface clarity on internal tools and marketing pages, helping users process complex information faster.</li>
+                                        <li>Strengthened digital presence with a unified visual identity that improved brand consistency by 25%.</li>
+                                        <li>Collaborated with product teams to provide early UI direction and user-centered design practices.</li>
+                                        <li>Created visual assets that boosted engagement across web and social, improving communication and brand recall.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Life at BlissDezign Gallery -->
         <section class="life-gallery">
             <div class="life-gallery-fade-v">
@@ -310,6 +388,29 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (window.CMSLoader) {
                 window.CMSLoader.loadLifeGallery('life-gallery-container');
+            }
+
+            // --- Smart Cross-Page Smooth Scroll ---
+            if (window.location.hash === '#career-journey') {
+                // Prevent default jump by scrolling to top first
+                window.scrollTo(0, 0);
+                
+                const target = document.getElementById('career-journey');
+                if (target) {
+                    // Slight delay to ensure layout is settled and assets are loading
+                    setTimeout(() => {
+                        const offset = 100; // Account for sticky header
+                        const bodyRect = document.body.getBoundingClientRect().top;
+                        const elementRect = target.getBoundingClientRect().top;
+                        const elementPosition = elementRect - bodyRect;
+                        const offsetPosition = elementPosition - offset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }, 500);
+                }
             }
         });
     </script>
