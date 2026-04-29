@@ -1667,7 +1667,145 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize all media upload previews
     setupImagePreviews();
 
+    // --- 10. Life Gallery Management ---
+    const galleryItemsGrid = document.getElementById('gallery-items-grid');
+    const galleryUploadInput = document.getElementById('gallery-upload-input');
+    const galleryReorderHint = document.getElementById('gallery-reorder-hint');
+    let lifeGalleryItems = [];
+
+    async function fetchGallery() {
+        if (!galleryItemsGrid) return;
+        const { data, error } = await supabaseClient.from('life_gallery').select('*').order('display_order', { ascending: true });
+        
+        if (error) {
+            console.error('Error fetching gallery:', error);
+            return;
+        }
+
+        lifeGalleryItems = data;
+        renderGallery();
+    }
+
+    function renderGallery() {
+        if (!galleryItemsGrid) return;
+        
+        if (lifeGalleryItems.length === 0) {
+            galleryItemsGrid.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px; grid-column: 1/-1;">No images in your gallery yet.</p>';
+            galleryReorderHint.style.display = 'none';
+            return;
+        }
+
+        galleryReorderHint.style.display = 'block';
+        galleryItemsGrid.innerHTML = lifeGalleryItems.map((item, idx) => `
+            <div class="selection-thumb" data-id="${item.id}">
+                <div class="thumb-index">${idx + 1}</div>
+                <img src="${item.url}" alt="Gallery Item">
+                <div class="remove-btn" onclick="window.deleteGalleryItem('${item.id}', '${item.url}')">
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+            </div>
+        `).join('');
+
+        initGallerySortable();
+    }
+
+    function initGallerySortable() {
+        if (!galleryItemsGrid) return;
+        if (window.gallerySortable) window.gallerySortable.destroy();
+
+        window.gallerySortable = new Sortable(galleryItemsGrid, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: async () => {
+                const newOrder = [];
+                const thumbs = galleryItemsGrid.querySelectorAll('.selection-thumb');
+                
+                thumbs.forEach((thumb, idx) => {
+                    const id = thumb.getAttribute('data-id');
+                    newOrder.push({ id, display_order: idx });
+                });
+
+                // Bulk update orders
+                setLoading(true, 'Updating order...');
+                try {
+                    for (let item of newOrder) {
+                        await supabaseClient.from('life_gallery').update({ display_order: item.display_order }).eq('id', item.id);
+                    }
+                    showToast('Gallery order updated', 'success');
+                } catch (err) {
+                    console.error("Order update error:", err);
+                    showToast('Failed to update order', 'error');
+                } finally {
+                    setLoading(false);
+                    fetchGallery();
+                }
+            }
+        });
+    }
+
+    if (galleryUploadInput) {
+        galleryUploadInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            setLoading(true, `Uploading ${files.length} images...`);
+            
+            for (let file of files) {
+                const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+                const filePath = `gallery/${fileName}`;
+
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('portfolio-assets')
+                    .upload(filePath, file);
+
+                if (uploadError) {
+                    console.error('Upload error:', uploadError);
+                    continue;
+                }
+
+                const { data: { publicUrl } } = supabaseClient.storage.from('portfolio-assets').getPublicUrl(filePath);
+
+                await supabaseClient.from('life_gallery').insert({
+                    url: publicUrl,
+                    display_order: lifeGalleryItems.length
+                });
+            }
+
+            setLoading(false);
+            showToast('Gallery updated successfully', 'success');
+            galleryUploadInput.value = '';
+            fetchGallery();
+        });
+    }
+
+    window.deleteGalleryItem = async (id, url) => {
+        showConfirm('Delete this image from your gallery?', async () => {
+            setLoading(true, 'Deleting...');
+            
+            const { error: dbError } = await supabaseClient.from('life_gallery').delete().eq('id', id);
+            
+            if (dbError) {
+                console.error('Delete error:', dbError);
+                setLoading(false);
+                showToast('Failed to delete', 'error');
+                return;
+            }
+
+            setLoading(false);
+            showToast('Image removed', 'success');
+            fetchGallery();
+        });
+    };
+
+    // Update switchPanel to include gallery
+    const originalSwitchPanel = window.switchPanel;
+    window.switchPanel = function(target) {
+        originalSwitchPanel(target);
+        if (target === 'manage-gallery-panel') fetchGallery();
+    };
+
     // Make functions available globally so they can be called by reset/edit
     window.renderTags = renderTags;
     window.renderCaseStudyGallery = renderCaseStudyGallery;
+    window.fetchGallery = fetchGallery;
 });

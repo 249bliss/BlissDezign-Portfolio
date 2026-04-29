@@ -121,15 +121,59 @@
 
         <!-- The Journey -->
         <section class="about-story bg-section">
-            <div class="container small-container reveal-on-scroll">
-                <h2 class="section-title">How I Started</h2>
-                <div class="story-content">
-                    <p>I started out in graphic design around early 2022.</p>
-                    <p>At the time, I was working in an electrical company and needed a design for a personal brand idea. I reached out to a designer, but the cost didn’t make sense to me at the time. That moment pushed me to try and learn design myself instead of outsourcing it.</p>
-                    <p class="quote">“That’s how I got into graphic design not from inspiration, but from necessity.”</p>
-                    <p>As I learned, I began to understand layout, composition, and how visual decisions affect communication. But over time, I realized something important.</p>
-                    <p>Good-looking designs were not enough. Many products looked visually fine but still failed because users couldn’t understand them or didn’t enjoy using them.</p>
-                    <p>That realization shifted my direction. I didn’t just want to design visuals I wanted to design products that actually work. That’s what led me into product design around 2024, and by 2025 I fully committed to it.</p>
+            <div class="container reveal-on-scroll">
+                <div class="story-split-grid">
+                    <div class="story-sticky-left">
+                        <span class="badge">The Journey</span>
+                        <h2 class="section-title">How I <br>Started</h2>
+                    </div>
+                    <div class="story-right">
+                        <div class="story-milestones">
+                            <div class="story-milestone reveal-on-scroll">
+                                <p>I started out in <strong>graphic design</strong> around early 2022. At the time, I was working in an electrical company and needed a design for a personal brand idea. I reached out to a designer, but the cost didn’t make sense to me at the time. That moment pushed me to try and <strong>learn design myself</strong> instead of outsourcing it.</p>
+                            </div>
+                            
+                            <div class="story-milestone quote-card reveal-on-scroll">
+                                <p class="quote-text">“That’s how I got into graphic design—not from inspiration, but from necessity.”</p>
+                            </div>
+                            
+                            <div class="story-milestone reveal-on-scroll">
+                                <p>As I learned, I began to understand layout, composition, and how visual decisions affect communication. But over time, I realized something important: <strong>Good-looking designs were not enough.</strong> Many products looked visually fine but still failed because users couldn’t understand them or didn’t enjoy using them.</p>
+                            </div>
+                            
+                            <div class="story-milestone reveal-on-scroll">
+                                <p>That realization shifted my direction. I didn’t just want to design visuals—I wanted to design <strong>products that actually work</strong>. That’s what led me into product design around 2024, and by 2025 I fully committed to it.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Life at BlissDezign Gallery -->
+        <section class="life-gallery">
+            <div class="life-gallery-fade-v">
+                <div class="life-gallery-fade-h">
+                    <div class="container" style="overflow: visible;">
+                        <div class="section-header reveal-on-scroll" style="margin-bottom: 40px; text-align: center; position: relative; z-index: 20;">
+                            <span class="badge">Life at BlissDezign</span>
+                            <h2 class="section-title">Moments & Inspiration</h2>
+                        </div>
+                        <div class="life-grid reveal-on-scroll" id="life-gallery-container">
+                            <div class="life-item"><img src="file:///C:/Users/LENOVO/.gemini/antigravity/brain/ef7cf619-c107-4c57-8f91-0adea49d269e/modern_design_workspace_1777458724195.png" alt="Workspace"></div>
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop" alt="Team"></div>
+                            <div class="life-item"><img src="file:///C:/Users/LENOVO/.gemini/antigravity/brain/ef7cf619-c107-4c57-8f91-0adea49d269e/design_process_sketch_1777458745429.png" alt="Process"></div>
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop" alt="Coding"></div>
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop" alt="Collaboration"></div>
+                            
+                            <!-- Row 2 -->
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000&auto=format&fit=crop" alt="Laptop"></div>
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop" alt="Coffee"></div>
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1527689368864-3a821dbccc34?q=80&w=1000&auto=format&fit=crop" alt="Meeting"></div>
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1000&auto=format&fit=crop" alt="Brainstorming"></div>
+                            <div class="life-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1000&auto=format&fit=crop" alt="Tech"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -260,7 +304,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
+    <script src="js/cms-loader.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.CMSLoader) {
+                window.CMSLoader.loadLifeGallery('life-gallery-container');
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -385,6 +385,33 @@ const CMSLoader = {
         }
     },
     
+    // 8. Fetch Life Gallery for About Page
+    loadLifeGallery: async (containerId) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        console.log("Fetching life gallery...");
+        const { data: items, error } = await supabaseClient
+            .from('life_gallery')
+            .select('*')
+            .order('display_order', { ascending: true });
+
+        if (error) {
+            console.error("Error loading gallery:", error);
+            return;
+        }
+
+        if (!items || items.length === 0) return;
+
+        container.innerHTML = items.map(item => `
+            <div class="life-item">
+                <img src="${item.url}" alt="Life Moment">
+            </div>
+        `).join('');
+
+        CMSLoader.triggerReveal(container);
+    },
+
     // Toast Notification utility
     showToast: (message, type = 'success') => {
         let container = document.getElementById('toast-container');
