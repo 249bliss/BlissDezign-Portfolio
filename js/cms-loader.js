@@ -267,17 +267,24 @@ const CMSLoader = {
         coverEl.src = post.cover_image;
         coverEl.alt = post.title;
 
-        // Simple Markdown-ish processing for content (replaces newlines with paragraphs)
-        // In a real app, you might use a library like 'marked'
-        const formattedContent = post.content
-            .split('\n\n')
-            .map(para => {
-                if (para.startsWith('## ')) return `<h2>${para.replace('## ', '')}</h2>`;
-                if (para.startsWith('### ')) return `<h3>${para.replace('### ', '')}</h3>`;
-                if (para.startsWith('> ')) return `<blockquote>${para.replace('> ', '')}</blockquote>`;
-                return `<p>${para.replace(/\n/g, '<br>')}</p>`;
-            })
-            .join('');
+        // Detect if content is HTML or needs processing
+        const isHTML = post.content.includes('<p>') || post.content.includes('<div>') || post.content.includes('<br>') || post.content.includes('<b>');
+        
+        let formattedContent = '';
+        if (isHTML) {
+            formattedContent = post.content;
+        } else {
+            // Simple Markdown-ish processing for legacy content
+            formattedContent = post.content
+                .split('\n\n')
+                .map(para => {
+                    if (para.startsWith('## ')) return `<h2>${para.replace('## ', '')}</h2>`;
+                    if (para.startsWith('### ')) return `<h3>${para.replace('### ', '')}</h3>`;
+                    if (para.startsWith('> ')) return `<blockquote>${para.replace('> ', '')}</blockquote>`;
+                    return `<p>${para.replace(/\n/g, '<br>')}</p>`;
+                })
+                .join('');
+        }
 
         bodyEl.innerHTML = formattedContent;
 

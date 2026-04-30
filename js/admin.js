@@ -1115,6 +1115,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('post-slug').value = post.slug;
         document.getElementById('post-excerpt').value = post.excerpt;
         document.getElementById('post-content').value = post.content;
+        
+        // Populate Rich Text Editor
+        const editor = document.getElementById('post-editor');
+        if (editor) {
+            // Check if it's markdown-like or HTML
+            if (post.content.includes('<p>') || post.content.includes('<b>') || post.content.includes('<h2>')) {
+                editor.innerHTML = post.content;
+            } else {
+                // Basic conversion for legacy markdown-like posts
+                editor.innerHTML = post.content.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+            }
+        }
+
         document.getElementById('post-is-published').checked = post.is_published;
         document.getElementById('post-notify-subs').checked = false;
 
@@ -1146,6 +1159,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetPostForm() {
         blogForm.reset();
         document.getElementById('edit-post-id').value = '';
+        
+        // Clear Rich Text Editor
+        const editor = document.getElementById('post-editor');
+        if (editor) editor.innerHTML = '';
+
         document.getElementById('post-form-title').innerText = 'Add New Article';
         document.getElementById('submit-post-btn').innerText = 'Publish Post';
         document.getElementById('cancel-post-btn').style.display = 'none';
@@ -1164,6 +1182,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const title = document.getElementById('post-title').value;
         const slug = document.getElementById('post-slug').value || title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
         const excerpt = document.getElementById('post-excerpt').value;
+        
+        // Sync Editor Content before submission
+        const editor = document.getElementById('post-editor');
+        if (editor) {
+            document.getElementById('post-content').value = editor.innerHTML;
+        }
         const content = document.getElementById('post-content').value;
         const isPublished = document.getElementById('post-is-published').checked;
         const notifySubscribers = document.getElementById('post-notify-subs').checked;
@@ -1279,15 +1303,82 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- 6. Utils & Helpers ---
 
     async function uploadImage(file, pathFolder) {
-        const fileExt = file.name.split('.').pop();
+        // --- Mobile & Large File Robustness ---
+        // 1. Validate file exists
+        if (!file) throw new Error("No file selected for upload.");
+
+        // 2. Safe Extension Parsing
+        const fileExt = file.name ? file.name.split('.').pop().toLowerCase() : 'jpg';
+        
+        // 3. Image Optimization (Resize/Compress if > 2MB or extremely large)
+        let fileToUpload = file;
+        if (file.type.startsWith('image/') && (file.size > 2 * 1024 * 1024)) {
+            console.log(`Optimizing large image: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+            setLoading(true, 'Optimizing image for faster upload...');
+            try {
+                fileToUpload = await optimizeImage(file, 2500, 0.8);
+                console.log(`Optimized size: ${(fileToUpload.size / 1024 / 1024).toFixed(2)} MB`);
+            } catch (optErr) {
+                console.warn("Optimization failed, attempting original upload:", optErr);
+            }
+        }
+
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `${pathFolder}/${fileName}`;
 
-        const { error } = await supabaseClient.storage.from('portfolio-assets').upload(filePath, file);
-        if (error) throw error;
+        const { error } = await supabaseClient.storage.from('portfolio-assets').upload(filePath, fileToUpload);
+        
+        if (error) {
+            console.error("Supabase Upload Error:", error);
+            if (error.message.includes('Payload too large') || error.status === 413) {
+                throw new Error("The image is too large for the server. Try a smaller version or a different format.");
+            }
+            throw error;
+        }
         
         const { data } = supabaseClient.storage.from('portfolio-assets').getPublicUrl(filePath);
         return data.publicUrl;
+    }
+
+    /**
+     * Client-side Image Optimizer
+     * Resizes and compresses images using Canvas to ensure mobile uploads succeed.
+     */
+    async function optimizeImage(file, maxWidth, quality) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxWidth) {
+                        height = (maxWidth / width) * height;
+                        width = maxWidth;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Fallback to JPEG if WebP isn't supported or fails
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(new File([blob], file.name, { type: 'image/jpeg' }));
+                        } else {
+                            reject(new Error("Canvas toBlob failed"));
+                        }
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
     }
 
     async function chopAndUploadImage(file) {
@@ -1315,9 +1406,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                             canvas.height = height;
                             ctx.drawImage(img, 0, (i * CHUNK_HEIGHT), img.width, height, 0, 0, img.width, height);
                             
-                            console.log(`Converting slice ${i + 1} to WebP...`);
-                            const blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 0.9));
-                            const chunkFile = new File([blob], `chunk_${i}.webp`, { type: 'image/webp' });
+                            // Robust Format Detection
+                            const format = (img.height > CHUNK_HEIGHT) ? 'image/jpeg' : 'image/webp';
+                            const ext = (format === 'image/jpeg') ? 'jpg' : 'webp';
+
+                            console.log(`Converting slice ${i + 1} to ${ext}...`);
+                            const blob = await new Promise(res => {
+                                canvas.toBlob(b => res(b), format, 0.85);
+                            });
+                            
+                            if (!blob) throw new Error(`Failed to process image chunk ${i+1}`);
+
+                            const chunkFile = new File([blob], `chunk_${i}.${ext}`, { type: format });
                             
                             console.log(`Uploading slice ${i + 1} to storage...`);
                             const url = await uploadImage(chunkFile, 'case_studies');
@@ -1457,6 +1557,52 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     }
+    
+    // --- 6.5 Rich Text Editor Initialization ---
+    function initRichTextEditor() {
+        const editor = document.getElementById('post-editor');
+        const toolbar = document.getElementById('post-editor-toolbar');
+        const hiddenContent = document.getElementById('post-content');
+
+        if (!editor || !toolbar) return;
+
+        // Handle Toolbar Buttons
+        toolbar.querySelectorAll('.toolbar-btn').forEach(btn => {
+            btn.onclick = () => {
+                const command = btn.getAttribute('data-command');
+                const value = btn.getAttribute('data-value');
+
+                if (command === 'createLink') {
+                    const url = prompt('Enter the link URL:');
+                    if (url) document.execCommand(command, false, url);
+                } else if (command === 'formatBlock' || command === 'fontSize') {
+                    document.execCommand(command, false, value);
+                } else {
+                    document.execCommand(command, false, null);
+                }
+                
+                editor.focus();
+                syncEditorContent();
+            };
+        });
+
+        // Sync content from editable div to hidden textarea
+        const syncEditorContent = () => {
+            hiddenContent.value = editor.innerHTML;
+        };
+
+        editor.oninput = syncEditorContent;
+        editor.onblur = syncEditorContent;
+
+        // Ensure we always have a paragraph to start with
+        editor.onfocus = () => {
+            if (editor.innerHTML === '' || editor.innerHTML === '<br>') {
+                document.execCommand('formatBlock', false, 'p');
+            }
+        };
+    }
+    
+    initRichTextEditor();
 
     // --- 7. Custom Dialog System ---
 
