@@ -1897,33 +1897,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
 
-            setLoading(true, `Uploading ${files.length} images...`);
+            setLoading(true, `Optimizing & Uploading ${files.length} image${files.length > 1 ? 's' : ''}...`);
             
-            for (let file of files) {
-                const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
-                const filePath = `gallery/${fileName}`;
+            try {
+                const newItems = [];
+                let currentMaxOrder = lifeGalleryItems.length;
 
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from('portfolio-assets')
-                    .upload(filePath, file);
-
-                if (uploadError) {
-                    console.error('Upload error:', uploadError);
-                    continue;
+                for (let file of files) {
+                    try {
+                        // Use the robust uploadImage helper (handles optimization & unique naming)
+                        const publicUrl = await uploadImage(file, 'gallery');
+                        
+                        newItems.push({
+                            url: publicUrl,
+                            display_order: currentMaxOrder++
+                        });
+                    } catch (uploadErr) {
+                        console.error(`Failed to upload ${file.name}:`, uploadErr);
+                        showToast(`Failed to upload ${file.name}: ${uploadErr.message}`, 'error');
+                    }
                 }
 
-                const { data: { publicUrl } } = supabaseClient.storage.from('portfolio-assets').getPublicUrl(filePath);
-
-                await supabaseClient.from('life_gallery').insert({
-                    url: publicUrl,
-                    display_order: lifeGalleryItems.length
-                });
+                if (newItems.length > 0) {
+                    const { error: insertError } = await supabaseClient.from('life_gallery').insert(newItems);
+                    if (insertError) throw insertError;
+                    
+                    showToast(`${newItems.length} image${newItems.length > 1 ? 's' : ''} added to gallery!`, 'success');
+                }
+            } catch (err) {
+                console.error("Gallery batch upload error:", err);
+                showAlert('Error updating gallery: ' + err.message);
+            } finally {
+                setLoading(false);
+                galleryUploadInput.value = '';
+                fetchGallery();
             }
-
-            setLoading(false);
-            showToast('Gallery updated successfully', 'success');
-            galleryUploadInput.value = '';
-            fetchGallery();
         });
     }
 

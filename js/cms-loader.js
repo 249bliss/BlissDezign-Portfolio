@@ -408,11 +408,14 @@ const CMSLoader = {
             return;
         }
 
-        if (!items || items.length === 0) return;
+        if (!items || items.length === 0) {
+            container.innerHTML = '<p class="text-muted" style="grid-column: 1/-1; text-align: center; padding: 40px;">Gallery is currently empty.</p>';
+            return;
+        }
 
         container.innerHTML = items.map(item => `
             <div class="life-item">
-                <img src="${item.url}" alt="Life Moment">
+                <img src="${item.url}" alt="Life Moment" loading="lazy">
             </div>
         `).join('');
 

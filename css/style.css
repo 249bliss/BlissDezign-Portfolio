@@ -2777,8 +2777,26 @@ form select option {
     gap: 12px;
     position: relative;
     z-index: 1;
-    width: 120%; /* Slightly wider to ensure edges are masked */
+    width: 120%;
     margin-left: -10%;
+    justify-content: center;
+}
+
+@media (max-width: 1200px) {
+    .life-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 992px) {
+    .life-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .life-grid { 
+        grid-template-columns: repeat(2, 1fr);
+        width: 110%;
+        margin-left: -5%;
+        gap: 8px;
+    }
 }
 
 .life-item {
