@@ -35,14 +35,18 @@
     <!-- ─── Canonical URL ─── -->
     <link rel="canonical" href="https://blissdezigns.vercel.app">
 
-    <!-- Google Fonts -->
+    <!-- ─── Preconnect & Preload ─── -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Sen:wght@400;700;800&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://ssyryszuawzuzuzuzuzu.supabase.co"> <!-- Supabase URL -->
+
+    <!-- Preload Critical Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Sen:wght@700;800&display=swap" as="style">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Sen:wght@400;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
     <!-- ─── Structured Data (Schema.org) ─── -->
@@ -68,7 +72,7 @@
         <div class="container">
             <nav class="nav-container">
                 <div class="logo">
-                    <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo">
+                    <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30">
                     <span class="logo-text">BlissDezign</span>
                 </div>
                 <ul class="nav-links">
@@ -138,7 +142,7 @@
                 </div>
                 <div class="hero-image-container">
                     <div class="image-wrapper">
-                        <img src="assets/Main profile.webp" alt="BlissDezign Profile" class="profile-img">
+                        <img src="assets/Main profile.webp" alt="BlissDezign Profile" class="profile-img" width="800" height="800" fetchpriority="high">
                     </div>
                 </div>
             </div>
@@ -150,31 +154,31 @@
                 <div class="marquee-content" id="marquee-content">
                     <!-- Set 1 -->
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Desktop.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Desktop.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 12.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Frame 12.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                     <div class="marquee-card">
                         <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline></video>
                     </div>
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43730.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Frame 43730.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                     <div class="marquee-card">
                         <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline></video>
                     </div>
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43731.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Frame 43731.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                 </div>
                 <!-- Set 2 (for infinite loop - separated for GPU memory limit fix) -->
                 <div class="marquee-content" aria-hidden="true">
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Desktop.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Desktop.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 12.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Frame 12.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                     <div class="marquee-card marquee-card--video-placeholder"
                         data-video-src="assets/Maquee Images/SKIN-CARE-GERO.mp4">
@@ -182,7 +186,7 @@
                             loading="lazy"></video>
                     </div>
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43730.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Frame 43730.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                     <div class="marquee-card marquee-card--video-placeholder"
                         data-video-src="assets/Maquee Images/Scene.mp4">
@@ -190,7 +194,7 @@
                             loading="lazy"></video>
                     </div>
                     <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43731.webp" alt="Project" loading="lazy" decoding="async">
+                        <img src="assets/Maquee Images/Frame 43731.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
                     </div>
                 </div>
             </div>
@@ -203,7 +207,7 @@
                 <div class="services-grid">
                     <div class="service-card">
                         <div class="service-card-top">
-                            <img src="assets/icon1.webp" alt="Clarity icon">
+                            <img src="assets/icon1.webp" alt="Clarity icon" width="120" height="120" loading="lazy">
                         </div>
                         <div class="service-card-content">
                             <h3>Clarity before execution</h3>
@@ -213,7 +217,7 @@
                     </div>
                     <div class="service-card">
                         <div class="service-card-top">
-                            <img src="assets/icon2.webp" alt="User focused icon">
+                            <img src="assets/icon2.webp" alt="User focused icon" width="120" height="120" loading="lazy">
                         </div>
                         <div class="service-card-content">
                             <h3>User-focused product design</h3>
@@ -223,7 +227,7 @@
                     </div>
                     <div class="service-card">
                         <div class="service-card-top">
-                            <img src="assets/icon3.webp" alt="Scalable icon">
+                            <img src="assets/icon3.webp" alt="Scalable icon" width="120" height="120" loading="lazy">
                         </div>
                         <div class="service-card-content">
                             <h3>Scalable UI systems</h3>
@@ -232,7 +236,7 @@
                     </div>
                     <div class="service-card">
                         <div class="service-card-top">
-                            <img src="assets/icon4.webp" alt="Prototyping icon">
+                            <img src="assets/icon4.webp" alt="Prototyping icon" width="120" height="120" loading="lazy">
                         </div>
                         <div class="service-card-content">
                             <h3>Prototyping & validation</h3>
@@ -415,7 +419,7 @@
         <div class="container footer-grid">
             <div class="footer-brand">
                 <div class="logo">
-                    <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo">
+                    <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30" loading="lazy">
                     <span class="logo-text">BlissDezign</span>
                 </div>
                 <p class="footer-desc">I help brands move forward by creating user-focused designs that are not just

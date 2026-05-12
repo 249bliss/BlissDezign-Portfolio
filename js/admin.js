@@ -1845,15 +1845,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         galleryReorderHint.style.display = 'block';
-        galleryItemsGrid.innerHTML = lifeGalleryItems.map((item, idx) => `
-            <div class="selection-thumb" data-id="${item.id}">
-                <div class="thumb-index">${idx + 1}</div>
-                <img src="${item.url}" alt="Gallery Item">
-                <div class="remove-btn" onclick="window.deleteGalleryItem('${item.id}', '${item.url}')">
-                    <i class="fa-solid fa-trash"></i>
+        galleryItemsGrid.innerHTML = lifeGalleryItems.map((item, idx) => {
+            const isVid = (item.url || "").split('?')[0].split('#')[0].match(/\.(mp4|webm|ogg|mov)$/i);
+            return `
+                <div class="selection-thumb" data-id="${item.id}">
+                    <div class="thumb-index">${idx + 1}</div>
+                    ${isVid ? `<video src="${item.url}" muted loop playsinline></video>` : `<img src="${item.url}" alt="Gallery Item">`}
+                    <div class="remove-btn" onclick="window.deleteGalleryItem('${item.id}', '${item.url}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         initGallerySortable();
     }
@@ -1897,7 +1900,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
 
-            setLoading(true, `Optimizing & Uploading ${files.length} image${files.length > 1 ? 's' : ''}...`);
+            setLoading(true, `Optimizing & Uploading ${files.length} asset${files.length > 1 ? 's' : ''}...`);
             
             try {
                 const newItems = [];
@@ -1922,7 +1925,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const { error: insertError } = await supabaseClient.from('life_gallery').insert(newItems);
                     if (insertError) throw insertError;
                     
-                    showToast(`${newItems.length} image${newItems.length > 1 ? 's' : ''} added to gallery!`, 'success');
+                    showToast(`${newItems.length} asset${newItems.length > 1 ? 's' : ''} added to gallery!`, 'success');
                 }
             } catch (err) {
                 console.error("Gallery batch upload error:", err);

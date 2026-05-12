@@ -415,7 +415,7 @@ const CMSLoader = {
 
         container.innerHTML = items.map(item => `
             <div class="life-item">
-                <img src="${item.url}" alt="Life Moment" loading="lazy">
+                ${CMSLoader.renderMedia(item.url, 'Life Moment')}
             </div>
         `).join('');
 
