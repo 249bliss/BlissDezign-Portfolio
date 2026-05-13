@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- SECURITY: Master Whitelist ---
     const WHITELISTED_ADMINS = ['blissstudio44@gmail.com'];
+    const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit for Supabase Storage
     const logoutBtn = document.getElementById('logout-btn');
     const userDisplay = document.getElementById('user-display');
     
@@ -1304,8 +1305,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function uploadImage(file, pathFolder) {
         // --- Mobile & Large File Robustness ---
-        // 1. Validate file exists
+        // 1. Validate file exists and size
         if (!file) throw new Error("No file selected for upload.");
+        
+        if (file.size > MAX_FILE_SIZE) {
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            const limitMB = (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
+            throw new Error(`File is too large (${sizeMB} MB). The maximum allowed size is ${limitMB} MB. Please compress your video or use a smaller file.`);
+        }
 
         // 2. Safe Extension Parsing
         const fileExt = file.name ? file.name.split('.').pop().toLowerCase() : 'jpg';
@@ -1331,7 +1338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (error) {
             console.error("Supabase Upload Error:", error);
             if (error.message.includes('Payload too large') || error.status === 413) {
-                throw new Error("The image is too large for the server. Try a smaller version or a different format.");
+                throw new Error("The file is too large for the server. Try a smaller version or a different format.");
             }
             throw error;
         }
