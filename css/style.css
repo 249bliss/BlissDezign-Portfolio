@@ -1065,7 +1065,7 @@ header.scrolled .nav-container {
 }
 
 .experience-intro h2 {
-    font-size: 3rem;
+    font-size: clamp(1.8rem, 6vw, 3rem);
     margin-bottom: 25px;
     line-height: 1.1;
 }
@@ -1393,7 +1393,7 @@ header.scrolled .nav-container {
 }
 
 .contact-text h2 {
-    font-size: 4rem;
+    font-size: clamp(2rem, 8vw, 4rem);
     margin-bottom: 20px;
 }
 
@@ -1703,14 +1703,7 @@ header.scrolled .nav-container {
     .nav-actions {
         gap: 20px;
     }
-    
-    .experience-intro h2 {
-        font-size: 1.875rem; /* Reduced by exactly 2px (0.125rem) from 2rem */
-    }
-    
-    .contact-text h2 {
-        font-size: 2.075rem; /* Reduced by exactly 2px (0.125rem) from 2.2rem */
-    }
+    /* Fluid typography handles experience-intro and contact-text scaling automatically */
     
     .section-title {
         margin-bottom: 35px;
@@ -2282,7 +2275,7 @@ header.scrolled .nav-container {
 }
 
 .vision-cta-section h2 {
-    font-size: 3rem;
+    font-size: clamp(1.8rem, 6vw, 3rem);
     margin-bottom: 20px;
 }
 
@@ -4014,7 +4007,7 @@ form select option {
 }
 
 .testimonials-title-area h2 {
-    font-size: 40px;
+    font-size: clamp(28px, 5vw, 40px);
     line-height: 1.2;
     margin: 0;
 }
@@ -4040,7 +4033,7 @@ form select option {
 }
 
 .stat-box h3 {
-    font-size: 42px;
+    font-size: clamp(28px, 6vw, 42px);
     color: var(--text-main);
     margin: 0 0 5px 0;
     line-height: 1;
@@ -4048,7 +4041,7 @@ form select option {
 }
 
 .stat-box .stat-suffix {
-    font-size: 30px;
+    font-size: clamp(20px, 4vw, 30px);
     color: var(--text-main);
     font-weight: 500;
     margin-left: 2px;
