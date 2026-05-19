@@ -2141,6 +2141,7 @@ header.scrolled .nav-container {
     }
 
     .hero-portrait {
+        width: 100%;
         max-width: 420px;
         height: auto;
         object-fit: contain;
@@ -2293,6 +2294,10 @@ header.scrolled .nav-container {
 }
 
 @media (max-width: 768px) {
+    .hero-title {
+        font-size: clamp(2.0rem, 8vw, 2.8rem);
+    }
+
     .work-hero h1 {
         font-size: 2.8rem;
     }
