@@ -2030,6 +2030,14 @@ header.scrolled .nav-container {
     .hero-actions .btn {
         width: 100%;
     }
+
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .projects-masonry {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Mobile Navigation Overlay - Premium Circular Ripple Editorial Overhaul */
@@ -2364,14 +2372,6 @@ header.scrolled .nav-container {
         text-align: center;
     }
 
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .projects-masonry {
-        grid-template-columns: 1fr;
-    }
-    
     .masonry-large {
         grid-column: span 1;
     }
@@ -3845,7 +3845,7 @@ header.scrolled .nav-container {
 
 .testimonials-title-area {
     flex: 1;
-    max-width: 500px;
+    max-width: 100%; /* Changed from 500px so it can center cleanly on smaller screens */
 }
 
 .badge-pill {
@@ -4099,6 +4099,8 @@ header.scrolled .nav-container {
 @media (max-width: 992px) {
     .testimonials-top {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
     .modern-test-card {
         flex-direction: column;
