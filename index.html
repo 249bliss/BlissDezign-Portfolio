@@ -38,6 +38,12 @@
     <!-- ─── Preconnect & Preload ─── -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Marquee Preloads for Instant Showcase Load -->
+    <link rel="preload" as="image" href="assets/Maquee%20Images/Desktop.webp">
+    <link rel="preload" as="image" href="assets/Maquee%20Images/Frame%2012.webp">
+    <link rel="preload" as="image" href="assets/Maquee%20Images/Frame%2043730.webp">
+    <link rel="preload" as="image" href="assets/Maquee%20Images/Frame%2043731.webp">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://ssyryszuawzuzuzuzuzu.supabase.co"> <!-- Supabase URL -->
 
@@ -163,22 +169,22 @@
                     <div class="marquee-track">
                         <!-- Set 1 -->
                         <div class="marquee-card card-idx-1">
-                            <img src="assets/Maquee Images/Desktop.webp" alt="Project Desktop Showcase" loading="lazy" decoding="async" width="340" height="420">
+                            <img src="assets/Maquee Images/Desktop.webp" alt="Project Desktop Showcase" fetchpriority="high" width="340" height="420">
                         </div>
                         <div class="marquee-card card-idx-2">
-                            <img src="assets/Maquee Images/Frame 12.png" alt="Project Wallet App Showcase" loading="lazy" decoding="async" width="340" height="420">
+                            <img src="assets/Maquee Images/Frame 12.webp" alt="Project Wallet App Showcase" fetchpriority="high" width="340" height="420">
                         </div>
                         <div class="marquee-card card-idx-3">
                             <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline></video>
                         </div>
                         <div class="marquee-card card-idx-4">
-                            <img src="assets/Maquee Images/Frame 43730.webp" alt="Project Finance App Showcase" loading="lazy" decoding="async" width="340" height="420">
+                            <img src="assets/Maquee Images/Frame 43730.webp" alt="Project Finance App Showcase" fetchpriority="high" width="340" height="420">
                         </div>
                         <div class="marquee-card card-idx-5">
                             <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline></video>
                         </div>
                         <div class="marquee-card card-idx-6">
-                            <img src="assets/Maquee Images/Frame 43731.webp" alt="Project Mobile Interface Showcase" loading="lazy" decoding="async" width="340" height="420">
+                            <img src="assets/Maquee Images/Frame 43731.webp" alt="Project Mobile Interface Showcase" fetchpriority="high" width="340" height="420">
                         </div>
 
                         <!-- Set 1 Duplicate for Perfect Infinite Scroll -->
@@ -186,7 +192,7 @@
                             <img src="assets/Maquee Images/Desktop.webp" alt="Project Desktop Showcase" loading="lazy" decoding="async" width="340" height="420">
                         </div>
                         <div class="marquee-card card-idx-2" aria-hidden="true">
-                            <img src="assets/Maquee Images/Frame 12.png" alt="Project Wallet App Showcase" loading="lazy" decoding="async" width="340" height="420">
+                            <img src="assets/Maquee Images/Frame 12.webp" alt="Project Wallet App Showcase" loading="lazy" decoding="async" width="340" height="420">
                         </div>
                         <div class="marquee-card card-idx-3 marquee-card--video-placeholder" aria-hidden="true" data-video-src="assets/Maquee Images/SKIN-CARE-GERO.mp4">
                             <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline loading="lazy"></video>
@@ -473,6 +479,7 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
     <script src="js/cms-loader.js"></script>
+    <script src="js/marquee-optimizer.js"></script>
     <script>
         // Trigger Dynamic Loading
         document.addEventListener('DOMContentLoaded', () => {
