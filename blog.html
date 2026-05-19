@@ -70,7 +70,7 @@
                             <path d="m19.07 4.93-1.41 1.41" />
                         </svg>
                     </button>
-                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-primary desktop-btn">Book a Call</a>
+                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="nav-btn-lux desktop-btn"><svg class="phone-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call</a>
                     <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle mobile menu">
                         <span></span>
                         <span></span>
@@ -83,20 +83,25 @@
 
     <!-- Mobile Navigation Overlay -->
     <div class="mobile-overlay" id="mobile-overlay">
-        <ul class="mobile-nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="work.html">Work</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="blog.html" class="active">Blog</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-primary" style="margin-top: 10px;">Book a Call</a></li>
-        </ul>
+        <div class="mobile-overlay-inner">
+            <ul class="mobile-nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="work.html">Work</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            
+            <div class="mobile-menu-cta">
+                <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="nav-btn-lux mobile-cta-btn">
+                    <svg class="phone-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call</a>
+            </div>
+        </div>
     </div>
 
     <main>
         <section class="work-hero" style="padding-bottom: 60px;">
             <div class="container text-center reveal-on-scroll">
-                <span class="badge">Blog</span>
                 <h1>Design <span class="gradient-text-gray">Discourse</span></h1>
                 <p class="hero-sub">Sharing my perspective on design strategy, product psychology, and the art of simple code.</p>
             </div>
@@ -134,7 +139,7 @@
                      <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo">
                      <span class="logo-text">BlissDezign</span>
                 </div>
-                <p class="footer-desc">I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
+                <p class="footer-desc">Focused on product clarity, onboarding, and retention. I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
                 <div class="footer-socials">
                     <a href="https://www.linkedin.com/in/emmanuelbliss/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
                     <a href="https://www.behance.net/blissstudionuelly" target="_blank"><i class="fa-brands fa-behance"></i></a>

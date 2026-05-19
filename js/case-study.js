@@ -102,7 +102,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         let content = `
             <section class="cs-hero">
                 <div class="container text-center">
-                    <span class="badge">Case Study</span>
                     <h1>${data.title} <br> <span class="gradient-text-gray">${data.subtitle}</span></h1>
                 </div>
             </section>

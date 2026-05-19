@@ -34,12 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileBtn = document.getElementById('mobile-menu-btn');
     const mobileOverlay = document.getElementById('mobile-overlay');
     const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+    const headerEl = document.querySelector('header');
 
     if (mobileBtn && mobileOverlay) {
         // Toggle menu visibility and animated burger state
         mobileBtn.addEventListener('click', () => {
             mobileBtn.classList.toggle('active');
             mobileOverlay.classList.toggle('active');
+            if (headerEl) headerEl.classList.toggle('menu-open');
 
             // Prevent body scrolling when menu is open
             body.style.overflow = mobileOverlay.classList.contains('active') ? 'hidden' : '';
@@ -50,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link.addEventListener('click', () => {
                 mobileBtn.classList.remove('active');
                 mobileOverlay.classList.remove('active');
+                if (headerEl) headerEl.classList.remove('menu-open');
                 body.style.overflow = '';
             });
         });
@@ -374,6 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         allMarqueeVideos.forEach(video => videoObserver.observe(video));
     }
+
 });
 
 // Project Gallery Filtering Logic (for work.html)

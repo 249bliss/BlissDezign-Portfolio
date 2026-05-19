@@ -79,7 +79,7 @@
                             <path d="m19.07 4.93-1.41 1.41" />
                         </svg>
                     </button>
-                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-primary desktop-btn">Book a Call</a>
+                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="nav-btn-lux desktop-btn"><svg class="phone-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call</a>
                     <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle mobile menu">
                         <span></span>
                         <span></span>
@@ -92,20 +92,25 @@
 
     <!-- Mobile Navigation Overlay -->
     <div class="mobile-overlay" id="mobile-overlay">
-        <ul class="mobile-nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="work.html" class="active">Work</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-primary" style="margin-top: 10px;">Book a Call</a></li>
-        </ul>
+        <div class="mobile-overlay-inner">
+            <ul class="mobile-nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="work.html" class="active">Work</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            
+            <div class="mobile-menu-cta">
+                <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="nav-btn-lux mobile-cta-btn">
+                    <svg class="phone-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call</a>
+            </div>
+        </div>
     </div>
 
     <main>
         <section class="work-hero">
             <div class="container text-center reveal-on-scroll">
-                <span class="badge">Portfolio</span>
                 <h1>Selected <span class="gradient-text-gray">Work</span></h1>
                 <p class="hero-sub">Exploring the intersection of intentionality, usability, and visual excellence across digital products.</p>
             </div>
@@ -129,13 +134,17 @@
         </section>
 
         <!-- Vision CTA -->
-        <section class="vision-cta-section">
-            <div class="container text-center reveal-on-scroll">
-                <h2>Have a project in mind?</h2>
-                <p>Let’s collaborate to build products that solve real problems.</p>
-                <div class="hero-actions" style="justify-content: center; margin-top: 40px;">
-                    <a href="contact.html" class="btn btn-primary">Let's Talk ↗</a>
-                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-secondary">Book a Call</a>
+        <section class="vision-cta-section" style="padding: 120px 0; text-align: center;">
+            <div class="container reveal-on-scroll" style="max-width: 800px; margin: 0 auto;">
+                <h2 style="font-size: 56px; font-weight: 500; margin-bottom: 20px; line-height: 1.1;">Have a project in mind?</h2>
+                <p style="font-size: 20px; color: var(--text-muted); margin-bottom: 50px;">Let's collaborate to build products that solve real problems.</p>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+                    <a href="contact.html" class="btn btn-editorial-primary" style="text-decoration: none; border-radius: 50px; height: 55px; width: 220px; box-sizing: border-box; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; text-transform: uppercase; padding: 0;">
+                        EMAIL ME ↗
+                    </a>
+                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-editorial-secondary" style="text-decoration: none; border-radius: 50px; height: 55px; width: 220px; box-sizing: border-box; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; padding: 0;">
+                        <svg class="phone-icon" style="width: 16px; height: 16px; flex-shrink: 0;" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call
+                    </a>
                 </div>
             </div>
         </section>
@@ -148,7 +157,7 @@
                      <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30" loading="lazy">
                      <span class="logo-text">BlissDezign</span>
                 </div>
-                <p class="footer-desc">I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
+                <p class="footer-desc">Focused on product clarity, onboarding, and retention. I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
                 <div class="footer-socials">
                     <a href="https://www.linkedin.com/in/emmanuelbliss/" target="_blank" aria-label="LinkedIn">
                         <i class="fa-brands fa-linkedin-in"></i>

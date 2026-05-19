@@ -72,8 +72,10 @@
         <div class="container">
             <nav class="nav-container">
                 <div class="logo">
-                    <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30">
-                    <span class="logo-text">BlissDezign</span>
+                     <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+                        <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30">
+                        <span class="logo-text">BlissDezign</span>
+                     </a>
                 </div>
                 <ul class="nav-links">
                     <li><a href="#home" class="active">Home</a></li>
@@ -99,7 +101,7 @@
                         </svg>
                     </button>
                     <a href="https://cal.com/blissdezigns/discovery-call" target="_blank"
-                        class="btn btn-primary desktop-btn">Book a Call</a>
+                        class="nav-btn-lux desktop-btn"><svg class="phone-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call</a>
                     <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle mobile menu">
                         <span></span>
                         <span></span>
@@ -112,15 +114,20 @@
 
     <!-- Mobile Navigation Overlay -->
     <div class="mobile-overlay" id="mobile-overlay">
-        <ul class="mobile-nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="work.html">Work</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-primary"
-                    style="margin-top: 10px;">Book a Call</a></li>
-        </ul>
+        <div class="mobile-overlay-inner">
+            <ul class="mobile-nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="work.html">Work</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            
+            <div class="mobile-menu-cta">
+                <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="nav-btn-lux mobile-cta-btn">
+                    <svg class="phone-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call</a>
+            </div>
+        </div>
     </div>
 
     <main>
@@ -128,73 +135,71 @@
         <section id="home" class="hero">
             <div class="container hero-grid">
                 <div class="hero-content">
-                    <span class="badge">Available for hire</span>
-                    <h1>Designing Products <br> <span class="text-light-gray"
-                            style="color: var(--text-muted); background: none; -webkit-text-fill-color: currentcolor;">Users
-                            Trust</span></h1>
-                    <p>Hi, I’m Emmanuel Bliss, a Product Designer & no-code dev that simplify complex workflows, reduce
-                        user drop-off, and improve retention.</p>
+
+                    <h1 class="hero-title">Designing for trust<span class="accent-dot">.</span></h1>
+                    <p class="hero-intro">Hi, I’m Emmanuel Bliss, a Product Designer & AI-Assisted Developer focused on simplifying complex workflows and improving digital experiences.</p>
                     <div class="hero-actions">
                         <a href="https://cal.com/blissdezigns/discovery-call" target="_blank"
-                            class="btn btn-primary">Book a Call</a>
-                        <a href="#work" class="btn btn-secondary">Portfolio ↗</a>
+                            class="btn btn-editorial-primary"><svg class="phone-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call</a>
+                        <a href="#work" class="btn btn-editorial-secondary">Work <span class="arrow">↗</span></a>
                     </div>
                 </div>
                 <div class="hero-image-container">
-                    <div class="image-wrapper">
-                        <img src="assets/Main profile.webp" alt="BlissDezign Profile" class="profile-img" width="800" height="800" fetchpriority="high">
-                    </div>
+                    <div class="hero-purple-glow"></div>
+                    <div class="hero-glow-blur"></div>
+                    <img src="assets/Profile1234.png" alt="Emmanuel Bliss Profile" class="hero-portrait" width="800" height="800" fetchpriority="high">
                 </div>
             </div>
         </section>
 
-        <!-- Portfolio Gallery (Horizontal Marquee) -->
-        <section class="portfolio-gallery">
-            <div class="marquee">
-                <div class="marquee-content" id="marquee-content">
-                    <!-- Set 1 -->
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Desktop.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
-                    </div>
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 12.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
-                    </div>
-                    <div class="marquee-card">
-                        <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline></video>
-                    </div>
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43730.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
-                    </div>
-                    <div class="marquee-card">
-                        <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline></video>
-                    </div>
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43731.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
-                    </div>
-                </div>
-                <!-- Set 2 (for infinite loop - separated for GPU memory limit fix) -->
-                <div class="marquee-content" aria-hidden="true">
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Desktop.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
-                    </div>
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 12.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
-                    </div>
-                    <div class="marquee-card marquee-card--video-placeholder"
-                        data-video-src="assets/Maquee Images/SKIN-CARE-GERO.mp4">
-                        <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline
-                            loading="lazy"></video>
-                    </div>
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43730.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
-                    </div>
-                    <div class="marquee-card marquee-card--video-placeholder"
-                        data-video-src="assets/Maquee Images/Scene.mp4">
-                        <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline
-                            loading="lazy"></video>
-                    </div>
-                    <div class="marquee-card">
-                        <img src="assets/Maquee Images/Frame 43731.webp" alt="Project" loading="lazy" decoding="async" width="380" height="480">
+        <!-- Premium Minimalist Showcase (Classic Editorial) -->
+        <section class="premium-showcase" id="portfolio-gallery">
+            <!-- Elegant Side Vignette Edge Fades -->
+            <div class="marquee-fade-overlay left"></div>
+            <div class="marquee-fade-overlay right"></div>
+
+            <div class="marquee-container">
+                <div class="marquee-row">
+                    <div class="marquee-track">
+                        <!-- Set 1 -->
+                        <div class="marquee-card card-idx-1">
+                            <img src="assets/Maquee Images/Desktop.webp" alt="Project Desktop Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
+                        <div class="marquee-card card-idx-2">
+                            <img src="assets/Maquee Images/Frame 12.png" alt="Project Wallet App Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
+                        <div class="marquee-card card-idx-3">
+                            <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline></video>
+                        </div>
+                        <div class="marquee-card card-idx-4">
+                            <img src="assets/Maquee Images/Frame 43730.webp" alt="Project Finance App Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
+                        <div class="marquee-card card-idx-5">
+                            <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline></video>
+                        </div>
+                        <div class="marquee-card card-idx-6">
+                            <img src="assets/Maquee Images/Frame 43731.webp" alt="Project Mobile Interface Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
+
+                        <!-- Set 1 Duplicate for Perfect Infinite Scroll -->
+                        <div class="marquee-card card-idx-1" aria-hidden="true">
+                            <img src="assets/Maquee Images/Desktop.webp" alt="Project Desktop Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
+                        <div class="marquee-card card-idx-2" aria-hidden="true">
+                            <img src="assets/Maquee Images/Frame 12.png" alt="Project Wallet App Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
+                        <div class="marquee-card card-idx-3 marquee-card--video-placeholder" aria-hidden="true" data-video-src="assets/Maquee Images/SKIN-CARE-GERO.mp4">
+                            <video src="assets/Maquee Images/SKIN-CARE-GERO.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        </div>
+                        <div class="marquee-card card-idx-4" aria-hidden="true">
+                            <img src="assets/Maquee Images/Frame 43730.webp" alt="Project Finance App Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
+                        <div class="marquee-card card-idx-5 marquee-card--video-placeholder" aria-hidden="true" data-video-src="assets/Maquee Images/Scene.mp4">
+                            <video src="assets/Maquee Images/Scene.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        </div>
+                        <div class="marquee-card card-idx-6" aria-hidden="true">
+                            <img src="assets/Maquee Images/Frame 43731.webp" alt="Project Mobile Interface Showcase" loading="lazy" decoding="async" width="340" height="420">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -319,68 +324,46 @@
             </div>
         </section>
 
-        <!-- Tools Section -->
-        <section class="tools">
-            <div class="container experience-grid">
-                <div class="experience-intro">
-                    <h2 style="margin-bottom: 20px;">My Design tools you should know</h2>
-                    <p style="font-size: 1.15rem;">I use a mix of design, build, and AI tools to move from idea to
-                        usable product faster without losing clarity or intention.</p>
-                </div>
-                <div class="tools-interactive-container">
-                    <div class="dotted-canvas" id="canvas-container">
-                        <!-- Floating Items -->
-                        <div class="floating-pill-wrapper" style="top: 45%; left: 30%;" data-orig-top="45%"
-                            data-orig-left="30%">
-                            <div class="floating-pill" style="transform: rotate(-5deg);">Product Design</div>
-                        </div>
-                        <div class="floating-pill-wrapper" style="top: 65%; left: 80%;" data-orig-top="65%"
-                            data-orig-left="80%">
-                            <div class="floating-pill" style="transform: rotate(35deg);">Prototyping</div>
-                        </div>
-                        <div class="floating-pill-wrapper" style="top: 70%; left: 55%;" data-orig-top="70%"
-                            data-orig-left="55%">
-                            <div class="floating-pill" style="transform: rotate(-5deg);">UX Strategy</div>
-                        </div>
-                        <div class="floating-pill-wrapper" style="top: 75%; left: 20%;" data-orig-top="75%"
-                            data-orig-left="20%">
-                            <div class="floating-pill" style="transform: rotate(-40deg);">AI tools</div>
-                        </div>
-                        <div class="floating-pill-wrapper" style="top: 85%; left: 40%;" data-orig-top="85%"
-                            data-orig-left="40%">
-                            <div class="floating-pill" style="transform: rotate(-5deg);">Framer</div>
-                        </div>
-                        <div class="floating-pill-wrapper" style="top: 85%; left: 75%;" data-orig-top="85%"
-                            data-orig-left="75%">
-                            <div class="floating-pill" style="transform: rotate(5deg);">Figma</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Testimonials Section -->
-        <section id="testimonials" class="testimonials">
+
+        <!-- Modern Testimonials Section -->
+        <section id="testimonials" class="testimonials-modern">
             <div class="container">
-                <h2 class="section-title text-center">Words from clients and collaborators</h2>
-
-                <div class="stats-container reveal-on-scroll">
-                    <div class="stat-item">
-                        <h3 class="stat-number">10<span class="stat-plus">+</span></h3>
-                        <p class="stat-label">Projects Delivered</p>
+                <div class="testimonials-top reveal-on-scroll">
+                    <div class="testimonials-title-area">
+                        <h2>Trusted by amazing teams and founders worldwide</h2>
                     </div>
-                    <div class="stat-item">
-                        <h3 class="stat-number">90<span class="stat-plus">%</span></h3>
-                        <p class="stat-label">Client Satisfaction</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3 class="stat-number">3<span class="stat-plus">+</span></h3>
-                        <p class="stat-label">Years Experience</p>
+                    
+                    <div class="testimonials-stats">
+                        <div class="stat-box">
+                            <h3 class="stat-number">10</h3><span class="stat-suffix">+</span>
+                            <p>Projects Delivered</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3 class="stat-number">90</h3><span class="stat-suffix">%</span>
+                            <p>Client Satisfaction</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3 class="stat-number">3</h3><span class="stat-suffix">+</span>
+                            <p>Years Experience</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3 class="stat-number">100</h3><span class="stat-suffix">%</span>
+                            <p>Project Transparency</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="testimonial-marquee dynamic-testimonials">
-                    <!-- Dynamic Testimonials Load Here -->
+                <div class="testimonial-slider-wrapper reveal-on-scroll">
+                    <button class="slider-side-btn prev-btn" aria-label="Previous Testimonial"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="testimonial-slider dynamic-testimonials" id="dynamic-testimonials">
+                        <!-- Dynamic Testimonials Load Here via cms-loader -->
+                    </div>
+                    <button class="slider-side-btn next-btn" aria-label="Next Testimonial"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="slider-controls">
+                        <button class="slider-btn prev-btn" aria-label="Previous Testimonial"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button class="slider-btn next-btn" aria-label="Next Testimonial"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -422,8 +405,7 @@
                     <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30" loading="lazy">
                     <span class="logo-text">BlissDezign</span>
                 </div>
-                <p class="footer-desc">I help brands move forward by creating user-focused designs that are not just
-                    beautiful, but also functional and scalable.</p>
+                <p class="footer-desc">Focused on product clarity, onboarding, and retention. I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
                 <div class="footer-socials">
                     <a href="https://www.linkedin.com/in/emmanuelbliss/" target="_blank" aria-label="LinkedIn">
                         <i class="fa-brands fa-linkedin-in"></i>

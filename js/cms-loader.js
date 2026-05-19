@@ -124,10 +124,10 @@ const CMSLoader = {
         }
     },
 
-    // 3. Fetch Testimonials for Marquee
+    // 3. Fetch Testimonials for Slider
     loadDynamicTestimonials: async (containerId) => {
-        const marquee = document.querySelector(`.${containerId}`);
-        if (!marquee) return;
+        const sliderContainer = document.querySelector(`.${containerId}`);
+        if (!sliderContainer) return;
 
         console.log("Fetching testimonials...");
         const { data: reviews, error } = await supabaseClient
@@ -142,45 +142,84 @@ const CMSLoader = {
 
         if (!reviews || reviews.length === 0) return;
 
-        // Structure for the marquee (dual set for infinite scroll)
         const renderSet = (items) => items.map(rev => `
-            <div class="testimonial-card">
-                <div class="testimonial-header">
-                    <div class="author-avatar">
-                        <img src="${rev.avatar_url}" alt="${rev.author_name}">
+            <div class="modern-test-card">
+                <div class="modern-test-image">
+                    <div class="modern-test-image-inner">
+                        <img src="${rev.avatar_url || 'assets/avatar_placeholder.png'}" alt="${rev.author_name}" onerror="this.src='assets/avatar_placeholder.png'">
                     </div>
-                    <div class="author-info">
-                        <h4>${rev.author_name}</h4>
-                        <span>${rev.author_role}</span>
-                    </div>
-                    <div class="social-icon"><i class="fa-brands fa-x-twitter"></i></div>
                 </div>
-                <p class="testimonial-text">"${rev.review_text}"</p>
+                <div class="modern-test-content">
+                    <div class="quote-icon">”</div>
+                    <p class="modern-test-text">"${rev.review_text}"</p>
+                    <div class="modern-test-author">
+                        <h4>${rev.author_name}</h4>
+                        <p>${rev.author_role}</p>
+                    </div>
+                </div>
             </div>
         `).join('');
 
-        marquee.innerHTML = `
-            <div class="testimonial-marquee-content">
-                ${renderSet(reviews)}
-            </div>
-            <div class="testimonial-marquee-content" aria-hidden="true">
-                ${renderSet(reviews)}
-            </div>
-        `;
+        sliderContainer.innerHTML = renderSet(reviews);
 
-        // Re-apply pause logic
-        CMSLoader.initMarqueeInteractivity(marquee);
+        // Initialize slider logic
+        CMSLoader.initSliderInteractivity(sliderContainer);
     },
 
-    initMarqueeInteractivity: (marquee) => {
-        marquee.addEventListener('click', () => {
-            const contents = marquee.querySelectorAll('.testimonial-marquee-content');
-            contents.forEach(content => {
-                const currentPlayState = window.getComputedStyle(content).animationPlayState;
-                content.style.animationPlayState = currentPlayState === 'paused' ? 'running' : 'paused';
+    initSliderInteractivity: (sliderContainer) => {
+        const wrapper = sliderContainer.closest('.testimonial-slider-wrapper');
+        if (!wrapper) return;
+        
+        const prevBtns = wrapper.querySelectorAll('.prev-btn');
+        const nextBtns = wrapper.querySelectorAll('.next-btn');
+        const cards = sliderContainer.querySelectorAll('.modern-test-card');
+        
+        if (!cards.length) return;
+        
+        let currentIndex = 0;
+        
+        const updateSlider = () => {
+            cards.forEach((card, index) => {
+                card.style.transform = `translateX(-${currentIndex * 100}%)`;
             });
-            marquee.classList.toggle('is-paused');
+            
+            // Update disabled states
+            prevBtns.forEach(btn => {
+                if (currentIndex === 0) {
+                    btn.classList.add('disabled');
+                } else {
+                    btn.classList.remove('disabled');
+                }
+            });
+            
+            nextBtns.forEach(btn => {
+                if (currentIndex === cards.length - 1) {
+                    btn.classList.add('disabled');
+                } else {
+                    btn.classList.remove('disabled');
+                }
+            });
+        };
+        
+        prevBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateSlider();
+                }
+            });
         });
+        
+        nextBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentIndex < cards.length - 1) {
+                    currentIndex++;
+                    updateSlider();
+                }
+            });
+        });
+        
+        updateSlider();
     },
 
     // 4. Fetch Blog Posts
