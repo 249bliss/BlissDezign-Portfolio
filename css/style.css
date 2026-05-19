@@ -4111,6 +4111,7 @@ form select option {
 /* Modern Testimonial Card */
 .modern-test-card {
     min-width: 100%;
+    height: 100%;
     background: #fafcff;
     border: 1px solid rgba(0,0,0,0.04);
     border-radius: 16px;
@@ -4160,6 +4161,7 @@ form select option {
     flex-direction: column;
     justify-content: center;
     position: relative;
+    height: 100%;
 }
 
 .quote-icon {
@@ -4184,6 +4186,11 @@ form select option {
     margin-bottom: 20px;
     position: relative;
     z-index: 2;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .modern-test-author h4 {
@@ -4238,7 +4245,11 @@ form select option {
     .modern-test-card {
         flex-direction: column;
         padding: 30px;
-        gap: 30px;
+        gap: 20px;
+        justify-content: flex-start;
+    }
+    .modern-test-content {
+        justify-content: flex-start;
     }
     .modern-test-image {
         flex: none;
@@ -4263,8 +4274,10 @@ form select option {
         right: -5px;
     }
     .modern-test-card {
-        padding: 20px 20px; /* Reduce padding inside testimonial frame */
+        height: 420px; /* Uniform card size */
+        padding: 25px 20px;
         gap: 20px;
+        justify-content: flex-start;
     }
     .modern-test-image {
         width: 110px;
@@ -4280,7 +4293,11 @@ form select option {
     .modern-test-text {
         font-size: 14px; /* Reduce quote content font-size */
         line-height: 1.5;
-        margin-bottom: 15px;
+        margin-bottom: auto; /* Push author to the bottom to avoid messy gaps */
+        -webkit-line-clamp: 6; /* Reduce details to fit */
+    }
+    .modern-test-content {
+        justify-content: flex-start;
     }
     .quote-icon {
         font-size: 40px; /* Reduce quote icon size */
