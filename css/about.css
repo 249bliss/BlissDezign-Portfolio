@@ -219,3 +219,40 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* ── About Page: Hero Portrait Styles ── */
+.about-hero {
+    overflow: hidden;
+}
+
+.about-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.about-portrait {
+    width: 457px;
+    height: 537px;
+    max-width: 100%;
+    object-fit: cover;
+    z-index: 2;
+    pointer-events: none;
+    display: block;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+}
+
+@media (max-width: 992px) {
+    .about-portrait {
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        object-fit: contain;
+        aspect-ratio: 457/537;
+        margin: 0 auto;
+    }
+}
+
