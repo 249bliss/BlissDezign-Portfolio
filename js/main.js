@@ -180,13 +180,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (entry.isIntersecting) {
                     const statNumbers = entry.target.querySelectorAll('.stat-number');
                     statNumbers.forEach(statEl => {
-                        // Read target from the text node (exclude the suffix span)
-                        let targetValue = 0;
-                        statEl.childNodes.forEach(node => {
-                            if (node.nodeType === Node.TEXT_NODE) {
-                                targetValue = parseInt(node.textContent.trim(), 10) || 0;
-                            }
-                        });
+                        // Read target from the text node or data attribute
+                        let targetValue = statEl.getAttribute('data-target');
+                        if (!targetValue) {
+                            statEl.childNodes.forEach(node => {
+                                if (node.nodeType === Node.TEXT_NODE) {
+                                    targetValue = parseInt(node.textContent.trim(), 10) || 0;
+                                }
+                            });
+                            statEl.setAttribute('data-target', targetValue);
+                        } else {
+                            targetValue = parseInt(targetValue, 10);
+                        }
+
                         // Clear the content immediately so it starts from 0 visually right away
                         statEl.childNodes.forEach(node => {
                             if (node.nodeType === Node.TEXT_NODE) node.textContent = '0';
