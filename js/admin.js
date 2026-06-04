@@ -1081,9 +1081,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const {error} = await supabaseClient.from('reviews').insert([reviewData]);
                     opError = error;
                 }
-                if (!opError) {
-                    setTimeout(() => showAlert("Saved! Note: 'Display Order' was ignored. Add a 'display_order' (int4) column in Supabase to enable sorting."), 1000);
-                }
             }
 
             if (opError) throw opError;
