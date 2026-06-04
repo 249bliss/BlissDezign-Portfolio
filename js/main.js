@@ -193,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         animateCounter(statEl, targetValue);
                     });
-                    obs.unobserve(entry.target); // Fire only once
                 }
             });
         }, { threshold: 0.4 });

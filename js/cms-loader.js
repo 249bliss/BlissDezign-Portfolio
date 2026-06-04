@@ -142,8 +142,11 @@ const CMSLoader = {
         if (!reviews || reviews.length === 0) return;
 
         reviews.sort((a, b) => {
-            const orderA = a.display_order !== undefined ? a.display_order : 0;
-            const orderB = b.display_order !== undefined ? b.display_order : 0;
+            let orderA = parseInt(a.display_order);
+            let orderB = parseInt(b.display_order);
+            if (isNaN(orderA) || orderA === 0) orderA = 999;
+            if (isNaN(orderB) || orderB === 0) orderB = 999;
+            
             if (orderA === orderB) {
                 return new Date(b.created_at) - new Date(a.created_at);
             }
