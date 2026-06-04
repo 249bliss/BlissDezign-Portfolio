@@ -133,6 +133,7 @@ const CMSLoader = {
         const { data: reviews, error } = await supabaseClient
             .from('reviews')
             .select('*')
+            .order('display_order', { ascending: true })
             .order('created_at', { ascending: false });
 
         if (error) {

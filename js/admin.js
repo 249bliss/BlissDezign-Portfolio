@@ -259,22 +259,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('stat-messages').innerText = '...';
             document.getElementById('stat-subscribers').innerText = '...';
 
-            let trafficQuery = supabaseClient.from('analytics').select('created_at').eq('event_type', 'view');
-            let msgQuery = supabaseClient.from('messages').select('created_at');
-            let subQuery = supabaseClient.from('subscribers').select('created_at');
-
             let labelText = "Total Reach";
             let leadsText = "Total Leads";
             let communityText = "Community";
+            let isoDate = null;
 
             if (days > 0) {
                 const dateLimit = new Date();
                 dateLimit.setDate(dateLimit.getDate() - days);
-                const isoDate = dateLimit.toISOString();
-                
-                trafficQuery = trafficQuery.gte('created_at', isoDate);
-                msgQuery = msgQuery.gte('created_at', isoDate);
-                subQuery = subQuery.gte('created_at', isoDate);
+                isoDate = dateLimit.toISOString();
                 
                 let rangeLabel = `Last ${days} Days`;
                 if (days === 1) {
@@ -296,10 +289,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('label-messages').innerText = leadsText;
             document.getElementById('label-subscribers').innerText = communityText;
 
+            // Helper to fetch all rows by paginating 1000 at a time
+            async function fetchAllRecords(table, dateIso) {
+                let allData = [];
+                let from = 0;
+                const step = 1000;
+                while (true) {
+                    let query = supabaseClient.from(table).select('created_at');
+                    if (table === 'analytics') query = query.eq('event_type', 'view');
+                    if (dateIso) query = query.gte('created_at', dateIso);
+                    
+                    const { data, error } = await query.range(from, from + step - 1);
+                    if (error) { console.error(error); break; }
+                    if (!data || data.length === 0) break;
+                    allData = allData.concat(data);
+                    if (data.length < step) break;
+                    from += step;
+                }
+                return { data: allData };
+            }
+
             const [{ data: traffic }, { data: messages }, { data: subs }] = await Promise.all([
-                trafficQuery,
-                msgQuery,
-                subQuery
+                fetchAllRecords('analytics', isoDate),
+                fetchAllRecords('messages', isoDate),
+                fetchAllRecords('subscribers', isoDate)
             ]);
 
             const trafficCount = traffic?.length || 0;
@@ -911,7 +924,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- 4. CRUD: Reviews ---
 
     async function fetchReviews() {
-        const { data, error } = await supabaseClient.from('reviews').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('reviews').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false });
         if (error) return console.error(error);
 
         reviewsList.innerHTML = data.length ? data.map(rev => `
@@ -969,6 +982,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('edit-rev-id').value = rev.id;
         document.getElementById('rev-name').value = rev.author_name;
         document.getElementById('rev-role').value = rev.author_role;
+        document.getElementById('rev-order').value = rev.display_order || 0;
         document.getElementById('rev-text').value = rev.review_text;
         
         const avatarBox = document.getElementById('avatar-preview-box');
@@ -999,6 +1013,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetReviewForm() {
         reviewsForm.reset();
         document.getElementById('edit-rev-id').value = '';
+        document.getElementById('rev-order').value = '0';
         document.getElementById('review-form-title').innerText = 'Add New Testimonial';
         document.getElementById('submit-rev-btn').innerText = 'Publish Testimonial';
         document.getElementById('cancel-rev-btn').style.display = 'none';
@@ -1022,6 +1037,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const author_name = document.getElementById('rev-name').value;
             const author_role = document.getElementById('rev-role').value;
+            const display_order = parseInt(document.getElementById('rev-order').value) || 0;
             const review_text = document.getElementById('rev-text').value;
             
             let avatar_url = null;
@@ -1036,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 avatar_url = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(author_name) + '&background=DF00FF&color=fff&size=256';
             }
 
-            const reviewData = { author_name, author_role, review_text, avatar_url };
+            const reviewData = { author_name, author_role, review_text, avatar_url, display_order };
 
             if (isEdit) {
                 await supabaseClient.from('reviews').update(reviewData).eq('id', editId);

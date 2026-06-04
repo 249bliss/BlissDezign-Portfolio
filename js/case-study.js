@@ -102,7 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         let content = `
             <section class="cs-hero">
                 <div class="container text-center">
-                    <h1>${data.title} <br> <span class="gradient-text-gray">${data.subtitle}</span></h1>
+                    <h1 style="margin-bottom: 16px;">${data.title}</h1>
+                    <p class="gradient-text-gray" style="font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0 auto; max-width: 700px;">${data.subtitle}</p>
                 </div>
             </section>
 
@@ -168,8 +169,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         container.innerHTML = `
             <section class="cs-coming-soon container">
                 <i class="fa-solid fa-compass-drafting"></i>
-                <h1>${projectName} Story <br> <span class="gradient-text-gray">is under build.</span></h1>
-                <p>I'm currently documenting the design process, research, and results for this project. Check back soon for the full deep dive.</p>
+                <h1 style="margin-bottom: 16px;">${projectName} Story</h1>
+                <p class="gradient-text-gray" style="font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0 auto 16px auto; max-width: 600px;">is under build.</p>
+                <p style="font-size: 15px;">I'm currently documenting the design process, research, and results for this project. Check back soon for the full deep dive.</p>
                 <a href="work.html" class="btn btn-primary">Back to Work</a>
             </section>
         `;
