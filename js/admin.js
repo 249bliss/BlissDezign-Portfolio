@@ -1038,6 +1038,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     reviewsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const author_name = document.getElementById('rev-name').value.trim();
+        const author_role = document.getElementById('rev-role').value.trim();
+        const review_text = document.getElementById('rev-text').value.trim();
+
+        if (!author_name || !author_role || !review_text) {
+            return showAlert('Please fill out all required fields: Name, Role, and Review Content.');
+        }
+
         const editId = document.getElementById('edit-rev-id').value;
         const isEdit = !!editId;
 
