@@ -173,13 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(step);
     };
 
-    const statsContainer = document.querySelector('.stats-container');
-    if (statsContainer) {
-        const statNumbers = statsContainer.querySelectorAll('.stat-number');
-
+    const statsContainers = document.querySelectorAll('.stats-container, .testimonials-stats');
+    if (statsContainers.length > 0) {
         const counterObserver = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
                     statNumbers.forEach(statEl => {
                         // Read target from the text node (exclude the suffix span)
                         let targetValue = 0;
@@ -188,6 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 targetValue = parseInt(node.textContent.trim(), 10) || 0;
                             }
                         });
+                        // Clear the content immediately so it starts from 0 visually right away
+                        statEl.childNodes.forEach(node => {
+                            if (node.nodeType === Node.TEXT_NODE) node.textContent = '0';
+                        });
                         animateCounter(statEl, targetValue);
                     });
                     obs.unobserve(entry.target); // Fire only once
@@ -195,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { threshold: 0.4 });
 
-        counterObserver.observe(statsContainer);
+        statsContainers.forEach(container => counterObserver.observe(container));
     }
 
 
