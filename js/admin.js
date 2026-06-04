@@ -924,8 +924,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- 4. CRUD: Reviews ---
 
     async function fetchReviews() {
-        const { data, error } = await supabaseClient.from('reviews').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('reviews').select('*');
         if (error) return console.error(error);
+
+        data.sort((a, b) => {
+            const orderA = a.display_order !== undefined ? a.display_order : 0;
+            const orderB = b.display_order !== undefined ? b.display_order : 0;
+            if (orderA === orderB) {
+                return new Date(b.created_at) - new Date(a.created_at);
+            }
+            return orderA - orderB;
+        });
 
         reviewsList.innerHTML = data.length ? data.map(rev => `
             <div class="review-manage-card">
@@ -1054,11 +1063,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const reviewData = { author_name, author_role, review_text, avatar_url, display_order };
 
+            let opError;
             if (isEdit) {
-                await supabaseClient.from('reviews').update(reviewData).eq('id', editId);
+                const {error} = await supabaseClient.from('reviews').update(reviewData).eq('id', editId);
+                opError = error;
             } else {
-                await supabaseClient.from('reviews').insert([reviewData]);
+                const {error} = await supabaseClient.from('reviews').insert([reviewData]);
+                opError = error;
             }
+
+            if (opError && opError.message && opError.message.includes('display_order')) {
+                delete reviewData.display_order;
+                if (isEdit) {
+                    const {error} = await supabaseClient.from('reviews').update(reviewData).eq('id', editId);
+                    opError = error;
+                } else {
+                    const {error} = await supabaseClient.from('reviews').insert([reviewData]);
+                    opError = error;
+                }
+                if (!opError) {
+                    setTimeout(() => showAlert("Saved! Note: 'Display Order' was ignored. Add a 'display_order' (int4) column in Supabase to enable sorting."), 1000);
+                }
+            }
+
+            if (opError) throw opError;
 
             showToast('Review saved!', 'success');
             resetReviewForm();

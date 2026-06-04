@@ -132,9 +132,7 @@ const CMSLoader = {
         console.log("Fetching testimonials...");
         const { data: reviews, error } = await supabaseClient
             .from('reviews')
-            .select('*')
-            .order('display_order', { ascending: true })
-            .order('created_at', { ascending: false });
+            .select('*');
 
         if (error) {
             console.error("Error loading reviews:", error);
@@ -142,6 +140,15 @@ const CMSLoader = {
         }
 
         if (!reviews || reviews.length === 0) return;
+
+        reviews.sort((a, b) => {
+            const orderA = a.display_order !== undefined ? a.display_order : 0;
+            const orderB = b.display_order !== undefined ? b.display_order : 0;
+            if (orderA === orderB) {
+                return new Date(b.created_at) - new Date(a.created_at);
+            }
+            return orderA - orderB;
+        });
 
         const renderSet = (items) => items.map(rev => `
             <div class="modern-test-card">
