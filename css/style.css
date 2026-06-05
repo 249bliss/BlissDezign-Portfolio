@@ -809,7 +809,7 @@ header.scrolled .nav-container {
 
 .service-card {
     background: var(--bg-card);
-    border-radius: 32px;
+    border-radius: 14px;
     border: 1px solid rgba(168, 85, 247, 0.15);
     overflow: hidden;
     transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -938,7 +938,7 @@ header.scrolled .nav-container {
 
 .masonry-card {
     background: var(--bg-card);
-    border-radius: 20px;
+    border-radius: 14px;
     padding: 15px;
     border: 1px solid var(--border-color);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
@@ -985,7 +985,7 @@ header.scrolled .nav-container {
 
 .masonry-image {
     width: 100%;
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     background: var(--bg-section);
     margin-bottom: 20px;
@@ -1088,7 +1088,7 @@ header.scrolled .nav-container {
     position: relative;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--border-color);
-    border-radius: 30px;
+    border-radius: 14px;
     background: var(--bg-card);
     box-shadow: var(--shadow);
 }
@@ -1308,7 +1308,7 @@ header.scrolled .nav-container {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     padding: 30px;
-    border-radius: 24px;
+    border-radius: 14px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -1411,7 +1411,7 @@ header.scrolled .nav-container {
 .contact-form {
     background: var(--bg-card);
     padding: 50px;
-    border-radius: 30px;
+    border-radius: 14px;
     border: 1px solid var(--border-color);
 }
 
@@ -1606,7 +1606,7 @@ header.scrolled .nav-container {
 .contact-form {
     background: var(--bg-card);
     padding: 50px;
-    border-radius: 30px;
+    border-radius: 14px;
     border: 1px solid var(--border-color);
 }
 
@@ -4258,7 +4258,7 @@ header.scrolled .nav-container {
 .modern-test-card {
     background: #fafcff;
     border: 1px solid rgba(0,0,0,0.04);
-    border-radius: 24px;
+    border-radius: 14px;
     padding: 40px;
     display: flex;
     flex-direction: column;
