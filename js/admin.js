@@ -991,6 +991,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         setLoading(false);
         if (error) return showAlert(error.message);
 
+        let avatarUrl = '';
+        let logoUrl = '';
+        if (rev.avatar_url) {
+            const parts = rev.avatar_url.split('|||');
+            avatarUrl = parts[0] || '';
+            logoUrl = parts[1] || '';
+        }
+
         document.getElementById('edit-rev-id').value = rev.id;
         document.getElementById('rev-name').value = rev.author_name;
         document.getElementById('rev-role').value = rev.author_role;
@@ -1001,9 +1009,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const avatarImg = document.getElementById('avatar-preview-img');
         const avatarSaved = document.getElementById('avatar-saved-status');
 
-        if (rev.avatar_url) {
+        if (avatarUrl) {
             avatarBox.style.display = 'block';
-            avatarImg.src = rev.avatar_url;
+            avatarImg.src = avatarUrl;
             if (avatarSaved) avatarSaved.style.display = 'flex';
             
             const thumb = avatarBox.querySelector('.selection-thumb');
@@ -1011,6 +1019,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 thumb.classList.remove('is-new');
                 thumb.classList.add('is-persisted');
             }
+        } else {
+            avatarBox.style.display = 'none';
+        }
+
+        const logoBox = document.getElementById('company-logo-preview-box');
+        const logoImg = document.getElementById('company-logo-preview-img');
+        const logoSaved = document.getElementById('company-logo-saved-status');
+
+        if (logoUrl) {
+            logoBox.style.display = 'block';
+            logoImg.src = logoUrl;
+            if (logoSaved) logoSaved.style.display = 'flex';
+            
+            const thumb = logoBox.querySelector('.selection-thumb');
+            if (thumb) {
+                thumb.classList.remove('is-new');
+                thumb.classList.add('is-persisted');
+            }
+        } else {
+            logoBox.style.display = 'none';
         }
 
         document.getElementById('review-form-title').innerText = 'Edit Testimonial';
@@ -1032,6 +1060,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const avatarBox = document.getElementById('avatar-preview-box');
         if (avatarBox) avatarBox.style.display = 'none';
+
+        const logoBox = document.getElementById('company-logo-preview-box');
+        if (logoBox) logoBox.style.display = 'none';
         
         window.switchPanel('manage-reviews-panel');
     }
@@ -1061,17 +1092,39 @@ document.addEventListener('DOMContentLoaded', async () => {
             const display_order = parseInt(document.getElementById('rev-order').value) || 0;
             const review_text = document.getElementById('rev-text').value;
             
-            let avatar_url = null;
+            // Parse existing URLs if we are editing
+            let existingAvatarUrl = '';
+            let existingLogoUrl = '';
+            if (isEdit) {
+                const { data } = await supabaseClient.from('reviews').select('avatar_url').eq('id', editId).single();
+                if (data && data.avatar_url) {
+                    const parts = data.avatar_url.split('|||');
+                    existingAvatarUrl = parts[0] || '';
+                    existingLogoUrl = parts[1] || '';
+                }
+            }
+
+            let avatar_url_part = null;
             const avatarFile = document.getElementById('rev-avatar').files[0];
             if (avatarFile) {
-                avatar_url = await uploadImage(avatarFile, 'reviews');
-            } else if (isEdit) {
-                const { data } = await supabaseClient.from('reviews').select('avatar_url').eq('id', editId).single();
-                avatar_url = data.avatar_url;
+                avatar_url_part = await uploadImage(avatarFile, 'reviews');
+            } else if (isEdit && existingAvatarUrl) {
+                avatar_url_part = existingAvatarUrl;
             } else {
                 // Default fallback avatar if none provided for new review
-                avatar_url = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(author_name) + '&background=DF00FF&color=fff&size=256';
+                avatar_url_part = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(author_name) + '&background=DF00FF&color=fff&size=256';
             }
+
+            let logo_url_part = '';
+            const logoFile = document.getElementById('rev-company-logo').files[0];
+            if (logoFile) {
+                logo_url_part = await uploadImage(logoFile, 'reviews');
+            } else if (isEdit && existingLogoUrl) {
+                logo_url_part = existingLogoUrl;
+            }
+
+            // Combine both parts into avatar_url field using ||| separator
+            const avatar_url = logo_url_part ? `${avatar_url_part}|||${logo_url_part}` : avatar_url_part;
 
             const reviewData = { author_name, author_role, review_text, avatar_url, display_order };
 
@@ -1557,6 +1610,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (revInput) {
             revInput.addEventListener('change', () => {
                 updateSinglePreview(revInput, revBox, revImg, null, revSaved);
+            });
+        }
+
+        const compLogoInput = document.getElementById('rev-company-logo');
+        const compLogoBox = document.getElementById('company-logo-preview-box');
+        const compLogoImg = document.getElementById('company-logo-preview-img');
+        const compLogoSaved = document.getElementById('company-logo-saved-status');
+
+        if (compLogoInput) {
+            compLogoInput.addEventListener('change', () => {
+                updateSinglePreview(compLogoInput, compLogoBox, compLogoImg, null, compLogoSaved);
             });
         }
 

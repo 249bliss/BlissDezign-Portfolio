@@ -124,10 +124,10 @@ const CMSLoader = {
         }
     },
 
-    // 3. Fetch Testimonials for Slider
+    // 3. Fetch Testimonials for Grid/Vertical List
     loadDynamicTestimonials: async (containerId) => {
-        const sliderContainer = document.querySelector(`.${containerId}`);
-        if (!sliderContainer) return;
+        const gridContainer = document.querySelector(`.${containerId}`);
+        if (!gridContainer) return;
 
         console.log("Fetching testimonials...");
         const { data: reviews, error } = await supabaseClient
@@ -153,84 +153,78 @@ const CMSLoader = {
             return orderA - orderB;
         });
 
-        const renderSet = (items) => items.map(rev => `
-            <div class="modern-test-card">
-                <div class="modern-test-image">
-                    <div class="modern-test-image-inner">
-                        <img src="${rev.avatar_url || 'assets/avatar_placeholder.png'}" alt="${rev.author_name}" onerror="this.src='assets/avatar_placeholder.png'">
+        const renderSet = (items) => items.map(rev => {
+            const urls = rev.avatar_url ? rev.avatar_url.split('|||') : [];
+            const avatarUrl = urls[0] || 'assets/avatar_placeholder.png';
+            const logoUrl = urls[1] || null;
+
+            // Render company logo badge overlay
+            let logoOverlay = '';
+            if (logoUrl) {
+                logoOverlay = `<div class="brand-badge-overlay"><img src="${logoUrl}" alt="Brand Logo"></div>`;
+            } else {
+                // Fallback detection from role name text
+                const roleLower = (rev.author_role || '').toLowerCase();
+                if (roleLower.includes('spotify')) {
+                    logoOverlay = `<div class="brand-badge-overlay spotify"><i class="fa-brands fa-spotify"></i></div>`;
+                } else if (roleLower.includes('meta') || roleLower.includes('facebook')) {
+                    logoOverlay = `<div class="brand-badge-overlay meta"><i class="fa-brands fa-meta"></i></div>`;
+                } else if (roleLower.includes('booking')) {
+                    logoOverlay = `<div class="brand-badge-overlay booking"><span>B.</span></div>`;
+                } else if (roleLower.includes('google')) {
+                    logoOverlay = `<div class="brand-badge-overlay google"><i class="fa-brands fa-google"></i></div>`;
+                } else if (roleLower.includes('apple')) {
+                    logoOverlay = `<div class="brand-badge-overlay apple"><i class="fa-brands fa-apple"></i></div>`;
+                }
+            }
+
+            return `
+                <div class="modern-test-card reveal-on-scroll" data-reveal>
+                    <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+                    <p class="modern-test-text">${rev.review_text.startsWith('"') ? rev.review_text : `"${rev.review_text}"`}</p>
+                    <div class="modern-test-author-row">
+                        <div class="modern-test-avatar-container">
+                            <img src="${avatarUrl}" alt="${rev.author_name}" onerror="this.src='assets/avatar_placeholder.png'">
+                            ${logoOverlay}
+                        </div>
+                        <div class="modern-test-author-info">
+                            <span class="author-name">${rev.author_name.toUpperCase()}</span>
+                            <span class="author-company">${rev.author_role.toUpperCase()}</span>
+                        </div>
                     </div>
                 </div>
-                <div class="modern-test-content">
-                    <div class="quote-icon">”</div>
-                    <p class="modern-test-text">"${rev.review_text}"</p>
-                    <div class="modern-test-author">
-                        <h4>${rev.author_name}</h4>
-                        <p>${rev.author_role}</p>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
-        sliderContainer.innerHTML = renderSet(reviews);
+        gridContainer.innerHTML = renderSet(reviews);
 
-        // Initialize slider logic
-        CMSLoader.initSliderInteractivity(sliderContainer);
-    },
+        // Control see-all expand/collapse functionality
+        const wrapper = document.getElementById('testimonials-grid-wrapper');
+        const fadeOverlay = document.getElementById('testimonials-fade-overlay');
+        const seeAllBtn = document.getElementById('see-all-btn');
 
-    initSliderInteractivity: (sliderContainer) => {
-        const wrapper = sliderContainer.closest('.testimonial-slider-wrapper');
-        if (!wrapper) return;
-        
-        const prevBtns = wrapper.querySelectorAll('.prev-btn');
-        const nextBtns = wrapper.querySelectorAll('.next-btn');
-        const cards = sliderContainer.querySelectorAll('.modern-test-card');
-        
-        if (!cards.length) return;
-        
-        let currentIndex = 0;
-        
-        const updateSlider = () => {
-            cards.forEach((card, index) => {
-                card.style.transform = `translateX(-${currentIndex * 100}%)`;
-            });
-            
-            // Update disabled states
-            prevBtns.forEach(btn => {
-                if (currentIndex === 0) {
-                    btn.classList.add('disabled');
-                } else {
-                    btn.classList.remove('disabled');
-                }
-            });
-            
-            nextBtns.forEach(btn => {
-                if (currentIndex === cards.length - 1) {
-                    btn.classList.add('disabled');
-                } else {
-                    btn.classList.remove('disabled');
-                }
-            });
-        };
-        
-        prevBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                    updateSlider();
-                }
-            });
-        });
-        
-        nextBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (currentIndex < cards.length - 1) {
-                    currentIndex++;
-                    updateSlider();
-                }
-            });
-        });
-        
-        updateSlider();
+        if (reviews.length <= 4) {
+            if (fadeOverlay) fadeOverlay.style.display = 'none';
+            if (wrapper) wrapper.classList.add('no-fade');
+        } else {
+            if (fadeOverlay) fadeOverlay.style.display = 'flex';
+            if (seeAllBtn) {
+                seeAllBtn.addEventListener('click', () => {
+                    const isExpanded = wrapper.classList.contains('is-expanded');
+                    if (isExpanded) {
+                        wrapper.classList.remove('is-expanded');
+                        seeAllBtn.innerHTML = 'See All';
+                        const target = document.getElementById('testimonials');
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        wrapper.classList.add('is-expanded');
+                        seeAllBtn.innerHTML = 'See Less';
+                    }
+                });
+            }
+        }
+
+        CMSLoader.triggerReveal(gridContainer);
     },
 
     // 4. Fetch Blog Posts
