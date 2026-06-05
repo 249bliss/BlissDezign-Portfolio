@@ -1933,7 +1933,7 @@ header.scrolled .nav-container {
     .marquee-card {
         min-width: 220px;
         height: 280px;
-        border-radius: 20px;
+        border-radius: 8px;
         padding: 12px;
     }
 
@@ -1971,7 +1971,7 @@ header.scrolled .nav-container {
         height: auto;
         padding: 22px;
         gap: 16px;
-        border-radius: 20px;
+        border-radius: 8px;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -2010,7 +2010,7 @@ header.scrolled .nav-container {
     /* Form & Layout Refinement */
     .contact-form {
         padding: 24px; /* Reduced from 50px for better fit */
-        border-radius: 24px;
+        border-radius: 8px;
     }
 
     .form-group input, 
@@ -4442,7 +4442,7 @@ header.scrolled .nav-container {
     }
     .modern-test-card {
         padding: 30px 24px;
-        border-radius: 20px;
+        border-radius: 8px;
     }
     .modern-test-text {
         font-size: 1.05rem;
@@ -4454,4 +4454,32 @@ header.scrolled .nav-container {
     }
 }
 
-
+/* ── Mobile: Reduce all card border-radius to 8px ── */
+@media (max-width: 768px) {
+    .service-card {
+        border-radius: 8px;
+    }
+    .experience-card {
+        border-radius: 8px;
+    }
+    .masonry-card {
+        border-radius: 8px;
+    }
+    .masonry-image {
+        border-radius: 6px;
+    }
+    .cs-hero-image {
+        border-radius: 8px;
+    }
+    .founder-box,
+    .philosophy-box,
+    .story-milestone {
+        border-radius: 8px;
+    }
+    .interest-card {
+        border-radius: 8px;
+    }
+    .life-item {
+        border-radius: 8px;
+    }
+}
