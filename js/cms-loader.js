@@ -40,7 +40,7 @@ const CMSLoader = {
             .select('*')
             .eq('is_featured', true)
             .order('display_order', { ascending: true })
-            .limit(10);
+            .limit(4); // Only 4 items for the new layout
 
         if (error) {
             console.error("Error loading home projects:", error);
@@ -48,21 +48,25 @@ const CMSLoader = {
         }
 
         if (!projects || projects.length === 0) {
-            container.innerHTML = '<p class="text-muted">No projects found. Use the admin panel to add some!</p>';
+            container.innerHTML = '<p class="text-muted text-center">No projects found. Use the admin panel to add some!</p>';
             return;
         }
 
         container.innerHTML = projects.map((project, index) => {
-            const isLarge = project.grid_layout === 'large';
             return `
-                <a href="case-study.html?project=${project.id}" class="masonry-card ${isLarge ? 'masonry-large' : ''} reveal-on-scroll">
-                    <div class="masonry-image">
+                <a href="case-study.html?project=${project.id}" class="portfolio-card-large reveal-on-scroll" style="text-decoration: none; color: inherit;">
+                    <div class="portfolio-image-wrapper" data-cursor="view" style="width: 100%; border-radius: 20px; overflow: hidden; margin-bottom: 40px; position: relative;">
                         ${CMSLoader.renderMedia(project.hero_image, project.title)}
                     </div>
-                    <div class="masonry-info">
-                        <h3>${project.title}</h3>
-                        <div class="masonry-tags">
-                            ${(project.category_tags || []).map(tag => `<span>${tag}</span>`).join('')}
+                    <div class="portfolio-card-bottom" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div class="portfolio-card-info">
+                            <h3 style="font-size: 2.5rem; font-weight: 500; font-family: var(--font-heading); margin: 0 0 12px 0;">${project.title}</h3>
+                            <div class="portfolio-tags" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                ${(project.category_tags || []).map(tag => `<span style="padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; font-size: 0.85rem; text-transform: uppercase;">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="portfolio-card-icon" style="width: 50px; height: 50px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                            <i class="fa-solid fa-chevron-right"></i>
                         </div>
                     </div>
                 </a>
@@ -94,22 +98,26 @@ const CMSLoader = {
         }
 
         container.innerHTML = projects.map((project, index) => {
-            const isLarge = project.grid_layout === 'large';
             const filterClass = (project.category_tags || [])
                 .map(t => t.toLowerCase().replace(/\s+/g, '-'))
                 .join(' ');
 
             return `
                 <a href="case-study.html?project=${project.id}" 
-                   class="masonry-card ${isLarge ? 'masonry-large' : ''} filter-item ${filterClass} reveal-on-scroll" 
-                   data-reveal>
-                    <div class="masonry-image">
+                   class="portfolio-card-large filter-item ${filterClass} reveal-on-scroll" 
+                   data-reveal style="text-decoration: none; color: inherit;">
+                    <div class="portfolio-image-wrapper" data-cursor="view" style="width: 100%; border-radius: 20px; overflow: hidden; margin-bottom: 40px; position: relative;">
                         ${CMSLoader.renderMedia(project.hero_image, project.title)}
                     </div>
-                    <div class="masonry-info">
-                        <h3>${project.title}</h3>
-                        <div class="masonry-tags">
-                            ${(project.category_tags || []).map(tag => `<span>${tag}</span>`).join('')}
+                    <div class="portfolio-card-bottom" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div class="portfolio-card-info">
+                            <h3 style="font-size: 2.5rem; font-weight: 500; font-family: var(--font-heading); margin: 0 0 12px 0;">${project.title}</h3>
+                            <div class="portfolio-tags" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                ${(project.category_tags || []).map(tag => `<span style="padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; font-size: 0.85rem; text-transform: uppercase;">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="portfolio-card-icon" style="width: 50px; height: 50px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                            <i class="fa-solid fa-chevron-right"></i>
                         </div>
                     </div>
                 </a>

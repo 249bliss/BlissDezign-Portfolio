@@ -55,7 +55,8 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/style-fixes.css?v=1">
     <link rel="stylesheet" href="css/about.css">
 </head>
 
@@ -331,27 +332,19 @@
             </div>
         </section>
 
-        <!-- Vision & Goals -->
-        <section class="about-vision bg-section">
-            <div class="container small-container text-center reveal-on-scroll">
-                <h2 class="section-title">Where I’m Headed</h2>
-                <p class="large-text">I want to work on products that people actually use and remember. I’m focused on improving how users interact with digital systems and helping startups and businesses turn ideas into clear, usable products.</p>
-                <div class="vision-cta">
-                    <a href="contact.html" class="btn btn-primary">Let’s Work Together</a>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-brand">
-                <div class="logo">
-                     <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30" loading="lazy">
-                     <span class="logo-text">BlissDezign</span>
-                </div>
-                <p class="footer-desc">Focused on product clarity, onboarding, and retention. I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
-                <div class="footer-socials">
+    <footer class="new-site-footer">
+        <div class="container">
+            <div class="footer-top-row">
+                <nav class="footer-nav">
+                    <a href="index.html#home">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="work.html">Projects</a>
+                    <a href="blog.html">Blogs</a>
+                    <a href="contact.html">Contact</a>
+                </nav>
+                <div class="footer-social-icons">
                     <a href="https://www.linkedin.com/in/emmanuelbliss/" target="_blank" aria-label="LinkedIn">
                         <i class="fa-brands fa-linkedin-in"></i>
                     </a>
@@ -372,29 +365,13 @@
                     </a>
                 </div>
             </div>
-
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <a href="index.html#home">Home</a>
-                <a href="index.html#work">Work</a>
-                <a href="index.html#services">Services</a>
-                <a href="blog.html">Blog</a>
-            </div>
-
-            <div class="footer-newsletter">
-                <h3>Stay updated</h3>
-                <p>Join my newsletter for the latest design insights and articles.</p>
-                <form id="newsletter-form" class="newsletter-form">
-                    <input type="email" id="newsletter-email" placeholder="Your email address" required>
-                    <button type="submit" class="btn btn-primary" style="padding: 12px;">Subscribe ↗</button>
-                    <p id="newsletter-message" style="display: none; font-size: 0.85rem; margin-top: 10px;"></p>
-                </form>
+            <div class="footer-middle-row">
+                <span>BlissDezign® — Creative Studio</span>
+                <span>© 2026 BlissDezign. All rights reserved. | <a href="admin.html">Admin</a></span>
             </div>
         </div>
-        
-        <div class="container footer-bottom">
-            <p>© 2026 BlissDezign. All rights reserved. | <a href="admin.html" style="opacity: 0.3; font-size: 0.8rem;">Admin</a></p>
-            <p>Designed with intentionally minimal clarity.</p>
+        <div class="footer-bottom-row">
+            <h1 class="huge-brand-text">BlissDezign®</h1>
         </div>
     </footer>
 
@@ -407,6 +384,7 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/cms-loader.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/portx-motion.js?v=3"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             if (window.CMSLoader) {

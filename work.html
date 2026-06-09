@@ -55,7 +55,8 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/style-fixes.css?v=1">
 </head>
 
 <body>
@@ -139,38 +140,36 @@
                     <button class="filter-btn" data-filter="dashboards">Dashboards</button>
                 </div>
 
-                <div class="projects-masonry" id="work-projects-container">
+
+
+                <div class="projects-stacked" id="work-projects-container" style="display: flex; flex-direction: column; gap: 60px;">
                     <!-- Dynamic Projects Load Here -->
                 </div>
             </div>
         </section>
 
-        <!-- Vision CTA -->
-        <section class="vision-cta-section" style="padding: 120px 0; text-align: center;">
-            <div class="container reveal-on-scroll" style="max-width: 800px; margin: 0 auto;">
-                <h2 style="font-size: 56px; font-weight: 500; margin-bottom: 20px; line-height: 1.1;">Have a project in mind?</h2>
-                <p style="font-size: 20px; color: var(--text-muted); margin-bottom: 50px;">Let's collaborate to build products that solve real problems.</p>
-                <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
-                    <a href="contact.html" class="btn btn-editorial-primary" style="text-decoration: none; border-radius: 50px; height: 55px; width: 220px; box-sizing: border-box; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; text-transform: uppercase; padding: 0;">
-                        EMAIL ME ↗
-                    </a>
-                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="btn btn-editorial-secondary" style="text-decoration: none; border-radius: 50px; height: 55px; width: 220px; box-sizing: border-box; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; padding: 0;">
-                        <svg class="phone-icon" style="width: 16px; height: 16px; flex-shrink: 0;" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Book a Call
-                    </a>
-                </div>
+        <!-- Contact Section -->
+        <section id="contact" class="cta-modern">
+            <div class="cta-icon">
+                <i class="fa-solid fa-earth-americas"></i>
             </div>
+            <h2>READY TO<br>COLLABORATE?</h2>
+            <p>Have a project in mind?<br>Let's create something extraordinary together</p>
+            <a href="contact.html" class="btn-outline">CONTACT NOW</a>
         </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-brand">
-                <div class="logo">
-                     <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30" loading="lazy">
-                     <span class="logo-text">BlissDezign</span>
-                </div>
-                <p class="footer-desc">Focused on product clarity, onboarding, and retention. I help brands move forward by creating user-focused designs that are not just beautiful, but also functional and scalable.</p>
-                <div class="footer-socials">
+    <footer class="new-site-footer">
+        <div class="container">
+            <div class="footer-top-row">
+                <nav class="footer-nav">
+                    <a href="index.html#home">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="work.html">Projects</a>
+                    <a href="blog.html">Blogs</a>
+                    <a href="contact.html">Contact</a>
+                </nav>
+                <div class="footer-social-icons">
                     <a href="https://www.linkedin.com/in/emmanuelbliss/" target="_blank" aria-label="LinkedIn">
                         <i class="fa-brands fa-linkedin-in"></i>
                     </a>
@@ -191,29 +190,13 @@
                     </a>
                 </div>
             </div>
-
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <a href="index.html#home">Home</a>
-                <a href="work.html" class="active">Work</a>
-                <a href="index.html#services">Services</a>
-                <a href="blog.html">Blog</a>
-            </div>
-
-            <div class="footer-newsletter">
-                <h3>Stay updated</h3>
-                <p>Join my newsletter for the latest design insights and articles.</p>
-                <form id="newsletter-form" class="newsletter-form">
-                    <input type="email" id="newsletter-email" placeholder="Your email address" required>
-                    <button type="submit" class="btn btn-primary" style="padding: 12px;">Subscribe ↗</button>
-                    <p id="newsletter-message" style="display: none; font-size: 0.85rem; margin-top: 10px;"></p>
-                </form>
+            <div class="footer-middle-row">
+                <span>BlissDezign® — Creative Studio</span>
+                <span>© 2026 BlissDezign. All rights reserved. | <a href="admin.html">Admin</a></span>
             </div>
         </div>
-        
-        <div class="container footer-bottom">
-            <p>© 2026 BlissDezign. All rights reserved. | <a href="admin.html" style="opacity: 0.3; font-size: 0.8rem;">Admin</a></p>
-            <p>Designed with intentionally minimal clarity.</p>
+        <div class="footer-bottom-row">
+            <h1 class="huge-brand-text">BlissDezign®</h1>
         </div>
     </footer>
 
@@ -225,7 +208,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/cms-loader.js"></script>
+    <script src="js/portx-motion.js?v=3"></script>
+    <script src="js/cms-loader.js?v=2"></script>
     <script>
         // Trigger Dynamic Loading
         document.addEventListener('DOMContentLoaded', () => {
@@ -235,5 +219,4 @@
         });
     </script>
 </body>
-
 </html>
