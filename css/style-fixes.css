@@ -227,73 +227,86 @@ footer.new-site-footer,
 }
 
 /* ── Custom Cursor ──────────────────────────────────────────── */
-.cursor-dot {
-    position: fixed;
-    top: -9999px;
-    left: -9999px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent, #7c3aed);
-    pointer-events: none;
-    z-index: 99999;
-    will-change: transform;
-    transition: width 0.2s, height 0.2s, opacity 0.2s;
+/* Hide native cursor on mouse devices */
+@media (pointer: fine) {
+    *, *::before, *::after { cursor: none !important; }
 }
 
-.cursor-ring {
-    position: fixed;
-    top: -9999px;
-    left: -9999px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1.5px solid var(--accent, #7c3aed);
-    opacity: 0.45;
-    pointer-events: none;
-    z-index: 99999;
-    will-change: transform;
-    transition: width 0.35s cubic-bezier(0.25,1,0.5,1),
-                height 0.35s cubic-bezier(0.25,1,0.5,1),
-                opacity 0.35s;
-}
-
-.cursor-ring.hovered {
-    width: 52px;
-    height: 52px;
-    opacity: 0.2;
-}
-
-.cursor-view-bubble {
+/* Shared base for all cursor parts */
+.bd-cursor-dot,
+.bd-cursor-ring,
+.bd-cursor-label {
     position: fixed;
     top: 0;
     left: 0;
     pointer-events: none;
-    z-index: 99999;
-    background: rgba(255,255,255,0.92);
+    z-index: 999999;
+    will-change: transform;
+    border-radius: 50%;
+}
+
+/* ── Dot: small filled circle, snaps to cursor ── */
+.bd-cursor-dot {
+    width: 10px;
+    height: 10px;
+    background: #7c3aed;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    mix-blend-mode: difference;
+}
+
+.bd-cursor-dot.clicking {
+    transform: scale(0.4) !important;
+}
+
+/* ── Ring: large lagging outline circle ── */
+.bd-cursor-ring {
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid rgba(124, 58, 237, 0.5);
+    background: transparent;
+    transition:
+        width 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+        height 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+        background 0.25s ease,
+        border-color 0.25s ease,
+        opacity 0.2s ease;
+}
+
+.bd-cursor-ring.clicking {
+    width: 60px !important;
+    height: 60px !important;
+    opacity: 0.3 !important;
+}
+
+/* ── View label: pill shown over project cards ── */
+.bd-cursor-label {
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     color: #000;
+    font-family: 'Sen', 'Montserrat', sans-serif;
     font-weight: 800;
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 12px 28px;
-    border-radius: 50px;
-    visibility: hidden;
+    white-space: nowrap;
     opacity: 0;
-    will-change: transform;
-    transition: opacity 0.2s cubic-bezier(0.25,1,0.5,1), visibility 0.2s;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    /* center on cursor point */
+    margin-top: 0;
+    margin-left: 0;
 }
 
-.cursor-view-bubble.visible {
-    visibility: visible;
-    opacity: 1;
-}
-
+/* Hide everything on touch devices */
 @media (pointer: coarse) {
-    .cursor-dot, .cursor-ring, .cursor-view-bubble { display: none !important; }
+    .bd-cursor-dot,
+    .bd-cursor-ring,
+    .bd-cursor-label { display: none !important; }
 }
+
 
 /* ── Page Load Fade-in ─────────────────────────────────────── */
 @keyframes pageFadeIn {

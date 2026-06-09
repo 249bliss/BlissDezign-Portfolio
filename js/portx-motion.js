@@ -1,18 +1,22 @@
 /**
- * PORTX-STYLE MOTION SYSTEM v2
- * - Hardware-accelerated custom cursor (rAF loop, translate3d)
- * - CSS handles size/opacity, JS handles ONLY the position transform
- * - No CSS/JS transform conflicts
+ * BlissDezign Motion System v3
+ * ─────────────────────────────────────────────────────
+ * • Hardware-accelerated custom cursor (rAF, translate3d only)
+ * • 3 states: default | hover (links/buttons) | view (project images)
+ * • Click ripple on mousedown
+ * • Hero image parallax tilt
+ * • Smooth scroll via Lenis
+ * • Lightweight — zero external dependencies for cursor
+ * ─────────────────────────────────────────────────────
  */
 (function () {
     'use strict';
 
-    // ── Smooth Scroll (Lenis) ──
+    /* ═══════════════════════════════════════
+       1. SMOOTH SCROLL  (Lenis)
+    ═══════════════════════════════════════ */
     function loadLenis() {
-        if (window.Lenis) {
-            initLenis();
-            return;
-        }
+        if (window.Lenis) { initLenis(); return; }
         const s = document.createElement('script');
         s.src = 'https://unpkg.com/lenis@1.1.13/dist/lenis.min.js';
         s.onload = initLenis;
@@ -27,29 +31,18 @@
             smoothTouch: false,
             wheelMultiplier: 0.9,
         });
-
         window.lenis = lenis;
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
 
-        // Intercept hash anchor clicks for smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function (e) {
                 const id = this.getAttribute('href');
                 if (!id || id === '#') return;
                 const el = document.querySelector(id);
-                if (el) {
-                    e.preventDefault();
-                    lenis.scrollTo(el, { offset: -80, duration: 1.4 });
-                }
+                if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -80, duration: 1.4 }); }
             });
         });
-
-        // Handle hash on page load (e.g. about.html#career-journey)
         if (window.location.hash) {
             setTimeout(() => {
                 const el = document.querySelector(window.location.hash);
@@ -58,123 +51,157 @@
         }
     }
 
-    // ── Custom Cursor ──
-    // CSS sets top:-9999px; left:-9999px as default (off-screen).
-    // JS exclusively sets `style.transform` to position each element.
-    // We never set top/left in JS — only transform.
+    /* ═══════════════════════════════════════
+       2. CUSTOM CURSOR
+    ═══════════════════════════════════════ */
 
-    // Only run cursor on devices with a fine pointer (mouse).
-    // Matches the CSS `@media (pointer: coarse)` hide rule.
+    // Only on desktop/mouse devices
     if (!window.matchMedia('(pointer: fine)').matches) {
-        // Touch device – skip cursor init and go straight to Lenis
         loadLenis();
         return;
     }
 
-    const dot  = document.createElement('div');
-    dot.className = 'cursor-dot';
+    // Hide the native cursor globally
+    document.documentElement.style.cursor = 'none';
 
-    const ring = document.createElement('div');
-    ring.className = 'cursor-ring';
+    // ── Build elements ──────────────────────
+    const dot    = document.createElement('div');   // Small snappy dot
+    const ring   = document.createElement('div');   // Large lagging ring
+    const label  = document.createElement('div');   // "VIEW" pill on project hover
 
-    const bubble = document.createElement('div');
-    bubble.className = 'cursor-view-bubble';
-    bubble.textContent = 'VIEW';
+    dot.className   = 'bd-cursor-dot';
+    ring.className  = 'bd-cursor-ring';
+    label.className = 'bd-cursor-label';
+    label.textContent = 'VIEW';
 
-    document.body.appendChild(dot);
-    document.body.appendChild(ring);
-    document.body.appendChild(bubble);
+    // Inject into DOM once body exists
+    function mountCursor() {
+        document.body.appendChild(dot);
+        document.body.appendChild(ring);
+        document.body.appendChild(label);
+    }
+    if (document.body) {
+        mountCursor();
+    } else {
+        document.addEventListener('DOMContentLoaded', mountCursor);
+    }
 
-    // DOT size (px) – must match CSS width/height
-    const DOT_R  = 4;   // 8px / 2
-    const RING_R = 18;  // 36px / 2
+    // ── State ────────────────────────────────
+    // current mouse (fixed coords)
+    let mX = -300, mY = -300;
+    // interpolated positions
+    let dotX = -300, dotY = -300;
+    let ringX = -300, ringY = -300;
+    let labelX = -300, labelY = -300;
 
-    // Mouse target coordinates
-    let mX = -500, mY = -500;
+    let cursorState = 'default'; // 'default' | 'hover' | 'view' | 'hidden'
 
-    // Interpolated (lagging) positions for ring and dot
-    let dX = -500, dY = -500;
-    let rX = -500, rY = -500;
-
-    let hoveringView = false;
-    let isRunning = false;
-
-    // Track raw mouse position
+    // ── Track mouse ─────────────────────────
     window.addEventListener('mousemove', e => {
         mX = e.clientX;
         mY = e.clientY;
+    }, { passive: true });
 
-        if (!isRunning) {
-            isRunning = true;
-            requestAnimationFrame(tick);
-        }
-    });
+    document.addEventListener('mouseleave', () => { cursorState = 'hidden'; });
+    document.addEventListener('mouseenter', () => { cursorState = 'default'; });
 
-    function tick() {
-        // Dot: snappier interpolation (0.35 easing)
-        dX += (mX - dX) * 0.35;
-        dY += (mY - dY) * 0.35;
-
-        // Ring: slower trailing (0.12 easing)
-        rX += (mX - rX) * 0.12;
-        rY += (mY - rY) * 0.12;
-
-        // Position dot: center it by subtracting radius
-        dot.style.transform  = `translate3d(${dX - DOT_R}px, ${dY - DOT_R}px, 0)`;
-
-        // Position ring: center it by subtracting radius
-        ring.style.transform = `translate3d(${rX - RING_R}px, ${rY - RING_R}px, 0)`;
-
-        // Position bubble: center via translate(-50%,-50%) after moving to cursor
-        // This works because translate percentages in a transform chain apply
-        // to the element's own size, not the viewport.
-        bubble.style.transform = `translate3d(${mX}px, ${mY}px, 0) translate(-50%, -50%)`;
-
-        requestAnimationFrame(tick);
-    }
-
-    // ── Hover state management ──
+    // ── Hover detection ──────────────────────
     document.addEventListener('mouseover', e => {
         const t = e.target;
         if (!t) return;
-
         if (t.closest('[data-cursor="view"]')) {
-            hoveringView = true;
-            dot.style.opacity   = '0';
-            ring.style.opacity  = '0';
-            bubble.classList.add('visible');
-        } else if (t.closest('a, button, .btn, .service-card, .experience-card, .masonry-card, .portfolio-card-large')) {
-            ring.classList.add('hovered');
+            cursorState = 'view';
+        } else if (t.closest('a, button, [role="button"], .btn, .nav-btn-lux, .service-card, .portfolio-card-large, .masonry-card, .experience-card')) {
+            cursorState = 'hover';
+        } else {
+            cursorState = 'default';
         }
+    }, { passive: true });
+
+    // ── Click ripple ─────────────────────────
+    document.addEventListener('mousedown', () => {
+        ring.classList.add('clicking');
+        dot.classList.add('clicking');
+        setTimeout(() => {
+            ring.classList.remove('clicking');
+            dot.classList.remove('clicking');
+        }, 300);
     });
 
-    document.addEventListener('mouseout', e => {
-        const t = e.target;
-        if (!t) return;
+    // ── Lerp helper ──────────────────────────
+    function lerp(a, b, t) { return a + (b - a) * t; }
 
-        if (t.closest('[data-cursor="view"]')) {
-            hoveringView = false;
-            dot.style.opacity  = '';
-            ring.style.opacity = '';
-            bubble.classList.remove('visible');
+    // ── rAF render loop ─────────────────────
+    function tick() {
+        // Dot: fast
+        dotX = lerp(dotX, mX, 0.28);
+        dotY = lerp(dotY, mY, 0.28);
+
+        // Ring: slower trailing rubber-band
+        ringX = lerp(ringX, mX, 0.10);
+        ringY = lerp(ringY, mY, 0.10);
+
+        // Label: slightly faster than ring
+        labelX = lerp(labelX, mX, 0.10);
+        labelY = lerp(labelY, mY, 0.10);
+
+        const hidden = cursorState === 'hidden';
+        const isView = cursorState === 'view';
+        const isHover = cursorState === 'hover';
+
+        // -- Dot --
+        dot.style.transform  = `translate3d(${dotX - 5}px, ${dotY - 5}px, 0)`;
+        dot.style.opacity    = hidden || isView ? '0' : '1';
+        dot.style.transform  += isHover ? ' scale(0)' : '';
+
+        // -- Ring --
+        ring.style.transform = `translate3d(${ringX - 22}px, ${ringY - 22}px, 0)`;
+        ring.style.opacity   = hidden || isView ? '0' : '1';
+
+        if (isHover) {
+            ring.style.width  = '52px';
+            ring.style.height = '52px';
+            ring.style.transform = `translate3d(${ringX - 26}px, ${ringY - 26}px, 0)`;
+            ring.style.background = 'rgba(124, 58, 237, 0.08)';
+            ring.style.borderColor = 'rgba(124, 58, 237, 0.6)';
+        } else {
+            ring.style.width  = '44px';
+            ring.style.height = '44px';
+            ring.style.background = 'transparent';
+            ring.style.borderColor = 'rgba(124, 58, 237, 0.5)';
         }
-        if (t.closest('a, button, .btn, .service-card, .experience-card, .masonry-card, .portfolio-card-large')) {
-            ring.classList.remove('hovered');
-        }
-    });
 
-    // Hide cursor when mouse leaves window
-    document.addEventListener('mouseleave', () => {
-        dot.style.opacity  = '0';
-        ring.style.opacity = '0';
-        bubble.classList.remove('visible');
-    });
-    document.addEventListener('mouseenter', () => {
-        dot.style.opacity  = '';
-        ring.style.opacity = '';
-    });
+        // -- View label --
+        label.style.transform = `translate3d(${labelX}px, ${labelY}px, 0) translate(-50%, -50%)`;
+        label.style.opacity   = isView && !hidden ? '1' : '0';
+        label.style.visibility = isView && !hidden ? 'visible' : 'hidden';
 
-    // ── CTA Section entrance animation ──
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    /* ═══════════════════════════════════════
+       3. HERO IMAGE PARALLAX TILT
+    ═══════════════════════════════════════ */
+    const heroImage   = document.querySelector('.hero-image-container');
+    const heroSection = document.querySelector('.hero');
+    if (heroImage && heroSection) {
+        heroSection.addEventListener('mousemove', e => {
+            const r = heroSection.getBoundingClientRect();
+            const x = (e.clientX - r.left)  / r.width  - 0.5;
+            const y = (e.clientY - r.top)   / r.height - 0.5;
+            heroImage.style.transform = `perspective(900px) rotateY(${x * 7}deg) rotateX(${-y * 7}deg) scale(1.02)`;
+        });
+        heroSection.addEventListener('mouseleave', () => {
+            heroImage.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
+            heroImage.style.transform  = 'perspective(900px) rotateY(0deg) rotateX(0deg) scale(1)';
+            setTimeout(() => { heroImage.style.transition = ''; }, 700);
+        });
+    }
+
+    /* ═══════════════════════════════════════
+       4. CTA SECTION ENTRANCE
+    ═══════════════════════════════════════ */
     const ctaSection = document.querySelector('.cta-modern');
     if (ctaSection) {
         new IntersectionObserver((entries, obs) => {
@@ -187,24 +214,9 @@
         }, { threshold: 0.2 }).observe(ctaSection);
     }
 
-    // ── Hero image parallax tilt ──
-    const heroImage   = document.querySelector('.hero-image-container');
-    const heroSection = document.querySelector('.hero');
-    if (heroImage && heroSection) {
-        heroSection.addEventListener('mousemove', e => {
-            const r = heroSection.getBoundingClientRect();
-            const x = (e.clientX - r.left) / r.width  - 0.5;
-            const y = (e.clientY - r.top)  / r.height - 0.5;
-            heroImage.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
-        });
-        heroSection.addEventListener('mouseleave', () => {
-            heroImage.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
-            heroImage.style.transform  = 'perspective(800px) rotateY(0deg) rotateX(0deg)';
-            setTimeout(() => { heroImage.style.transition = ''; }, 600);
-        });
-    }
-
-    // Start Lenis
+    /* ═══════════════════════════════════════
+       5. START LENIS
+    ═══════════════════════════════════════ */
     loadLenis();
 
 })();
