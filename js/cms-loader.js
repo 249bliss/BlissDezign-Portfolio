@@ -24,9 +24,9 @@ const CMSLoader = {
     // Helper to render image or video
     renderMedia: (url, alt) => {
         if (CMSLoader.isMediaVideo(url)) {
-            return `<video src="${url}" autoplay muted loop playsinline></video>`;
+            return `<video src="${url}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;"></video>`;
         }
-        return `<img src="${url}" alt="${alt}" loading="lazy">`;
+        return `<img src="${url}" alt="${alt}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`;
     },
 
     // 1. Fetch Projects for Homepage (Selected Projects)
