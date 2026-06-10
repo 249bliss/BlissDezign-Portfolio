@@ -1014,10 +1014,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             avatarImg.src = avatarUrl;
             if (avatarSaved) avatarSaved.style.display = 'flex';
             
-            const thumb = avatarBox.querySelector('.selection-thumb');
+            const thumb = avatarBox.querySelector('.single-image-thumb');
             if (thumb) {
-                thumb.classList.remove('is-new');
-                thumb.classList.add('is-persisted');
+                thumb.style.borderColor = 'rgba(16, 185, 129, 0.6)';
+                thumb.style.animation = 'none';
             }
         } else {
             avatarBox.style.display = 'none';
@@ -1032,10 +1032,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             logoImg.src = logoUrl;
             if (logoSaved) logoSaved.style.display = 'flex';
             
-            const thumb = logoBox.querySelector('.selection-thumb');
+            const thumb = logoBox.querySelector('.single-image-thumb');
             if (thumb) {
-                thumb.classList.remove('is-new');
-                thumb.classList.add('is-persisted');
+                thumb.style.borderColor = 'rgba(16, 185, 129, 0.6)';
+                thumb.style.animation = 'none';
             }
         } else {
             logoBox.style.display = 'none';
@@ -1118,7 +1118,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             let logo_url_part = '';
             const logoFile = document.getElementById('rev-company-logo').files[0];
             if (logoFile) {
-                logo_url_part = await uploadImage(logoFile, 'reviews');
+                try {
+                    console.log(`Uploading company logo: ${logoFile.name} (${logoFile.type}, ${(logoFile.size/1024).toFixed(1)} KB)`);
+                    logo_url_part = await uploadImage(logoFile, 'reviews');
+                    console.log('Company logo uploaded successfully:', logo_url_part);
+                } catch (logoErr) {
+                    console.error('Company logo upload failed:', logoErr);
+                    throw new Error('Company logo upload failed: ' + logoErr.message + '. Try using a PNG file instead of SVG if the issue persists.');
+                }
             } else if (isEdit && existingLogoUrl) {
                 logo_url_part = existingLogoUrl;
             }
@@ -1424,8 +1431,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fileExt = file.name ? file.name.split('.').pop().toLowerCase() : 'jpg';
         
         // 3. Image Optimization (Resize/Compress if > 2MB or extremely large)
+        // NOTE: SVG and other vector formats CANNOT be drawn on a canvas, so skip optimization for them.
+        const isVectorFormat = file.type === 'image/svg+xml' || fileExt === 'svg';
         let fileToUpload = file;
-        if (file.type.startsWith('image/') && (file.size > 2 * 1024 * 1024)) {
+        if (!isVectorFormat && file.type.startsWith('image/') && (file.size > 2 * 1024 * 1024)) {
             console.log(`Optimizing large image: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
             setLoading(true, 'Optimizing image for faster upload...');
             try {
@@ -1567,10 +1576,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 box.style.display = 'block';
                 if (savedBadge) savedBadge.style.display = 'none'; // New file -> Hide saved badge
                 
-                const thumb = box.querySelector('.selection-thumb');
+                // Handle both multi-gallery thumbs and single-image thumbs
+                const thumb = box.querySelector('.selection-thumb') || box.querySelector('.single-image-thumb');
                 if (thumb) {
-                    thumb.classList.add('is-new');
-                    thumb.classList.remove('is-persisted');
+                    if (thumb.classList.contains('selection-thumb')) {
+                        thumb.classList.add('is-new');
+                        thumb.classList.remove('is-persisted');
+                    } else {
+                        // Reset single-image-thumb to pulsing state
+                        thumb.style.borderColor = '';
+                        thumb.style.animation = '';
+                    }
                 }
 
                 if (file.type.startsWith('video/')) {
