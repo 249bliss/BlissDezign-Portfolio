@@ -1448,12 +1448,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `${pathFolder}/${fileName}`;
 
-        const { error } = await supabaseClient.storage.from('portfolio-assets').upload(filePath, fileToUpload);
+        // Determine the correct MIME type — SVG can be misdetected by browsers/Supabase
+        let mimeType = fileToUpload.type;
+        if (fileExt === 'svg' || mimeType === 'image/svg+xml' || mimeType === 'text/xml' || mimeType === 'application/xml') {
+            mimeType = 'image/svg+xml';
+        }
+
+        const uploadOptions = { contentType: mimeType, upsert: false };
+
+        const { error } = await supabaseClient.storage.from('portfolio-assets').upload(filePath, fileToUpload, uploadOptions);
         
         if (error) {
             console.error("Supabase Upload Error:", error);
             if (error.message.includes('Payload too large') || error.status === 413) {
                 throw new Error("The file is too large for the server. Try a smaller version or a different format.");
+            }
+            if (error.message.toLowerCase().includes('mime') || error.message.toLowerCase().includes('type') || error.statusCode === '415') {
+                throw new Error(`File type "${mimeType}" may not be allowed in your Supabase storage bucket. Go to Supabase Dashboard → Storage → portfolio-assets → Policies and make sure the bucket allows this file type, or try uploading a PNG instead.`);
             }
             throw error;
         }
