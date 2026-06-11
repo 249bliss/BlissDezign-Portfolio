@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authError = document.getElementById('auth-error');
 
     // --- SECURITY: Master Whitelist ---
-    const WHITELISTED_ADMINS = ['blissstudio44@gmail.com'];
+    const WHITELISTED_ADMINS = ['workwithblissdezign@gmail.com'];
     const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit for Supabase Storage
     const logoutBtn = document.getElementById('logout-btn');
     const userDisplay = document.getElementById('user-display');
@@ -1399,7 +1399,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // --- Specific Check for Resend Test Mode / Unverified Domain ---
                 if (errorMsg.includes('verify a domain') || errorMsg.includes('own email address')) {
-                    errorMsg = "Resend Error: You need to verify your domain to send to subscribers. Currently, you can only send to your own email address (blissstudio44@gmail.com).";
+                    errorMsg = "Resend Error: You need to verify your domain to send to subscribers. Currently, you can only send to your own email address (workwithblissdezign@gmail.com).";
                     console.warn("Newsletter blocked by Resend Test Mode restrictions.");
                 }
 
