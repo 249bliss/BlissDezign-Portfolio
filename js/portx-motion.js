@@ -133,26 +133,26 @@
 
     // ── rAF render loop ─────────────────────
     function tick() {
-        // Dot: fast
-        dotX = lerp(dotX, mX, 0.28);
-        dotY = lerp(dotY, mY, 0.28);
+        // Dot: very snappy — tracks cursor closely
+        dotX = lerp(dotX, mX, 0.55);
+        dotY = lerp(dotY, mY, 0.55);
 
-        // Ring: slower trailing rubber-band
-        ringX = lerp(ringX, mX, 0.10);
-        ringY = lerp(ringY, mY, 0.10);
+        // Ring: smooth trailing rubber-band (faster than before)
+        ringX = lerp(ringX, mX, 0.20);
+        ringY = lerp(ringY, mY, 0.20);
 
-        // Label: slightly faster than ring
-        labelX = lerp(labelX, mX, 0.10);
-        labelY = lerp(labelY, mY, 0.10);
+        // Label: matches ring speed
+        labelX = lerp(labelX, mX, 0.20);
+        labelY = lerp(labelY, mY, 0.20);
 
-        const hidden = cursorState === 'hidden';
-        const isView = cursorState === 'view';
+        const hidden  = cursorState === 'hidden';
+        const isView  = cursorState === 'view';
         const isHover = cursorState === 'hover';
 
         // -- Dot --
-        dot.style.transform  = `translate3d(${dotX - 5}px, ${dotY - 5}px, 0)`;
-        dot.style.opacity    = hidden || isView ? '0' : '1';
-        dot.style.transform  += isHover ? ' scale(0)' : '';
+        const dotScale = isHover ? ' scale(0)' : '';
+        dot.style.transform = `translate3d(${dotX - 5}px, ${dotY - 5}px, 0)${dotScale}`;
+        dot.style.opacity   = hidden || isView ? '0' : '1';
 
         // -- Ring --
         ring.style.transform = `translate3d(${ringX - 22}px, ${ringY - 22}px, 0)`;
