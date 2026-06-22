@@ -134,16 +134,16 @@
     // ── rAF render loop ─────────────────────
     function tick() {
         // Dot: very snappy — tracks cursor closely
-        dotX = lerp(dotX, mX, 0.55);
-        dotY = lerp(dotY, mY, 0.55);
+        dotX = lerp(dotX, mX, 0.75);
+        dotY = lerp(dotY, mY, 0.75);
 
         // Ring: smooth trailing rubber-band (faster than before)
-        ringX = lerp(ringX, mX, 0.20);
-        ringY = lerp(ringY, mY, 0.20);
+        ringX = lerp(ringX, mX, 0.38);
+        ringY = lerp(ringY, mY, 0.38);
 
         // Label: matches ring speed
-        labelX = lerp(labelX, mX, 0.20);
-        labelY = lerp(labelY, mY, 0.20);
+        labelX = lerp(labelX, mX, 0.38);
+        labelY = lerp(labelY, mY, 0.38);
 
         const hidden  = cursorState === 'hidden';
         const isView  = cursorState === 'view';
@@ -162,13 +162,13 @@
             ring.style.width  = '52px';
             ring.style.height = '52px';
             ring.style.transform = `translate3d(${ringX - 26}px, ${ringY - 26}px, 0)`;
-            ring.style.background = 'rgba(124, 58, 237, 0.08)';
-            ring.style.borderColor = 'rgba(124, 58, 237, 0.6)';
+            ring.style.background = 'rgba(108, 59, 255, 0.08)';
+            ring.style.borderColor = 'rgba(108, 59, 255, 0.6)';
         } else {
             ring.style.width  = '44px';
             ring.style.height = '44px';
             ring.style.background = 'transparent';
-            ring.style.borderColor = 'rgba(124, 58, 237, 0.5)';
+            ring.style.borderColor = 'rgba(108, 59, 255, 0.5)';
         }
 
         // -- View label --

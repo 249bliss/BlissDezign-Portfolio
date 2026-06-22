@@ -412,8 +412,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     {
                         label: 'Views',
                         data: views || [12, 19, 3, 5, 2, 3, 5],
-                        borderColor: '#DF00FF',
-                        backgroundColor: 'rgba(223, 0, 255, 0.1)',
+                        borderColor: '#6C3BFF',
+                        backgroundColor: 'rgba(108, 59, 255, 0.1)',
                         tension: 0.4,
                         fill: true,
                         pointRadius: 0
@@ -1112,7 +1112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 avatar_url_part = existingAvatarUrl;
             } else {
                 // Default fallback avatar if none provided for new review
-                avatar_url_part = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(author_name) + '&background=DF00FF&color=fff&size=256';
+                avatar_url_part = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(author_name) + '&background=6C3BFF&color=fff&size=256';
             }
 
             let logo_url_part = '';

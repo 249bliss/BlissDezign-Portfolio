@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             return `<img src="${url}" alt="${data.title} Full Case Study" style="width: 100%; display: block; border: none; margin: -1px 0; padding: 0;">`;
                         }).join('')
                         : `
-                        <div class="cs-content-placeholder" style="padding: 150px 20px; text-align: center; background: var(--bg-card); border-radius: 32px; border: 1px dashed rgba(223, 0, 255, 0.3); margin: 60px auto; max-width: 800px; box-shadow: 0 0 60px rgba(0,0,0,0.08);">
+                        <div class="cs-content-placeholder" style="padding: 150px 20px; text-align: center; background: var(--bg-card); border-radius: 32px; border: 1px dashed rgba(108, 59, 255, 0.3); margin: 60px auto; max-width: 800px; box-shadow: 0 0 60px rgba(0,0,0,0.08);">
                             <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 3rem; color: var(--accent-purple); margin-bottom: 25px; opacity: 0.6; display: block;"></i>
                             <h2 style="color: var(--text-main); margin-bottom: 16px;">Visuals are in the lab.</h2>
                             <p style="color: var(--text-muted); font-size: 1rem; max-width: 500px; margin: 0 auto; line-height: 1.7;">I'm currently finalizing the high-resolution renders and design documentation for this project. Check back in a few hours!</p>

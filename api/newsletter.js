@@ -35,10 +35,10 @@ export default async function handler(req, res) {
                 html: `
                     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
                         ${cover_image ? `<img src="${cover_image}" style="width: 100%; border-radius: 12px; margin-bottom: 20px;">` : ''}
-                        <h1 style="color: #DF00FF;">${title}</h1>
+                        <h1 style="color: #6C3BFF;">${title}</h1>
                         <p style="font-size: 16px; line-height: 1.6;">${excerpt}</p>
                         <a href="https://blissdezigns.vercel.app/post.html?slug=${slug}" 
-                           style="display: inline-block; padding: 12px 24px; background: #DF00FF; color: #fff; text-decoration: none; border-radius: 8px; margin-top: 20px;">
+                           style="display: inline-block; padding: 12px 24px; background: #6C3BFF; color: #fff; text-decoration: none; border-radius: 8px; margin-top: 20px;">
                            Read Full Article
                         </a>
                         <hr style="margin-top: 40px; border: 0; border-top: 1px solid #eee;">

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
 
     // Check for saved theme in localStorage
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     body.setAttribute('data-theme', savedTheme);
 
     if (themeToggle) {

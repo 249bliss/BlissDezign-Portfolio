@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article | Bliss – Product Designer Insights</title>
     <meta name="description" content="Thoughts and insights on product design, mobile apps, and building digital products with intention.">
-    <link rel="icon" type="image/png" href="assets/kre8mind logo (2).webp">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
 
     <!-- ─── Open Graph ─── -->
     <meta property="og:type" content="profile">
@@ -52,7 +52,7 @@
         "name": "BlissDezign",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://blissdezigns.vercel.app/assets/kre8mind logo (2).webp"
+          "url": "https://blissdezigns.vercel.app/assets/logo-light.png"
         }
       }
     }
@@ -71,17 +71,18 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=6">
     <link rel="stylesheet" href="css/style-fixes.css?v=2">
 </head>
 
-<body class="post-template">
+<body class="post-template" data-theme="dark">
     <header>
         <div class="container">
             <nav class="nav-container">
                 <div class="logo">
                      <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
-                        <img src="assets/kre8mind logo (2).webp" alt="Kre8mind Logo" width="30" height="30">
+                        <img src="assets/logo-light.png" class="logo-light" alt="BlissDezign Logo" width="30" height="30">
+                        <img src="assets/logo-dark.png" class="logo-dark" alt="BlissDezign Logo" width="30" height="30">
                         <span class="logo-text">BlissDezign</span>
                      </a>
                 </div>
@@ -219,7 +220,7 @@
                 </div>
             </div>
             <div class="footer-middle-row">
-                <span>BlissDezign® — Creative Studio</span>
+                <span>BlissDezign® — Kre8mind</span>
                 <span>© 2026 BlissDezign. All rights reserved. | <a href="admin.html">Admin</a></span>
             </div>
         </div>
@@ -234,7 +235,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/portx-motion.js"></script>
+    <script src="js/portx-motion.js?v=4"></script>
     <script src="js/cms-loader.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

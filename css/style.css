@@ -3,8 +3,8 @@
 /* CSS Reset & Variable Setup */
 :root {
     /* Primary Colors */
-    --accent-purple: #DF00FF;
-    --primary-gradient: linear-gradient(135deg, #DF00FF 0%, #D454FF 50%, #9E00D3 100%);
+    --accent-purple: #6C3BFF;
+    --primary-gradient: linear-gradient(135deg, #6C3BFF 0%, #8C62FF 100%);
     
     /* Light Mode (Primary) */
     --bg-main: #ffffff;
@@ -257,12 +257,20 @@ header.scrolled .nav-container {
 .logo img {
     height: 24px;
     width: auto;
-    filter: grayscale(1);
-    transition: filter 0.3s ease;
 }
 
-.logo:hover img {
-    filter: grayscale(0);
+.logo img.logo-light {
+    display: block;
+}
+.logo img.logo-dark {
+    display: none;
+}
+
+[data-theme="dark"] .logo img.logo-light {
+    display: none;
+}
+[data-theme="dark"] .logo img.logo-dark {
+    display: block;
 }
 
 .logo-text {
@@ -350,7 +358,7 @@ header.scrolled .nav-container {
 .theme-toggle:hover {
     border-color: var(--accent-purple);
     color: var(--accent-purple);
-    background: rgba(223, 0, 255, 0.05);
+    background: rgba(108, 59, 255, 0.05);
 }
 
 .nav-btn-lux {
@@ -384,7 +392,7 @@ header.scrolled .nav-container {
     transform: translateY(-4px);
     background: var(--accent-purple);
     color: #ffffff;
-    box-shadow: 0 4px 0 #7e22ce, 0 8px 16px rgba(223, 0, 255, 0.25);
+    box-shadow: 0 4px 0 #7e22ce, 0 8px 16px rgba(108, 59, 255, 0.25);
     animation: nav-glow-pulse 2s infinite ease-in-out;
 }
 
@@ -553,8 +561,8 @@ header.scrolled .nav-container {
     transform: translateY(-4px);
     border-color: var(--accent-purple);
     color: var(--accent-purple);
-    background: rgba(223, 0, 255, 0.03);
-    box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(223, 0, 255, 0.15);
+    background: rgba(108, 59, 255, 0.03);
+    box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(108, 59, 255, 0.15);
     animation: secondary-glow-pulse 2s infinite ease-in-out;
 }
 
@@ -623,14 +631,14 @@ header.scrolled .nav-container {
     transform: translate(-50%, -50%);
     width: 700px;
     height: 700px;
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.09) 0%, rgba(223, 0, 255, 0) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.09) 0%, rgba(108, 59, 255, 0) 70%);
     z-index: 0;
     pointer-events: none;
     filter: blur(30px);
 }
 
 [data-theme="light"] .hero-purple-glow {
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.04) 0%, rgba(223, 0, 255, 0) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.04) 0%, rgba(108, 59, 255, 0) 70%);
 }
 
 
@@ -1437,7 +1445,7 @@ header.scrolled .nav-container {
 .form-group input:focus, 
 .form-group textarea:focus {
     border-color: var(--accent-purple);
-    box-shadow: 0 0 0 4px rgba(223, 0, 255, 0.1);
+    box-shadow: 0 0 0 4px rgba(108, 59, 255, 0.1);
     transform: translateY(-2px);
 }
 
@@ -1632,7 +1640,7 @@ header.scrolled .nav-container {
 .form-group input:focus, 
 .form-group textarea:focus {
     border-color: var(--accent-purple);
-    box-shadow: 0 0 0 4px rgba(223, 0, 255, 0.1);
+    box-shadow: 0 0 0 4px rgba(108, 59, 255, 0.1);
     transform: translateY(-2px);
 }
 
@@ -2165,7 +2173,7 @@ header.scrolled .nav-container {
     left: 0;
     width: 100%;
     height: 100vh;
-    background: radial-gradient(circle at 90% 5%, rgba(223, 0, 255, 0.05), transparent 50%), var(--bg-main);
+    background: radial-gradient(circle at 90% 5%, rgba(108, 59, 255, 0.05), transparent 50%), var(--bg-main);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     display: flex;
@@ -2185,7 +2193,7 @@ header.scrolled .nav-container {
 }
 
 [data-theme="dark"] .mobile-overlay {
-    background: radial-gradient(circle at 90% 5%, rgba(223, 0, 255, 0.1), transparent 50%), rgba(5, 5, 5, 0.98);
+    background: radial-gradient(circle at 90% 5%, rgba(108, 59, 255, 0.1), transparent 50%), rgba(5, 5, 5, 0.98);
 }
 
 .mobile-overlay.active {
@@ -2296,7 +2304,7 @@ header.scrolled .nav-container {
     justify-content: center !important;
     align-items: center !important;
     gap: 10px !important;
-    box-shadow: 0 4px 15px rgba(223, 0, 255, 0.15) !important;
+    box-shadow: 0 4px 15px rgba(108, 59, 255, 0.15) !important;
     margin: 0 !important;
     transform: translateY(0) !important;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -2306,7 +2314,7 @@ header.scrolled .nav-container {
     background: var(--accent-purple) !important;
     color: #ffffff !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(223, 0, 255, 0.3) !important;
+    box-shadow: 0 6px 20px rgba(108, 59, 255, 0.3) !important;
 }
 
 /* Staggered Link Slide-in Animations via Transitions */
@@ -2761,7 +2769,7 @@ header.scrolled .nav-container {
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 20px rgba(223, 0, 255, 0.2));
+    filter: drop-shadow(0 0 20px rgba(108, 59, 255, 0.2));
 }
 
 .cs-coming-soon h1 {
@@ -3383,14 +3391,14 @@ header.scrolled .nav-container {
 }
 
 .like-button:hover {
-    background: rgba(223, 0, 255, 0.1);
+    background: rgba(108, 59, 255, 0.1);
     border-color: var(--accent-purple);
     color: var(--text-main);
     transform: translateY(-2px);
 }
 
 .like-button.liked {
-    background: rgba(223, 0, 255, 0.2);
+    background: rgba(108, 59, 255, 0.2);
     border-color: var(--accent-purple);
     color: var(--accent-purple);
 }
@@ -3783,7 +3791,7 @@ header.scrolled .nav-container {
 /* Dark Editorial & Lux Nav Buttons: Glowing Violet/Purple Glass Bubbles */
 .btn-editorial-primary::before,
 .nav-btn-lux::before {
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.45) 0%, rgba(223, 0, 255, 0.1) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.45) 0%, rgba(108, 59, 255, 0.1) 70%);
     filter: blur(12px);
 }
 .btn-editorial-primary::after,
@@ -3805,12 +3813,12 @@ header.scrolled .nav-container {
 /* Secondary/Transparent Buttons: Delicate Purple Accent Glass Bubbles */
 .btn-editorial-secondary::before,
 .btn-secondary::before {
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.16) 0%, rgba(223, 0, 255, 0.02) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.16) 0%, rgba(108, 59, 255, 0.02) 70%);
     filter: blur(15px);
 }
 .btn-editorial-secondary::after,
 .btn-secondary::after {
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.26) 0%, rgba(223, 0, 255, 0.04) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.26) 0%, rgba(108, 59, 255, 0.04) 70%);
     filter: blur(15px);
 }
 
@@ -3978,7 +3986,7 @@ header.scrolled .nav-container {
 /* Dark Editorial & Lux Nav Buttons: Glowing Violet/Purple Glass Bubbles */
 .btn-editorial-primary::before,
 .nav-btn-lux::before {
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.45) 0%, rgba(223, 0, 255, 0.1) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.45) 0%, rgba(108, 59, 255, 0.1) 70%);
     filter: blur(12px);
 }
 .btn-editorial-primary::after,
@@ -4000,12 +4008,12 @@ header.scrolled .nav-container {
 /* Secondary/Transparent Buttons: Delicate Purple Accent Glass Bubbles */
 .btn-editorial-secondary::before,
 .btn-secondary::before {
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.16) 0%, rgba(223, 0, 255, 0.02) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.16) 0%, rgba(108, 59, 255, 0.02) 70%);
     filter: blur(15px);
 }
 .btn-editorial-secondary::after,
 .btn-secondary::after {
-    background: radial-gradient(circle, rgba(223, 0, 255, 0.26) 0%, rgba(223, 0, 255, 0.04) 70%);
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.26) 0%, rgba(108, 59, 255, 0.04) 70%);
     filter: blur(15px);
 }
 
