@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Genos:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&display=swap');
 
 /* CSS Reset & Variable Setup */
 :root {
@@ -275,12 +275,12 @@ header.scrolled .nav-container {
 
 .logo-text {
     color: var(--text-main);
-    font-weight: 400;
-    font-style: italic;
-    font-size: 1.1rem;
-    letter-spacing: -0.01em;
-    text-transform: lowercase;
-    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    font-family: 'Genos', sans-serif;
 }
 
 .nav-links {
