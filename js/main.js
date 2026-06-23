@@ -22,6 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
             body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
 
+            // Update Cal.com config dynamically on theme toggle
+            document.querySelectorAll('a[href*="cal.com/blissdezigns"]').forEach(link => {
+                link.setAttribute('data-cal-config', JSON.stringify({
+                    layout: 'month_view',
+                    theme: newTheme
+                }));
+            });
+
             // Subtle feedback
             themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
             setTimeout(() => {
@@ -386,6 +394,17 @@ document.addEventListener('DOMContentLoaded', () => {
         allMarqueeVideos.forEach(video => videoObserver.observe(video));
     }
 
+    // Add Cal.com data attributes dynamically to all booking links
+    const bookCallLinks = document.querySelectorAll('a[href*="cal.com/blissdezigns"]');
+    bookCallLinks.forEach(link => {
+        link.setAttribute('data-cal-link', 'blissdezigns/discovery-call');
+        const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+        link.setAttribute('data-cal-config', JSON.stringify({
+            layout: 'month_view',
+            theme: currentTheme
+        }));
+    });
+
     // --- Cal.com Embed Integration ---
     (function (C, A, L) {
         let p = function (a, ar) { a.q.push(ar); };
@@ -428,22 +447,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Preload the booking link for instant response on click
     Cal("preload", { calLink: "blissdezigns/discovery-call" });
-
-    // Wire up all Book a Call links programmatically to trigger the Cal.com modal
-    const bookCallLinks = document.querySelectorAll('a[href*="cal.com/blissdezigns"]');
-    bookCallLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const currentTheme = document.body.getAttribute('data-theme') || 'dark';
-            Cal("show", {
-                calLink: "blissdezigns/discovery-call",
-                config: {
-                    layout: "month_view",
-                    theme: currentTheme
-                }
-            });
-        });
-    });
 
 });
 
