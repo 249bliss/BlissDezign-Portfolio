@@ -394,10 +394,13 @@ document.addEventListener('DOMContentLoaded', () => {
         allMarqueeVideos.forEach(video => videoObserver.observe(video));
     }
 
-    // Add Cal.com data attributes dynamically to all booking links
+    // Add Cal.com data attributes dynamically to all booking links and prevent tab redirection
     const bookCallLinks = document.querySelectorAll('a[href*="cal.com/blissdezigns"]');
     bookCallLinks.forEach(link => {
         link.setAttribute('data-cal-link', 'blissdezigns/discovery-call');
+        link.setAttribute('href', 'javascript:void(0)');
+        link.removeAttribute('target');
+        
         const currentTheme = document.body.getAttribute('data-theme') || 'dark';
         link.setAttribute('data-cal-config', JSON.stringify({
             layout: 'month_view',
