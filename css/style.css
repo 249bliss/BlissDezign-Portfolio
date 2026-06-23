@@ -3866,12 +3866,18 @@ header.scrolled .nav-container {
 
 /* Phone Icon and Interactive Vibration Animation */
 .phone-icon {
-    font-size: 11px;
+    width: 13px;
+    height: 13px;
     margin-right: 8px;
     display: inline-block !important;
     transform-origin: center center !important;
     flex-shrink: 0;
     transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.25s ease;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2px !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
 }
 
 @keyframes phone-vibrate {
