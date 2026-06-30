@@ -6,7 +6,7 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://blissdezigns.vercel.app/work.html</loc>
+    <loc>https://blissdezigns.vercel.app/projects.html</loc>
     <lastmod>2026-06-11</lastmod>
     <priority>0.8</priority>
   </url>
@@ -16,12 +16,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://blissdezigns.vercel.app/about.html</loc>
+    <loc>https://blissdezigns.vercel.app/my-story.html</loc>
     <lastmod>2026-06-11</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://blissdezigns.vercel.app/contact.html</loc>
+    <loc>https://blissdezigns.vercel.app/get-in-touch.html</loc>
     <lastmod>2026-06-11</lastmod>
     <priority>0.7</priority>
   </url>

@@ -318,3 +318,8 @@ body {
     .modern-test-text { font-size: 1.05rem; line-height: 1.6; margin-bottom: 24px; }
     .testimonials-title-area h2 { font-size: 2.2rem; }
 }
+
+/* ── Remove glow from timeline marker on hover ── */
+.timeline-item:hover .timeline-marker {
+    box-shadow: none !important;
+}

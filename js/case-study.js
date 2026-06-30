@@ -162,13 +162,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <h2>Liked what you saw?</h2>
                     <p>Let's collaborate on your next big project.</p>
                     <div class="hero-actions" style="justify-content: center; margin-top: 40px; flex-wrap: wrap; gap: 15px;">
-                        <a href="work.html" class="btn btn-primary">Back to Work</a>
+                        <a href="projects.html" class="btn btn-primary">Back to Projects</a>
                         ${data.projectLink ? `
                         <a href="${data.projectLink}" target="_blank" class="btn btn-secondary" style="gap: 8px;">
                             Visit Live Project <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i>
                         </a>
                         ` : ''}
-                        <a href="contact.html" class="btn btn-secondary">Get in Touch</a>
+                        <a href="get-in-touch.html" class="btn btn-secondary">Get in Touch</a>
                     </div>
                 </div>
             </section>
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <h1 style="margin-bottom: 16px;">${projectName} Story</h1>
                 <p class="gradient-text-gray" style="font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0 auto 16px auto; max-width: 600px;">is under build.</p>
                 <p style="font-size: 15px;">I'm currently documenting the design process, research, and results for this project. Check back soon for the full deep dive.</p>
-                <a href="work.html" class="btn btn-primary">Back to Work</a>
+                <a href="projects.html" class="btn btn-primary">Back to Projects</a>
             </section>
         `;
     }

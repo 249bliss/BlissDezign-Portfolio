@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// Project Gallery Filtering Logic (for work.html)
+// Project Gallery Filtering Logic (for projects.html)
 window.initProjectFilters = () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const projectItems = document.querySelectorAll('.filter-item');
