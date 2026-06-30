@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             layoutType: 'full-image', 
             fullImage: validVisuals,
             hasVisuals: hasVisuals,
+            projectLink: (caseStudy && caseStudy.project_link) ? caseStudy.project_link : null,
             stats: {
                 role: (caseStudy && caseStudy.role) ? caseStudy.role : 'Product Designer',
                 duration: (caseStudy && caseStudy.duration) ? caseStudy.duration : 'Varies',
@@ -104,6 +105,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="container text-center">
                     <h1 style="margin-bottom: 16px;">${data.title}</h1>
                     <p class="gradient-text-gray" style="font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0 auto; max-width: 700px;">${data.subtitle}</p>
+                    ${data.projectLink ? `
+                    <div class="hero-actions" style="justify-content: center; margin-top: 25px; margin-bottom: -15px;">
+                        <a href="${data.projectLink}" target="_blank" class="btn btn-secondary" style="gap: 8px;">
+                            Visit Live Project <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i>
+                        </a>
+                    </div>
+                    ` : ''}
                 </div>
             </section>
 
@@ -153,8 +161,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="container text-center">
                     <h2>Liked what you saw?</h2>
                     <p>Let's collaborate on your next big project.</p>
-                    <div class="hero-actions" style="justify-content: center; margin-top: 40px;">
+                    <div class="hero-actions" style="justify-content: center; margin-top: 40px; flex-wrap: wrap; gap: 15px;">
                         <a href="work.html" class="btn btn-primary">Back to Work</a>
+                        ${data.projectLink ? `
+                        <a href="${data.projectLink}" target="_blank" class="btn btn-secondary" style="gap: 8px;">
+                            Visit Live Project <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i>
+                        </a>
+                        ` : ''}
                         <a href="contact.html" class="btn btn-secondary">Get in Touch</a>
                     </div>
                 </div>

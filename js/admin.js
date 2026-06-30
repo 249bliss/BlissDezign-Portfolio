@@ -739,6 +739,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('cs-duration').value = caseStudy.duration || '';
                 document.getElementById('cs-tools').value = caseStudy.tools || '';
                 document.getElementById('cs-industry').value = caseStudy.industry || '';
+                document.getElementById('cs-project-link').value = caseStudy.project_link || '';
             }
 
             // UI Changes
@@ -860,6 +861,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const duration = document.getElementById('cs-duration').value;
                 const tools = document.getElementById('cs-tools').value;
                 const industry = document.getElementById('cs-industry').value;
+                const project_link = document.getElementById('cs-project-link').value.trim();
                 
                 let finalChunks = [];
                 const hugeItem = activeCaseStudyGallery.find(i => i.type === 'huge-file');
@@ -890,7 +892,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.warn("WARNING: Project marked as Case Study but NO visuals/chunks were found or uploaded.");
                 }
 
-                const csData = { id, role, duration, tools, industry, full_image_chunks: finalChunks };
+                const csData = { id, role, duration, tools, industry, project_link, full_image_chunks: finalChunks };
                 console.log("Saving Case Study record:", csData);
                 
                 const { error: csSaveErr } = await supabaseClient.from('case_studies').upsert([csData]);
