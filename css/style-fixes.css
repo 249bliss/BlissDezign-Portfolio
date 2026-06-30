@@ -241,41 +241,32 @@ footer.new-site-footer,
     left: 0;
     pointer-events: none;
     z-index: 999999;
-    will-change: transform;
+    will-change: transform, width, height, border-radius, background, border-color;
     border-radius: 50%;
 }
 
 /* ── Dot: small filled circle, snaps to cursor ── */
 .bd-cursor-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     background: #7c3aed;
     transition: opacity 0.15s ease, transform 0.15s ease;
     mix-blend-mode: difference;
 }
 
-.bd-cursor-dot.clicking {
-    transform: scale(0.4) !important;
-}
-
 /* ── Ring: large lagging outline circle ── */
 .bd-cursor-ring {
-    width: 44px;
-    height: 44px;
-    border: 1.5px solid rgba(124, 58, 237, 0.5);
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(124, 58, 237, 0.7);
     background: transparent;
     transition:
         width 0.25s cubic-bezier(0.25, 1, 0.5, 1),
         height 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+        border-radius 0.25s cubic-bezier(0.25, 1, 0.5, 1),
         background 0.25s ease,
         border-color 0.25s ease,
         opacity 0.2s ease;
-}
-
-.bd-cursor-ring.clicking {
-    width: 60px !important;
-    height: 60px !important;
-    opacity: 0.3 !important;
 }
 
 /* ── View label: pill shown over project cards ── */
@@ -306,6 +297,7 @@ footer.new-site-footer,
     .bd-cursor-ring,
     .bd-cursor-label { display: none !important; }
 }
+
 
 
 /* ── Page Load Fade-in ─────────────────────────────────────── */
