@@ -73,7 +73,8 @@
     margin: 0;
 }
 
-.contact-email-link {
+.contact-email-link,
+.contact-phone-link {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -84,7 +85,8 @@
     word-break: break-all;
 }
 
-.contact-email-link:hover {
+.contact-email-link:hover,
+.contact-phone-link:hover {
     color: var(--accent-purple);
 }
 
