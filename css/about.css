@@ -256,3 +256,29 @@
     }
 }
 
+/* ── About Page CTA Button ── */
+.btn-cta {
+    height: auto !important;
+    padding: 16px 45px !important;
+    font-family: var(--font-main);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 768px) {
+    .btn-cta {
+        padding: 12px 28px !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-cta {
+        padding: 10px 20px !important;
+        font-size: 0.8rem !important;
+        letter-spacing: 0.02em !important;
+    }
+}
+
