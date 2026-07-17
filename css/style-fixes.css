@@ -378,3 +378,16 @@ body {
         width: 100%;
     }
 }
+
+/* ─── Back Link Micro-animations ─── */
+.back-link {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.back-link:hover {
+    opacity: 0.8 !important;
+    transform: translateX(-4px) !important;
+}
