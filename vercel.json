@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/case-study.html",
+      "destination": "/api/case-study"
+    },
+    {
+      "source": "/case-study",
+      "destination": "/api/case-study"
+    },
+    {
+      "source": "/post.html",
+      "destination": "/api/post"
+    },
+    {
+      "source": "/post",
+      "destination": "/api/post"
+    }
+  ]
+}
