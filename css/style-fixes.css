@@ -405,80 +405,198 @@ body {
     }
 }
 
-/* ─── Contained About Page Portrait Card (Square Crop, No Fade Mask) ─── */
-.about-hero-image .image-wrapper {
-    border-radius: 20px !important;
-    border: none !important;
-    background: transparent !important;
-    overflow: hidden !important;
-    aspect-ratio: 4/5 !important;
-    display: block !important;
-    position: relative !important;
-}
+/* ─── Contained About Page Portrait Card (Seamless Blend & Same Height) ─── */
 
-[data-theme="light"] .about-hero-image .image-wrapper {
-    border: none !important;
-    background: transparent !important;
-}
-
-.about-hero-image .about-portrait {
-    mask-image: none !important;
-    -webkit-mask-image: none !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center top !important; /* Ensures head/face is centered and visible */
-    border-radius: inherit !important;
-    display: block !important;
-}
-
-/* On desktop, stretch the image card to match the text column height exactly */
+/* Desktop layout rules: Stretch image to full card height & crop seamlessly */
 @media (min-width: 993px) {
+    .about-hero-card {
+        padding: 0 !important; /* Remove card padding so image spans edge-to-edge */
+        overflow: hidden !important; /* Clips the image inside the card's rounded borders */
+        background: #ffffff !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 32px !important;
+        box-shadow: var(--shadow) !important;
+    }
+    
+    [data-theme="dark"] .about-hero-card {
+        background: #000000 !important; /* Pure black in dark theme to match transparent PNG background */
+        border-color: rgba(255, 255, 255, 0.06) !important;
+    }
+
     .about-hero-grid {
-        align-items: stretch !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* Two equal columns */
+        gap: 0 !important; /* No gap; spacing is handled via padding inside columns */
+        align-items: stretch !important; /* Equal height columns */
     }
 
     .about-hero-image {
         height: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
     }
 
     .about-hero-image .image-wrapper {
         height: 100% !important;
         width: 100% !important;
         aspect-ratio: auto !important;
-        flex-grow: 1 !important;
+        border-radius: 0 !important; /* Card handles rounding, not wrapper */
+        border: none !important;
+        background: transparent !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
+    }
+
+    .about-hero-image .about-portrait {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center top !important; /* Frame head & face at the top, body stretches to the bottom */
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        border-radius: 0 !important;
+        display: block !important;
+    }
+
+    .about-hero-content {
+        padding: 60px 60px 60px 50px !important; /* Generous text padding */
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important; /* Vertically center content */
+        height: 100% !important;
     }
 }
 
-@media (max-width: 992px) {
-    .about-hero-image .image-wrapper {
-        border-radius: 16px !important;
-        aspect-ratio: 4/5 !important;
-        max-width: 320px !important;
-        margin: 0 auto !important;
-        height: auto !important;
-    }
-}
-
-/* ─── About Hero Card Wrapper (Unified Container Card) ─── */
-.about-hero-card {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 32px !important;
-    padding: 60px !important;
-    box-shadow: var(--shadow) !important;
-}
-
-[data-theme="dark"] .about-hero-card {
-    background: #0a0a0a !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
-}
-
+/* Tablet & Mobile Layout Rules (Stacked View) */
 @media (max-width: 992px) {
     .about-hero-card {
         padding: 30px !important;
         border-radius: 24px !important;
+        background: #ffffff !important;
+        border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow) !important;
     }
+    
+    [data-theme="dark"] .about-hero-card {
+        background: #000000 !important;
+        border-color: rgba(255, 255, 255, 0.06) !important;
+    }
+
+    .about-hero-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important; /* Stacked layout */
+        gap: 40px !important;
+        align-items: center !important;
+    }
+
+    .about-hero-image {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    .about-hero-image .image-wrapper {
+        border-radius: 24px !important;
+        aspect-ratio: 4/5 !important;
+        width: 100% !important;
+        max-width: 340px !important;
+        height: auto !important;
+        background: #f8fafc !important; /* Subtle background for light theme wrapper */
+        border: 1px solid var(--border-color) !important;
+        overflow: hidden !important;
+    }
+
+    [data-theme="dark"] .about-hero-image .image-wrapper {
+        background: #0a0a0a !important; /* Subtle dark wrapper in dark mode */
+        border-color: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .about-hero-image .about-portrait {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center top !important;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+    }
+
+    .about-hero-content {
+        padding: 0 !important;
+        text-align: left !important;
+    }
+}
+
+/* About Hero typography & content styles to clean up inline styles and match design */
+.about-hero-title {
+    margin: 0 0 12px 0 !important;
+    font-family: var(--font-heading) !important;
+    font-size: clamp(2rem, 3.5vw, 2.6rem) !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    color: var(--text-main) !important;
+}
+
+.about-hero-subtitle {
+    font-family: var(--font-main) !important;
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem) !important;
+    font-weight: 600 !important;
+    color: var(--text-main) !important;
+    margin: 0 0 24px 0 !important;
+}
+
+.about-hero-desc {
+    font-family: var(--font-main) !important;
+    font-size: clamp(1.1rem, 2vw, 1.25rem) !important;
+    font-weight: 400 !important;
+    line-height: 1.65 !important;
+    color: var(--text-muted) !important;
+    margin: 0 0 35px 0 !important;
+}
+
+[data-theme="dark"] .about-hero-desc {
+    color: #a1a1aa !important; /* Better contrast in dark mode */
+}
+
+/* Purple Highlights */
+.highlight-purple {
+    color: #6C3BFF !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+}
+
+[data-theme="dark"] .highlight-purple {
+    color: #8C62FF !important;
+}
+
+/* Founder Box / Quote Card */
+.founder-box {
+    margin-top: 0 !important;
+    padding: 24px 30px !important;
+    background: rgba(108, 59, 255, 0.03) !important;
+    border: 1px solid rgba(108, 59, 255, 0.15) !important;
+    border-radius: 20px !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="dark"] .founder-box {
+    background: rgba(108, 59, 255, 0.05) !important;
+    border-color: rgba(108, 59, 255, 0.25) !important;
+}
+
+.founder-quote {
+    font-family: var(--font-main) !important;
+    font-style: italic !important;
+    font-weight: 400 !important;
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+    color: var(--text-muted) !important;
+    margin: 0 !important;
+}
+
+[data-theme="dark"] .founder-quote {
+    color: rgba(255, 255, 255, 0.75) !important;
 }
