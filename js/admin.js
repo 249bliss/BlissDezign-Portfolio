@@ -822,6 +822,50 @@ document.addEventListener('DOMContentLoaded', async () => {
                 existingCaseStudy = cs;
             }
 
+            // --- Shift display orders of other projects if there is a collision ---
+            let needShift = false;
+            if (displayOrder > 0) {
+                if (!isEdit) {
+                    needShift = true;
+                } else if (existingProject && existingProject.display_order !== displayOrder) {
+                    needShift = true;
+                }
+            }
+
+            if (needShift) {
+                console.log(`Shifting display orders starting from: ${displayOrder}`);
+                setLoading(true, 'Adjusting project order sequence...');
+                let query = supabaseClient.from('projects').select('id, display_order');
+                if (isEdit) {
+                    query = query.neq('id', originalId);
+                }
+                const { data: otherProjects, error: fetchErr } = await query;
+                
+                if (fetchErr) {
+                    console.error("Error fetching projects for reordering:", fetchErr);
+                } else if (otherProjects && otherProjects.length > 0) {
+                    // Filter projects that have display_order >= displayOrder
+                    const toShift = otherProjects.filter(p => p.display_order && p.display_order >= displayOrder);
+                    
+                    // Sort descending to update higher orders first and avoid collisions
+                    toShift.sort((a, b) => b.display_order - a.display_order);
+                    
+                    console.log(`Shifting display_order for ${toShift.length} projects...`);
+                    for (const proj of toShift) {
+                        const newOrd = proj.display_order + 1;
+                        const { error: updateErr } = await supabaseClient
+                            .from('projects')
+                            .update({ display_order: newOrd })
+                            .eq('id', proj.id);
+                        if (updateErr) {
+                            console.error(`Failed to shift project ${proj.id} to order ${newOrd}:`, updateErr);
+                        }
+                    }
+                }
+                // Restore primary loading state message
+                setLoading(true, isEdit ? 'Updating project...' : 'Creating project...');
+            }
+
             let heroUrl = null;
             const heroFile = document.getElementById('proj-hero').files[0];
             if (heroFile) {
