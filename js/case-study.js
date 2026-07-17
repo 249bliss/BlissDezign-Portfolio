@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let content = `
             <section class="cs-hero">
                 <div class="container text-center">
-                    <div style="margin-bottom: 24px; display: flex; justify-content: center;">
+                    <div class="cs-back-container">
                         <a href="projects.html" class="back-link">← Back to Projects</a>
                     </div>
                     <h1 style="margin-bottom: 16px;">${data.title}</h1>

@@ -391,3 +391,16 @@ body {
     opacity: 0.8 !important;
     transform: translateX(-4px) !important;
 }
+
+/* ─── Case Study Back Link Alignment (Left on desktop, centered on mobile) ─── */
+.cs-back-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+    .cs-back-container {
+        justify-content: center;
+    }
+}
