@@ -323,3 +323,58 @@ body {
 .timeline-item:hover .timeline-marker {
     box-shadow: none !important;
 }
+
+/* ─── Flat Outline Button (No 3D patterns, no 3D hover effects) ─── */
+.btn-outline-flat {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 47px;
+    padding: 0 32px;
+    border-radius: 50px;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    background: transparent !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: var(--text-main) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease !important;
+    position: relative;
+    cursor: pointer;
+}
+
+[data-theme="dark"] .btn-outline-flat {
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Disable pseudo-elements for 3D bubble effects */
+.btn-outline-flat::before,
+.btn-outline-flat::after {
+    display: none !important;
+    content: none !important;
+}
+
+.btn-outline-flat:hover {
+    border-color: var(--accent-purple) !important;
+    color: var(--accent-purple) !important;
+    background: rgba(108, 59, 255, 0.06) !important; /* Subtle tint on hover */
+    transform: none !important;
+    box-shadow: none !important;
+    animation: none !important;
+}
+
+.btn-outline-flat:active {
+    transform: none !important;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .hero-actions .btn-outline-flat {
+        width: 100%;
+    }
+}

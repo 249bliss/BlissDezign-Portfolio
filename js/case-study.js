@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p class="gradient-text-gray" style="font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0 auto; max-width: 700px;">${data.subtitle}</p>
                     ${data.projectLink ? `
                     <div class="hero-actions" style="justify-content: center; margin-top: 25px; margin-bottom: -15px;">
-                        <a href="${data.projectLink}" target="_blank" class="btn btn-secondary" style="gap: 8px;">
+                        <a href="${data.projectLink}" target="_blank" class="btn-outline-flat" style="gap: 8px;">
                             Visit Live Project <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i>
                         </a>
                     </div>
@@ -163,11 +163,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>Let's collaborate on your next big project.</p>
                     <div class="hero-actions" style="justify-content: center; margin-top: 40px; flex-wrap: wrap; gap: 15px;">
                         <a href="projects.html" class="btn btn-primary">Back to Projects</a>
-                        ${data.projectLink ? `
-                        <a href="${data.projectLink}" target="_blank" class="btn btn-secondary" style="gap: 8px;">
-                            Visit Live Project <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i>
-                        </a>
-                        ` : ''}
                         <a href="get-in-touch.html" class="btn btn-secondary">Get in Touch</a>
                     </div>
                 </div>
