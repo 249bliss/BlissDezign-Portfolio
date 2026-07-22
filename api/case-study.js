@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
     if (project) {
         try {
             // Fetch project data from Supabase REST API
-            const response = await fetch(
+            let response = await fetch(
                 `${SUPABASE_URL}/rest/v1/projects?id=eq.${encodeURIComponent(project)}&select=*`,
                 {
                     headers: {
@@ -34,17 +34,35 @@ module.exports = async (req, res) => {
                 }
             );
 
+            let data = null;
             if (response.ok) {
-                const data = await response.json();
-                if (data && data.length > 0) {
-                    const proj = data[0];
-                    title = proj.title ? `${proj.title} - Case Study` : title;
-                    description = proj.subtitle || proj.description || description;
-                    
-                    const hero = proj.hero_image || proj.cover_image || proj.image_url || proj.thumbnail || proj.banner_image;
-                    if (hero) {
-                        imageUrl = hero;
+                data = await response.json();
+            }
+
+            if (!data || data.length === 0) {
+                // Fallback to query by slug if id query returned empty
+                const slugResp = await fetch(
+                    `${SUPABASE_URL}/rest/v1/projects?slug=eq.${encodeURIComponent(project)}&select=*`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
                     }
+                );
+                if (slugResp.ok) {
+                    data = await slugResp.json();
+                }
+            }
+
+            if (data && data.length > 0) {
+                const proj = data[0];
+                title = proj.title ? `${proj.title} - Case Study` : title;
+                description = proj.subtitle || proj.description || description;
+                
+                const hero = proj.hero_image || proj.cover_image || proj.image_url || proj.thumbnail || proj.banner_image;
+                if (hero) {
+                    imageUrl = hero;
                 }
             }
         } catch (err) {
@@ -58,7 +76,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const htmlPath = path.join(process.cwd(), 'case-study.html');
+        const htmlPath = path.join(process.cwd(), 'case-study-template.html');
         let html = fs.readFileSync(htmlPath, 'utf8');
 
         // Replace Title tag
@@ -67,6 +85,7 @@ module.exports = async (req, res) => {
         // Replace Meta Description tags
         html = html.replace(/<meta name="description"[\s\S]*?content=".*?"/, `<meta name="description" content="${escapeHtml(description)}"`);
         html = html.replace(/<meta property="og:description" content=".*?"/, `<meta property="og:description" content="${escapeHtml(description)}"`);
+        html = html.replace(/<meta name="twitter:description" content=".*?"/, `<meta name="twitter:description" content="${escapeHtml(description)}"`);
         
         // Replace Social Sharing Image tags
         html = html.replace(/<meta property="og:image" content=".*?"/, `<meta property="og:image" content="${escapeHtml(imageUrl)}"`);
@@ -96,7 +115,7 @@ module.exports = async (req, res) => {
         res.setHeader('Content-Type', 'text/html');
         res.status(200).send(html);
     } catch (err) {
-        console.error("Error reading case-study.html:", err);
+        console.error("Error reading case-study-template.html:", err);
         res.status(500).send("Internal Server Error");
     }
 };
