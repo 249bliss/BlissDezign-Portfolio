@@ -615,3 +615,32 @@ body {
     }
 }
 
+/* ─── More Projects Horizontal Scroll ─── */
+.more-projects-scroll {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+}
+
+.more-projects-scroll::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+.more-project-card {
+    flex: 0 0 320px; /* Fixed width for horizontal scrolling */
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 992px) {
+    /* Optional: On desktop we can keep the horizontal scroll or wrap them. 
+       We'll stick to horizontal scroll as it is often preferred for these sections */
+    .more-project-card {
+        flex: 0 0 calc(33.333% - 16px);
+    }
+}

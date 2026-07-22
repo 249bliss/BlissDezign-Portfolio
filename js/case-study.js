@@ -66,7 +66,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         };
 
-        renderCaseStudy(data);
+        // --- Fetch Related Projects ---
+        const { data: relatedProjects, error: relatedError } = await supabaseClient
+            .from('projects')
+            .select('*')
+            .neq('id', projectId)
+            .order('display_order', { ascending: true })
+            .limit(4);
+
+        if (relatedError) {
+            console.warn("Failed to fetch related projects:", relatedError);
+        }
+
+        renderCaseStudy(data, relatedProjects || []);
 
         // --- SEO Enhancement ---
         document.title = `${project.title} | Case Study by Emmanuel Bliss`;
@@ -99,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderComingSoon("Project");
     }
 
-    function renderCaseStudy(data) {
+    function renderCaseStudy(data, relatedProjects = []) {
         let content = `
             <section class="cs-hero">
                 <div class="container text-center">
@@ -163,7 +175,39 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <i class="fa-solid fa-link" style="font-size: 0.85em;"></i> <span>Copy Case Study Link</span>
                     </button>
                 </div>
+                </div>
             </section>
+            
+            ${relatedProjects.length > 0 ? `
+            <section class="more-projects-section" style="padding: 60px 0 20px 0;">
+                <div class="container">
+                    <h3 style="font-size: 1.8rem; font-weight: 500; margin-bottom: 30px; font-family: var(--font-heading);">More Projects</h3>
+                    <div class="more-projects-scroll">
+                        ${relatedProjects.map(rp => {
+                            const isVideo = typeof rp.hero_image === 'string' && rp.hero_image.split('?')[0].split('#')[0].match(/\.(mp4|webm|ogg|mov)$/i);
+                            const mediaHtml = isVideo 
+                                ? `<video src="${rp.hero_image}" autoplay muted loop playsinline style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px;"></video>`
+                                : `<img src="${rp.hero_image || rp.image_url || rp.cover_image}" alt="${rp.title}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px;">`;
+                            return `
+                            <a href="case-study.html?project=${rp.id}" class="more-project-card portfolio-card-large" style="text-decoration: none; color: inherit; margin-bottom: 0 !important;">
+                                <div class="portfolio-image-wrapper" data-cursor="view" style="width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 16px; position: relative;">
+                                    ${mediaHtml}
+                                </div>
+                                <div class="portfolio-card-bottom" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                                    <div class="portfolio-card-info">
+                                        <h4 style="font-size: 1.25rem; font-weight: 500; margin: 0 0 8px 0;">${rp.title}</h4>
+                                    </div>
+                                    <div class="portfolio-card-icon" style="width: 32px; height: 32px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            </section>
+            ` : ''}
 
             <section class="vision-cta-section" style="padding: 100px 0;">
                 <div class="container text-center">
