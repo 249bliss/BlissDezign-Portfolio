@@ -192,16 +192,39 @@
                             <label for="email">Email Address</label>
                             <input type="email" id="email" name="email" placeholder="john@example.com" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group custom-dropdown-group">
                             <label for="project-type">Project Type (Optional)</label>
-                            <select id="project-type" name="project_type">
-                                <option value="" disabled selected>Select a product type</option>
-                                <option value="SaaS Product">SaaS Product</option>
-                                <option value="Mobile App">Mobile App</option>
-                                <option value="Web Application">Web Application</option>
-                                <option value="Dashboard/Internal Tool">Dashboard / Internal Tool</option>
-                                <option value="Other">Other</option>
+                            
+                            <!-- Hidden Native Select for Form Submission -->
+                            <select id="project-type" name="project_type" style="display: none;">
+                                <option value="" disabled selected>Select a service</option>
+                                <option value="web-app-dashboard">Web App & Dashboard UI/UX Design</option>
+                                <option value="website-app-redesign">Website & App Redesign</option>
+                                <option value="landing-page">Landing Page Design</option>
+                                <option value="mobile-app">Mobile App UI/UX Design</option>
+                                <option value="full-website">Full Website Design</option>
+                                <option value="product-ux-audit">Product UX Audit</option>
+                                <option value="other">Other Inquiry</option>
                             </select>
+
+                            <!-- Custom Select UI -->
+                            <div class="custom-select-wrapper" id="custom-service-select">
+                                <div class="custom-select-trigger">
+                                    <span class="custom-select-display">Select a service</span>
+                                    <svg class="custom-select-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="custom-select-options">
+                                    <div class="custom-option" data-value="web-app-dashboard">Web App & Dashboard UI/UX Design</div>
+                                    <div class="custom-option" data-value="website-app-redesign">Website & App Redesign</div>
+                                    <div class="custom-option" data-value="landing-page">Landing Page Design</div>
+                                    <div class="custom-option" data-value="mobile-app">Mobile App UI/UX Design</div>
+                                    <div class="custom-option" data-value="full-website">Full Website Design</div>
+                                    <div class="custom-option" data-value="product-ux-audit">Product UX Audit</div>
+                                    <div class="custom-option" data-value="other">Other Inquiry</div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="message">Project Details</label>
@@ -263,6 +286,77 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/script.js?v=2"></script>
     <script src="js/portx-motion.js?v=4"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const customWrapper = document.getElementById('custom-service-select');
+            const customTrigger = customWrapper.querySelector('.custom-select-trigger');
+            const customDisplay = customWrapper.querySelector('.custom-select-display');
+            const customOptions = customWrapper.querySelectorAll('.custom-option');
+            const nativeSelect = document.getElementById('project-type');
+            const messageTextarea = document.getElementById('message');
+
+            const serviceNames = {
+                'web-app-dashboard': 'Web App & Dashboard UI/UX Design',
+                'website-app-redesign': 'Website & App Redesign',
+                'landing-page': 'Landing Page Design',
+                'mobile-app': 'Mobile App UI/UX Design',
+                'full-website': 'Full Website Design',
+                'product-ux-audit': 'Product UX Audit'
+            };
+
+            // Toggle dropdown
+            customTrigger.addEventListener('click', () => {
+                customWrapper.classList.toggle('open');
+            });
+
+            // Close when clicking outside
+            window.addEventListener('click', (e) => {
+                if (!customWrapper.contains(e.target)) {
+                    customWrapper.classList.remove('open');
+                }
+            });
+
+            function updateSelection(value, text) {
+                // Update native select
+                nativeSelect.value = value;
+                // Update display
+                customDisplay.textContent = text;
+                // Update active class
+                customOptions.forEach(o => {
+                    if (o.getAttribute('data-value') === value) {
+                        o.classList.add('selected');
+                    } else {
+                        o.classList.remove('selected');
+                    }
+                });
+                
+                // Pre-fill logic
+                if (value && value !== 'other') {
+                    const serviceName = serviceNames[value] || 'project';
+                    messageTextarea.value = `Hi Emmanuel,\n\nI am interested in discussing your ${serviceName} service. Here are a few details about my project:\n\n`;
+                }
+            }
+
+            // Handle option click
+            customOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    updateSelection(value, text);
+                    customWrapper.classList.remove('open');
+                });
+            });
+
+            // Handle URL param
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceParam = urlParams.get('service');
+            
+            if (serviceParam && serviceNames[serviceParam]) {
+                updateSelection(serviceParam, serviceNames[serviceParam]);
+            }
+        });
+    </script>
 </body>
 </html>

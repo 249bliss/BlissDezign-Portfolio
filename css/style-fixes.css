@@ -644,3 +644,258 @@ body {
         flex: 0 0 calc(33.333% - 16px);
     }
 }
+
+/* ── Services & Packages Section ────────────────────────────── */
+.services-packages {
+    background: var(--bg-color); /* Matches the main dark background */
+}
+
+.services-pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.pricing-card {
+    background: #0a0a0a;
+    background-image: radial-gradient(circle at 50% 0%, rgba(108, 59, 255, 0.15) 0%, rgba(10, 10, 10, 0) 50%);
+    border: 1px solid rgba(255,255,255,0.02);
+    border-radius: 20px;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+    box-shadow: none;
+    position: relative;
+}
+
+.pricing-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(108, 59, 255, 0.8) 50%, transparent 100%);
+    z-index: 1;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    background-image: radial-gradient(circle at 50% 0%, rgba(108, 59, 255, 0.25) 0%, rgba(10, 10, 10, 0) 60%);
+}
+
+.pricing-card-top {
+    margin-bottom: 40px;
+}
+
+.pricing-title {
+    font-size: 1.6rem;
+    font-family: var(--font-heading);
+    font-weight: 400;
+    margin-bottom: 12px;
+    line-height: 1.2;
+    color: #ffffff;
+}
+
+.pricing-tagline {
+    font-size: 1rem;
+    color: #888888;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0 0;
+}
+
+.pricing-features li {
+    font-size: 0.85rem;
+    color: #aaaaaa;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.pricing-features li::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: rgba(108, 59, 255, 0.15);
+    border-radius: 50%;
+    margin-top: 2px;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c3bff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: 10px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.pricing-features li:last-child {
+    margin-bottom: 0;
+}
+
+.pricing-card-bottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.service-link-btn {
+    display: inline-block;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: max-content;
+}
+
+.service-link-btn:hover {
+    border-bottom-color: #ffffff;
+    color: #ffffff;
+    padding-bottom: 10px;
+}
+
+[data-theme="light"] .pricing-card {
+    background: #ffffff;
+    border-color: rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+
+[data-theme="light"] .pricing-card:hover {
+    border-color: rgba(0,0,0,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    background: #ffffff;
+}
+
+[data-theme="light"] .pricing-title {
+    color: #111111;
+}
+
+[data-theme="light"] .pricing-tagline {
+    color: #666666;
+}
+
+[data-theme="light"] .pricing-features li {
+    color: #444444;
+}
+
+[data-theme="light"] .service-link-btn {
+    color: #111111;
+    border-bottom-color: rgba(0,0,0,0.2);
+}
+
+[data-theme="light"] .service-link-btn:hover {
+    border-bottom-color: #111111;
+    color: #111111;
+}
+
+[data-theme="light"] .service-link-btn:hover {
+    color: #8b5cf6;
+    border-bottom-color: #8b5cf6;
+}
+
+/* ── Custom Dropdown UI ────────────────────────────────────── */
+.custom-select-wrapper {
+    position: relative;
+    user-select: none;
+    width: 100%;
+}
+
+.custom-select-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #ffffff;
+    background: #111111;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-select-trigger:hover, .custom-select-wrapper.open .custom-select-trigger {
+    border-color: #8b5cf6;
+}
+
+.custom-select-arrow {
+    transition: transform 0.3s ease;
+}
+
+.custom-select-wrapper.open .custom-select-arrow {
+    transform: rotate(180deg);
+}
+
+.custom-select-options {
+    position: absolute;
+    display: block;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #1a1a1a;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.custom-select-wrapper.open .custom-select-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.custom-option {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    color: #cccccc;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-option:hover, .custom-option.selected {
+    background: #222222;
+    color: #ffffff;
+}
+
+[data-theme="light"] .custom-select-trigger {
+    background: #f9f9f9;
+    border-color: #dddddd;
+    color: #111111;
+}
+
+[data-theme="light"] .custom-select-options {
+    background: #ffffff;
+    border-color: #dddddd;
+}
+
+[data-theme="light"] .custom-option {
+    color: #444444;
+}
+
+[data-theme="light"] .custom-option:hover, [data-theme="light"] .custom-option.selected {
+    background: #f0f0f0;
+    color: #111111;
+}
