@@ -16,7 +16,7 @@ function escapeHtml(unsafe) {
 }
 
 module.exports = async (req, res) => {
-    const { slug } = req.query;
+    const slug = req.query.slug || req.query.id;
     let title = "Article | Bliss – Product Designer Insights";
     let description = "Thoughts and insights on product design, mobile apps, and building digital products with intention.";
     let imageUrl = "https://blissdezigns.vercel.app/assets/my-website-cover.png";
@@ -24,28 +24,50 @@ module.exports = async (req, res) => {
     if (slug) {
         try {
             // Fetch post data from Supabase REST API
-            const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}&select=*`,
-                {
+            let endpoint = `${SUPABASE_URL}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}&select=*`;
+            let response = await fetch(endpoint, {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                }
+            });
+
+            let data = null;
+            if (response.ok) {
+                data = await response.json();
+            }
+
+            if (!data || data.length === 0) {
+                // Fallback to query by ID if slug did not return results
+                const idEndpoint = `${SUPABASE_URL}/rest/v1/posts?id=eq.${encodeURIComponent(slug)}&select=*`;
+                const idResp = await fetch(idEndpoint, {
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
+                });
+                if (idResp.ok) {
+                    data = await idResp.json();
                 }
-            );
+            }
 
-            if (response.ok) {
-                const data = await response.json();
-                if (data && data.length > 0) {
-                    const post = data[0];
-                    title = post.title || title;
-                    description = post.excerpt || description;
-                    imageUrl = post.cover_image || imageUrl;
+            if (data && data.length > 0) {
+                const post = data[0];
+                title = post.title || title;
+                description = post.excerpt || post.description || description;
+                const cover = post.cover_image || post.image_url || post.hero_image || post.thumbnail;
+                if (cover) {
+                    imageUrl = cover;
                 }
             }
         } catch (err) {
             console.error("Error fetching post metadata from Supabase:", err);
         }
+    }
+
+    // Ensure imageUrl is an absolute URL
+    if (imageUrl && !imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+        imageUrl = `https://blissdezigns.vercel.app/${imageUrl.replace(/^\//, '')}`;
     }
 
     try {
@@ -71,6 +93,17 @@ module.exports = async (req, res) => {
             html = html.replace(/<meta property="og:title" content=".*?"/, `<meta property="og:title" content="${escapeHtml(title)}"`);
         } else {
             html = html.replace('<!-- ─── Open Graph ─── -->', `<!-- ─── Open Graph ─── -->\n    <meta property="og:title" content="${escapeHtml(title)}">`);
+        }
+
+        // Canonical URL & OG URL
+        if (slug) {
+            const currentUrl = `https://blissdezigns.vercel.app/post.html?slug=${encodeURIComponent(slug)}`;
+            html = html.replace(/<link rel="canonical" href=".*?"/, `<link rel="canonical" href="${currentUrl}"`);
+            if (html.includes('property="og:url"')) {
+                html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="${currentUrl}"`);
+            } else {
+                html = html.replace('<!-- ─── Open Graph ─── -->', `<!-- ─── Open Graph ─── -->\n    <meta property="og:url" content="${currentUrl}">`);
+            }
         }
 
         res.setHeader('Content-Type', 'text/html');

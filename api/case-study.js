@@ -16,7 +16,7 @@ function escapeHtml(unsafe) {
 }
 
 module.exports = async (req, res) => {
-    const { project } = req.query;
+    const project = req.query.project || req.query.id;
     let title = "Case Study | BlissDezign";
     let description = "Dive deep into the design journey behind my projects. Exploring the problem, solution, and results.";
     let imageUrl = "https://blissdezigns.vercel.app/assets/my-website-cover.png";
@@ -38,14 +38,23 @@ module.exports = async (req, res) => {
                 const data = await response.json();
                 if (data && data.length > 0) {
                     const proj = data[0];
-                    title = `${proj.title} - Case Study`;
-                    description = proj.subtitle || description;
-                    imageUrl = proj.hero_image || imageUrl;
+                    title = proj.title ? `${proj.title} - Case Study` : title;
+                    description = proj.subtitle || proj.description || description;
+                    
+                    const hero = proj.hero_image || proj.cover_image || proj.image_url || proj.thumbnail || proj.banner_image;
+                    if (hero) {
+                        imageUrl = hero;
+                    }
                 }
             }
         } catch (err) {
             console.error("Error fetching project metadata from Supabase:", err);
         }
+    }
+
+    // Ensure imageUrl is an absolute URL
+    if (imageUrl && !imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+        imageUrl = `https://blissdezigns.vercel.app/${imageUrl.replace(/^\//, '')}`;
     }
 
     try {
@@ -71,6 +80,17 @@ module.exports = async (req, res) => {
             html = html.replace(/<meta property="og:title" content=".*?"/, `<meta property="og:title" content="${escapeHtml(title)}"`);
         } else {
             html = html.replace('<!-- ─── Open Graph ─── -->', `<!-- ─── Open Graph ─── -->\n    <meta property="og:title" content="${escapeHtml(title)}">`);
+        }
+
+        // Canonical URL & OG URL
+        if (project) {
+            const currentUrl = `https://blissdezigns.vercel.app/case-study.html?project=${encodeURIComponent(project)}`;
+            html = html.replace(/<link rel="canonical" href=".*?"/, `<link rel="canonical" href="${currentUrl}"`);
+            if (html.includes('property="og:url"')) {
+                html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="${currentUrl}"`);
+            } else {
+                html = html.replace('<!-- ─── Open Graph ─── -->', `<!-- ─── Open Graph ─── -->\n    <meta property="og:url" content="${currentUrl}">`);
+            }
         }
 
         res.setHeader('Content-Type', 'text/html');

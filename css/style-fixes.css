@@ -600,3 +600,18 @@ body {
 [data-theme="dark"] .founder-quote {
     color: rgba(255, 255, 255, 0.75) !important;
 }
+
+/* ─── Vision CTA Equal Button Length ─── */
+.vision-cta-section .hero-actions .btn {
+    min-width: 210px !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+@media (max-width: 576px) {
+    .vision-cta-section .hero-actions .btn {
+        width: 100% !important;
+        min-width: unset !important;
+    }
+}
+

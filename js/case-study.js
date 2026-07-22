@@ -158,21 +158,56 @@ document.addEventListener('DOMContentLoaded', async () => {
                         `
                     }
                 </div>
+                <div class="cs-share-bar" style="display: flex; justify-content: flex-end; align-items: center; width: 100%; max-width: 1400px; margin: 24px auto 0 auto; padding: 0 30px;">
+                    <button id="cs-copy-link-btn" style="background: transparent; border: none; color: rgba(255, 255, 255, 0.75); font-family: inherit; font-size: 0.95rem; font-weight: 500; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;">
+                        <i class="fa-solid fa-link" style="font-size: 0.85em;"></i> <span>Copy Case Study Link</span>
+                    </button>
+                </div>
             </section>
 
             <section class="vision-cta-section" style="padding: 100px 0;">
                 <div class="container text-center">
                     <h2>Liked what you saw?</h2>
-                    <p>Let's collaborate on your next big project.</p>
+                    <p>Tell me what you're building, and let's explore what's possible.</p>
                     <div class="hero-actions" style="justify-content: center; margin-top: 40px; flex-wrap: wrap; gap: 15px;">
-                        <a href="projects.html" class="btn btn-primary">Back to Projects</a>
-                        <a href="get-in-touch.html" class="btn btn-secondary">Get in Touch</a>
+                        <a href="get-in-touch.html" class="btn btn-primary" style="min-width: 210px; justify-content: center; text-align: center;">Get in Touch</a>
+                        <a href="projects.html" class="btn btn-secondary" style="min-width: 210px; justify-content: center; text-align: center;">Back to Projects</a>
                     </div>
                 </div>
             </section>
         `;
 
         container.innerHTML = content;
+
+        // Setup Copy Link button handler
+        const copyBtn = document.getElementById('cs-copy-link-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('mouseenter', () => {
+                copyBtn.style.color = '#ffffff';
+            });
+            copyBtn.addEventListener('mouseleave', () => {
+                copyBtn.style.color = 'rgba(255, 255, 255, 0.75)';
+            });
+
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    const span = copyBtn.querySelector('span');
+                    const icon = copyBtn.querySelector('i');
+                    if (span && icon) {
+                        span.textContent = 'Link Copied!';
+                        icon.className = 'fa-solid fa-check';
+                        copyBtn.style.color = '#a855f7';
+                        setTimeout(() => {
+                            span.textContent = 'Copy Case Study Link';
+                            icon.className = 'fa-solid fa-link';
+                            copyBtn.style.color = 'rgba(255, 255, 255, 0.75)';
+                        }, 2500);
+                    }
+                }).catch(err => {
+                    console.error('Failed to copy link: ', err);
+                });
+            });
+        }
     }
 
     function renderComingSoon(id) {
