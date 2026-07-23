@@ -1430,15 +1430,15 @@ header.scrolled .nav-container {
 .form-group input, 
 .form-group textarea {
     width: 100%;
-    padding: 18px 24px;
+    padding: 16px 20px;
     background: var(--bg-main);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: 6px;
     color: var(--text-main);
     font-family: inherit;
     outline: none;
     transition: 0.3s ease;
-    font-size: 1rem;
+    font-size: 0.88rem;
     resize: none;
 }
 
@@ -1894,15 +1894,16 @@ header.scrolled .nav-container {
     }
     
     .logo-text {
-        font-size: 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 500;
     }
 
     .logo {
-        gap: 8px;
+        gap: 6px;
     }
 
     .logo img {
-        height: 30px;
+        height: 16px;
     }
 
     .nav-actions {

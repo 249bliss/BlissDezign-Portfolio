@@ -232,63 +232,175 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submission handling
     const form = document.querySelector('.contact-form');
     if (form) {
+        const submitBtn = document.getElementById('contact-submit-btn') || form.querySelector('button[type="submit"]');
+        const nameInput  = form.querySelector('#name');
+        const emailInput = form.querySelector('#email');
+        const messageInput = form.querySelector('#message');
+
+        // ── Custom error helpers ──────────────────────────────────────────
+        function showError(fieldId, msg) {
+            const el = document.getElementById(fieldId + '-error');
+            if (el) { el.textContent = msg; el.classList.add('visible'); }
+            const input = document.getElementById(fieldId);
+            if (input) input.classList.add('field-invalid');
+        }
+        function clearError(fieldId) {
+            const el = document.getElementById(fieldId + '-error');
+            if (el) { el.textContent = ''; el.classList.remove('visible'); }
+            const input = document.getElementById(fieldId);
+            if (input) input.classList.remove('field-invalid');
+        }
+        function clearAllErrors() {
+            ['name','email','message'].forEach(clearError);
+        }
+
+        // ── Button state check ───────────────────────────────────────────
+        if (submitBtn) submitBtn.disabled = true;
+
+        function checkFormFilled() {
+            const nameFilled  = nameInput  && nameInput.value.trim().length > 0;
+            const emailFilled = emailInput && emailInput.value.trim().length > 0;
+            // Message is optional — only name + email required to send
+            if (submitBtn) submitBtn.disabled = !(nameFilled && emailFilled);
+        }
+
+        // Listen to input + change (covers autofill from some browsers)
+        [nameInput, emailInput, messageInput].forEach(field => {
+            if (!field) return;
+            field.addEventListener('input',  checkFormFilled);
+            field.addEventListener('change', checkFormFilled);
+            // Autofill CSS animation trick
+            field.addEventListener('animationstart', (e) => {
+                if (e.animationName === 'autofillDetect') checkFormFilled();
+            });
+        });
+
+        // Polling fallback for autofill (Chrome/mobile often silently fills)
+        let pollCount = 0;
+        const pollInterval = setInterval(() => {
+            checkFormFilled();
+            if (++pollCount >= 20) clearInterval(pollInterval); // stop after 10s
+        }, 500);
+
+        // ── Inline validation on blur ─────────────────────────────────────
+        if (nameInput) {
+            nameInput.addEventListener('blur', () => {
+                if (!nameInput.value.trim()) {
+                    showError('name', '↑ Please enter your full name');
+                } else {
+                    clearError('name');
+                }
+            });
+        }
+        if (emailInput) {
+            emailInput.addEventListener('blur', () => {
+                const val = emailInput.value.trim();
+                if (!val) {
+                    showError('email', '↑ Please enter your email address');
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                    showError('email', '↑ Please include a valid @ in your email address');
+                } else {
+                    clearError('email');
+                }
+            });
+        }
+        if (messageInput) {
+            messageInput.addEventListener('blur', () => {
+                if (!messageInput.value.trim()) {
+                    showError('message', '↑ Tell me a bit about your project');
+                } else {
+                    clearError('message');
+                }
+            });
+        }
+
+        // ── Reset custom dropdown display ─────────────────────────────────
+        function resetCustomSelect() {
+            const display = document.querySelector('.custom-select-display');
+            if (display) display.textContent = 'Select a service';
+            const options = document.querySelectorAll('.custom-option');
+            options.forEach(o => o.classList.remove('selected'));
+            const wrapper = document.getElementById('custom-service-select');
+            if (wrapper) wrapper.classList.remove('open');
+        }
+
+        // ── Submit ────────────────────────────────────────────────────────
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = form.querySelector('button');
-            const originalText = btn.innerText;
+
+            // Manual validation — name + email required, message is optional
+            let valid = true;
+            if (!nameInput || !nameInput.value.trim()) {
+                showError('name', '↑ Please enter your full name'); valid = false;
+            } else { clearError('name'); }
+
+            const emailVal = emailInput ? emailInput.value.trim() : '';
+            if (!emailVal) {
+                showError('email', '↑ Please enter your email address'); valid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+                showError('email', '↑ Please include a valid @ in your email address'); valid = false;
+            } else { clearError('email'); }
+
+            if (!valid) return;
+
+            const originalText = submitBtn.innerText;
             const formData = new FormData(form);
 
-            // UI Loading state
-            btn.innerText = 'Sending...';
-            btn.disabled = true;
+            // Lock button width so text-change doesn't resize it
+            submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
+
+            // Loading state
+            submitBtn.innerText = 'Sending...';
+            submitBtn.disabled = true;
 
             try {
                 const response = await fetch(form.action, {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
 
-                // --- Analytics: Save Message to Supabase ---
+                // Analytics
                 if (typeof supabaseClient !== 'undefined') {
-                    const name = formData.get('name') || formData.get('Full Name');
-                    const email = formData.get('email') || formData.get('Email Address');
-                    const msg = formData.get('message') || formData.get('Message');
-
+                    const name = formData.get('name');
+                    const email = formData.get('email');
+                    const msg = formData.get('message');
                     await supabaseClient.from('messages').insert([{ name, email, message: msg }]);
                     await supabaseClient.from('analytics').insert([{ page_path: window.location.pathname, event_type: 'message' }]);
                 }
 
                 if (response.ok) {
-                    // Success UI
-                    btn.innerText = 'Message Sent! ✓';
-                    btn.style.background = '#22c55e';
+                    // ✅ Branded success
+                    submitBtn.innerText = 'Message Sent ✓';
+                    submitBtn.style.background = 'linear-gradient(135deg, #4c1d95 0%, #6c3bff 100%)';
+                    submitBtn.style.boxShadow = '0 0 20px rgba(108, 59, 255, 0.35)';
+                    submitBtn.style.color = '#fff';
                     form.reset();
+                    resetCustomSelect();
+                    clearAllErrors();
                 } else {
-                    // Server error response
                     const data = await response.json();
                     if (Object.hasOwn(data, 'errors')) {
-                        btn.innerText = 'Error! ✗';
-                        btn.style.background = '#ef4444';
-                        console.error('Submission errors:', data.errors.map(error => error.message).join(", "));
+                        submitBtn.innerText = 'Error — Try Again ✗';
+                        submitBtn.style.background = 'linear-gradient(135deg, #3b0a0a 0%, #7f1d1d 100%)';
+                        submitBtn.style.color = '#fca5a5';
+                        console.error('Submission errors:', data.errors.map(e => e.message).join(', '));
                     } else {
-                        throw new Error('Oops! There was a problem submitting your form');
+                        throw new Error('Submission failed');
                     }
                 }
             } catch (error) {
-                // Network error
-                btn.innerText = 'Error! ✗';
-                btn.style.background = '#ef4444';
+                submitBtn.innerText = 'Error — Try Again ✗';
+                submitBtn.style.background = 'linear-gradient(135deg, #3b0a0a 0%, #7f1d1d 100%)';
+                submitBtn.style.color = '#fca5a5';
                 console.error('Submission error:', error);
             } finally {
-                // Return button to original state after delay
                 setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.background = '';
-                    btn.disabled = false;
-                }, 3000);
+                    submitBtn.innerText = originalText;
+                    submitBtn.style.cssText = '';
+                    // Re-check: re-enable if name+email still filled
+                    checkFormFilled();
+                }, 3500);
             }
 
             // Newsletter Form Handling

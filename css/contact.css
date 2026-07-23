@@ -37,7 +37,7 @@
     padding: 28px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: 12px;
     transition: 0.3s ease;
 }
 
@@ -103,7 +103,7 @@
 .contact-form-block {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 28px;
+    border-radius: 12px;
     padding: 40px;
 }
 
@@ -116,23 +116,38 @@
 
 .contact-form-block label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 500;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+}
+
+.contact-form-block input::placeholder,
+.contact-form-block textarea::placeholder {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.contact-form-block .btn[disabled],
+.contact-form-block button[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.3);
 }
 
 .contact-form-block select {
     width: 100%;
-    padding: 16px 20px;
+    padding: 14px 18px;
     background: var(--bg-main);
     border: 1px solid var(--border-color);
-    border-radius: 14px;
+    border-radius: 6px;
     color: var(--text-main);
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 0.88rem;
     outline: none;
     appearance: none;
     cursor: pointer;
@@ -146,6 +161,50 @@
 
 .w-full {
     width: 100%;
+}
+
+/* ── Field error messages ───────────────────────────── */
+.field-error {
+    display: block;
+    font-size: 0.75rem;
+    color: #c084fc;
+    margin-top: 5px;
+    padding-left: 2px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.25s ease, max-height 0.25s ease;
+    letter-spacing: 0.01em;
+}
+.field-error.visible {
+    opacity: 1;
+    max-height: 40px;
+}
+
+/* ── Invalid field border ────────────────────────────── */
+.contact-form-block .field-invalid,
+.form-group .field-invalid {
+    border-color: rgba(192, 132, 252, 0.6) !important;
+    box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.1) !important;
+}
+
+/* ── Disabled button ─────────────────────────────────── */
+.contact-form-block .btn[disabled],
+.contact-form-block button[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.2);
+}
+
+/* ── Autofill detection keyframe ─────────────────────── */
+@keyframes autofillDetect {
+    from { background-color: transparent; }
+    to   { background-color: transparent; }
+}
+input:-webkit-autofill {
+    animation-name: autofillDetect;
+    animation-duration: 0.001s;
 }
 
 /* Contact Page Responsive */
@@ -168,17 +227,18 @@
         font-size: clamp(1.8rem, 9vw, 2.8rem);
     }
     .contact-form-block {
-        padding: 25px 20px;
-        border-radius: 20px;
+        padding: 24px 20px;
+        border-radius: 12px;
     }
     .info-item {
         padding: 20px;
+        border-radius: 10px;
     }
     .info-icon {
         width: 42px;
         height: 42px;
         min-width: 42px;
-        border-radius: 12px;
+        border-radius: 10px;
     }
 }
 
@@ -189,14 +249,17 @@
     .info-item {
         padding: 16px;
         gap: 12px;
+        border-radius: 10px;
     }
     .info-icon {
         width: 38px;
         height: 38px;
         min-width: 38px;
         font-size: 0.95rem;
+        border-radius: 8px;
     }
     .contact-form-block {
-        padding: 20px 15px;
+        padding: 20px 16px;
+        border-radius: 12px;
     }
 }

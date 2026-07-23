@@ -661,7 +661,7 @@ body {
     background: #0a0a0a;
     background-image: radial-gradient(circle at 50% 0%, rgba(108, 59, 255, 0.15) 0%, rgba(10, 10, 10, 0) 50%);
     border: 1px solid rgba(255,255,255,0.02);
-    border-radius: 20px;
+    border-radius: 12px;
     padding: 40px 30px;
     display: flex;
     flex-direction: column;
