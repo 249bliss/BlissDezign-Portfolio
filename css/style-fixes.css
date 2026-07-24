@@ -964,13 +964,22 @@ body {
     height: 32px;
     width: auto;
     object-fit: contain;
-    /* Black and white filter, dimmed */
-    filter: grayscale(100%) opacity(0.6) contrast(1.2);
+    /* Force all logos to white for dark mode */
+    filter: brightness(0) invert(1) opacity(0.5);
     transition: filter 0.3s ease;
 }
 
 .marquee-track img:hover {
-    filter: grayscale(100%) opacity(1) contrast(1.2);
+    filter: brightness(0) invert(1) opacity(1);
+}
+
+[data-theme="light"] .marquee-track img {
+    /* Force all logos to black for light mode */
+    filter: brightness(0) opacity(0.5);
+}
+
+[data-theme="light"] .marquee-track img:hover {
+    filter: brightness(0) opacity(1);
 }
 
 @keyframes scroll-marquee {
