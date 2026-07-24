@@ -651,25 +651,48 @@ body {
 }
 
 .services-pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
     margin-top: 50px;
+    padding-bottom: 20vh; /* Extra scroll space to let the last cards stack */
 }
 
 .pricing-card {
     background: #0a0a0a;
-    background-image: radial-gradient(circle at 50% 0%, rgba(108, 59, 255, 0.15) 0%, rgba(10, 10, 10, 0) 50%);
-    border: 1px solid rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
     border-radius: 12px;
-    padding: 40px 30px;
+    padding: 40px 50px;
     display: flex;
     flex-direction: column;
+    gap: 40px;
     justify-content: space-between;
     transition: all 0.4s ease;
     box-shadow: none;
-    position: relative;
+    position: sticky;
+    top: 120px;
 }
+
+@media (min-width: 768px) {
+    .pricing-card {
+        flex-direction: row;
+        align-items: center;
+    }
+    .pricing-card-left {
+        flex: 1;
+        padding-right: 40px;
+    }
+    .pricing-card-right {
+        flex: 1;
+    }
+}
+
+.pricing-card:nth-child(1) { top: 120px; }
+.pricing-card:nth-child(2) { top: 140px; }
+.pricing-card:nth-child(3) { top: 160px; }
+.pricing-card:nth-child(4) { top: 180px; }
+.pricing-card:nth-child(5) { top: 200px; }
+.pricing-card:nth-child(6) { top: 220px; }
 
 .pricing-card::before {
     content: "";
@@ -678,15 +701,15 @@ body {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(108, 59, 255, 0.8) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(108, 59, 255, 0.4) 50%, transparent 100%);
     z-index: 1;
 }
 
 .pricing-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.1);
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    background-image: radial-gradient(circle at 50% 0%, rgba(108, 59, 255, 0.25) 0%, rgba(10, 10, 10, 0) 60%);
+    background-image: radial-gradient(circle at 50% 0%, rgba(108, 59, 255, 0.08) 0%, rgba(10, 10, 10, 0) 60%);
 }
 
 .pricing-card-top {

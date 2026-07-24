@@ -808,63 +808,78 @@ header.scrolled .nav-container {
 }
 
 .services-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    max-width: 900px;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    max-width: 800px;
+    margin: 60px auto 0;
+    padding-bottom: 20vh;
 }
 
 .service-card {
     background: var(--bg-card);
-    border-radius: 14px;
-    border: 1px solid rgba(168, 85, 247, 0.15);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Removed purple */
     overflow: hidden;
     transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.4); /* Dark shadow for depth, no glow */
     display: flex;
     flex-direction: column;
+    position: sticky;
+    top: 120px;
+    padding: 40px;
 }
 
+@media (min-width: 768px) {
+    .service-card {
+        flex-direction: row;
+        align-items: center;
+        gap: 40px;
+        padding: 50px;
+    }
+}
+
+.service-card:nth-child(1) { top: 120px; }
+.service-card:nth-child(2) { top: 140px; }
+.service-card:nth-child(3) { top: 160px; }
+.service-card:nth-child(4) { top: 180px; }
+
 .service-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--accent-purple);
-    box-shadow: 0 20px 40px -20px rgba(168, 85, 247, 0.2);
+    border-color: rgba(255, 255, 255, 0.15); /* No purple glow on hover */
+    /* Removed translate on hover to keep the sticky smooth */
 }
 
 .service-card-top {
-    height: 180px; /* Reduced height */
-    background: linear-gradient(180deg, rgba(168, 85, 247, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
     position: relative;
+    flex-shrink: 0;
 }
 
-.service-card-top::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 20px;
-    right: 20px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.2), transparent);
+/* Add floating animation to the 3D images */
+@keyframes float-icon {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0); }
 }
 
 .service-card-top img {
-    height: 120px; /* Specific reduced height */
+    height: 100px;
     width: auto;
     object-fit: contain;
-    transition: 0.5s ease;
+    animation: float-icon 5s ease-in-out infinite;
 }
 
-.service-card:hover .service-card-top img {
-    transform: scale(1.1);
-}
+/* Stagger the animations slightly so they don't move exactly together */
+.service-card:nth-child(1) .service-card-top img { animation-delay: 0s; }
+.service-card:nth-child(2) .service-card-top img { animation-delay: 0.5s; }
+.service-card:nth-child(3) .service-card-top img { animation-delay: 1s; }
+.service-card:nth-child(4) .service-card-top img { animation-delay: 1.5s; }
 
 .service-card-content {
-    padding: 30px;
+    flex: 1;
 }
 
 .service-card h3 {
@@ -1070,6 +1085,8 @@ header.scrolled .nav-container {
 
 .experience-intro {
     padding-right: 20px;
+    position: sticky;
+    top: 120px;
 }
 
 .experience-intro h2 {
