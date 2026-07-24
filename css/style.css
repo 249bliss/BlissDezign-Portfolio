@@ -819,10 +819,10 @@ header.scrolled .nav-container {
 .service-card {
     background: var(--bg-card);
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Removed purple */
+    border: 1px solid var(--border-color);
     overflow: hidden;
     transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.4); /* Dark shadow for depth, no glow */
+    box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
     position: sticky;
@@ -1120,7 +1120,7 @@ header.scrolled .nav-container {
     border: 1px solid var(--border-color);
     border-radius: 14px;
     background: var(--bg-card);
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow);
     
     /* Sticky Stack Effect */
     position: sticky;
