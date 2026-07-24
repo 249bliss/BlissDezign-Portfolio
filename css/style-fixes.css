@@ -922,3 +922,69 @@ body {
     background: #f0f0f0;
     color: #111111;
 }
+
+/* ── Trusted By Section (Marquee) ───────────────────────────── */
+.trusted-by {
+    padding: 60px 0 20px;
+    background: transparent;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+
+.trusted-by-text {
+    text-align: center;
+    color: #888888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.marquee-wrapper {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+    padding-right: 80px;
+    animation: scroll-marquee 20s linear infinite;
+    min-width: 100%;
+    flex-shrink: 0;
+}
+
+.marquee-track img {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    /* Black and white filter, dimmed */
+    filter: grayscale(100%) opacity(0.6) contrast(1.2);
+    transition: filter 0.3s ease;
+}
+
+.marquee-track img:hover {
+    filter: grayscale(100%) opacity(1) contrast(1.2);
+}
+
+@keyframes scroll-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+}
+
+/* Adjust marquee height for mobile */
+@media (max-width: 768px) {
+    .marquee-track {
+        gap: 50px;
+        padding-right: 50px;
+    }
+    .marquee-track img {
+        height: 24px;
+    }
+}
