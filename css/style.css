@@ -1085,8 +1085,13 @@ header.scrolled .nav-container {
 
 .experience-intro {
     padding-right: 20px;
-    position: sticky;
-    top: 120px;
+}
+
+@media (min-width: 768px) {
+    .experience-intro {
+        position: sticky;
+        top: 120px;
+    }
 }
 
 .experience-intro h2 {
@@ -1106,22 +1111,31 @@ header.scrolled .nav-container {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    padding-bottom: 20vh; /* Space to let the last cards stack */
 }
 
 .experience-card {
     padding: 35px 45px;
-    position: relative;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--border-color);
     border-radius: 14px;
     background: var(--bg-card);
-    box-shadow: var(--shadow);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+    
+    /* Sticky Stack Effect */
+    position: sticky;
+    top: 120px;
 }
 
+/* Staggered sticky top offsets */
+.experience-card:nth-child(1) { top: 120px; }
+.experience-card:nth-child(2) { top: 140px; }
+.experience-card:nth-child(3) { top: 160px; }
+.experience-card:nth-child(4) { top: 180px; }
+.experience-card:nth-child(5) { top: 200px; }
+
 .experience-card:hover {
-    transform: translateX(10px) translateY(-2px);
     border-color: var(--accent-purple);
-    box-shadow: 0 20px 40px -20px rgba(168, 85, 247, 0.2);
 }
 
 .exp-top {

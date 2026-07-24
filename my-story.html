@@ -84,6 +84,36 @@
       "description": "Emmanuel Bliss is a UI/UX Product Designer from Nigeria specializing in mobile apps, SaaS products, and web applications built in Figma."
     }
     </script>
+
+    <!-- Mobile Overrides for My Story Page -->
+    <style>
+    @media (max-width: 767px) {
+        /* Reduce font sizes to fit screen */
+        main h1 { font-size: clamp(1.8rem, 8vw, 2.2rem) !important; }
+        main h2 { font-size: clamp(1.5rem, 6vw, 1.8rem) !important; }
+        main h4 { font-size: 1.1rem !important; }
+        main p { font-size: 0.95rem !important; }
+        main li { font-size: 0.95rem !important; }
+        
+        /* Fix padding overflow on very small devices */
+        main section { padding: 40px 15px !important; }
+        main .container { padding-left: 15px !important; padding-right: 15px !important; }
+        
+        /* Fix rigid grids that cause horizontal scrolling */
+        div[style*="minmax(320px"] { grid-template-columns: 1fr !important; gap: 30px !important; }
+        div[style*="minmax(280px"] { grid-template-columns: 1fr !important; gap: 20px !important; }
+        
+        /* Make CTA button full length, 47px height, fully rounded */
+        .about-cta .btn-cta {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 47px !important;
+            padding: 0 20px !important;
+            font-size: 1.1rem !important;
+            border-radius: 50px !important;
+        }
+    }
+    </style>
 </head>
 
 <body data-theme="dark">
