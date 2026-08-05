@@ -406,7 +406,7 @@ header.scrolled .nav-container {
 .hero-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
+    align-items: flex-end;
     gap: 60px;
 }
 
@@ -590,15 +590,17 @@ header.scrolled .nav-container {
 }
 
 .hero-portrait {
-    width: 457px;
-    height: 537px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 825px;
+    height: auto;
+    transform: scale(1.15);
+    transform-origin: bottom center;
     object-fit: cover;
     z-index: 2;
     pointer-events: none;
     display: block;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0.9) 85%, rgba(0,0,0,0.5) 92%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0.9) 85%, rgba(0,0,0,0.5) 92%, rgba(0,0,0,0) 100%);
 }
 
 .hero-glow-blur {
@@ -2218,10 +2220,11 @@ header.scrolled .nav-container {
     
     /* Hardware-Accelerated Premium Ripple Reveal using Clip-Path */
     clip-path: circle(0px at calc(100% - 40px) 40px);
-    transition: clip-path 0.85s cubic-bezier(0.76, 0, 0.24, 1);
+    transition: clip-path 0.85s cubic-bezier(0.76, 0, 0.24, 1), visibility 0s linear 0.85s;
     
     visibility: hidden;
     pointer-events: none;
+    will-change: clip-path;
 }
 
 [data-theme="dark"] .mobile-overlay {
@@ -2232,6 +2235,7 @@ header.scrolled .nav-container {
     visibility: visible;
     pointer-events: auto;
     clip-path: circle(150% at calc(100% - 40px) 40px);
+    transition: clip-path 0.85s cubic-bezier(0.76, 0, 0.24, 1), visibility 0s linear 0s;
 }
 
 /* Internal Container for Perfect Responsiveness & Scrolling on Tiny Devices */
@@ -2441,6 +2445,7 @@ header.scrolled .nav-container {
 .hero-content {
     opacity: 0;
     animation: slideRight 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards;
+    padding-bottom: 30px;
 }
 
 .hero-image-container {
