@@ -45,14 +45,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerEl = document.querySelector('header');
 
     if (mobileBtn && mobileOverlay) {
+        // Prevent 300ms tap delay on tablets (iOS/Android)
+        mobileBtn.setAttribute('touch-action', 'manipulation');
+
+        let isToggling = false; // debounce guard
+
         // Toggle menu visibility and animated burger state
-        mobileBtn.addEventListener('click', () => {
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isToggling) return;
+            isToggling = true;
+            setTimeout(() => { isToggling = false; }, 400);
+
             mobileBtn.classList.toggle('active');
             mobileOverlay.classList.toggle('active');
             if (headerEl) headerEl.classList.toggle('menu-open');
 
             // Prevent body scrolling when menu is open
             body.style.overflow = mobileOverlay.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close when tapping outside the overlay (on the dimmed area)
+        mobileOverlay.addEventListener('click', (e) => {
+            if (e.target === mobileOverlay) {
+                mobileBtn.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                if (headerEl) headerEl.classList.remove('menu-open');
+                body.style.overflow = '';
+            }
         });
 
         // Close mobile overlay whenever a link is clicked to navigate

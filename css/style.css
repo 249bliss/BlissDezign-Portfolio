@@ -1803,12 +1803,15 @@ header.scrolled .nav-container {
     border: 1px solid var(--border-color);
     border-radius: 50%;
     cursor: pointer;
-    z-index: 1100;
+    z-index: 1200;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     box-sizing: border-box;
     padding: 0;
     position: relative;
     outline: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 /* Premium glass hover feedback */
