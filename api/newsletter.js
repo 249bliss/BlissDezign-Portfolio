@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+﻿export default async function handler(req, res) {
     // Enable CORS for local testing
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
                         ${cover_image ? `<img src="${cover_image}" style="width: 100%; border-radius: 12px; margin-bottom: 20px;">` : ''}
                         <h1 style="color: #6C3BFF;">${title}</h1>
                         <p style="font-size: 16px; line-height: 1.6;">${excerpt}</p>
-                        <a href="https://blissdezigns.vercel.app/post.html?slug=${slug}" 
+                        <a href="https://bliss.kre8mind.com/post.html?slug=${slug}" 
                            style="display: inline-block; padding: 12px 24px; background: #6C3BFF; color: #fff; text-decoration: none; border-radius: 8px; margin-top: 20px;">
                            Read Full Article
                         </a>
@@ -61,3 +61,4 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+

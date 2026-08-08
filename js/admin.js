@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+﻿document.addEventListener('DOMContentLoaded', async () => {
     console.log("Admin Dashboard JS initialized");
 
     // Check if Supabase Client is initialized
@@ -1424,7 +1424,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Bypassing browser CORS by using a Vercel Serverless Function!
             // We use the absolute live URL so this works even if you are testing the dashboard locally on your computer.
-            const response = await fetch('https://blissdezigns.vercel.app/api/newsletter', {
+            const response = await fetch('https://bliss.kre8mind.com/api/newsletter', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1456,7 +1456,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             console.error('Newsletter error:', err);
             // Use a longer timeout for this specific error since it's informational
-            showToast(`Article saved! 🔔 Newsletter failed: ${err.message}`, 'error');
+            showToast(`Article saved! ðŸ”” Newsletter failed: ${err.message}`, 'error');
         }
     }
 
@@ -1494,7 +1494,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `${pathFolder}/${fileName}`;
 
-        // Determine the correct MIME type — SVG can be misdetected by browsers/Supabase
+        // Determine the correct MIME type â€” SVG can be misdetected by browsers/Supabase
         let mimeType = fileToUpload.type;
         if (fileExt === 'svg' || mimeType === 'image/svg+xml' || mimeType === 'text/xml' || mimeType === 'application/xml') {
             mimeType = 'image/svg+xml';
@@ -1510,7 +1510,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error("The file is too large for the server. Try a smaller version or a different format.");
             }
             if (error.message.toLowerCase().includes('mime') || error.message.toLowerCase().includes('type') || error.statusCode === '415') {
-                throw new Error(`File type "${mimeType}" may not be allowed in your Supabase storage bucket. Go to Supabase Dashboard → Storage → portfolio-assets → Policies and make sure the bucket allows this file type, or try uploading a PNG instead.`);
+                throw new Error(`File type "${mimeType}" may not be allowed in your Supabase storage bucket. Go to Supabase Dashboard â†’ Storage â†’ portfolio-assets â†’ Policies and make sure the bucket allows this file type, or try uploading a PNG instead.`);
             }
             throw error;
         }
@@ -2166,3 +2166,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.renderCaseStudyGallery = renderCaseStudyGallery;
     window.fetchGallery = fetchGallery;
 });
+

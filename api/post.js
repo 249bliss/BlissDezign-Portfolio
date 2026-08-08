@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 // Supabase configuration
@@ -17,9 +17,9 @@ function escapeHtml(unsafe) {
 
 module.exports = async (req, res) => {
     const slug = req.query.slug || req.query.id;
-    let title = "Article | Bliss – Product Designer Insights";
+    let title = "Article | Bliss â€“ Product Designer Insights";
     let description = "Thoughts and insights on product design, mobile apps, and building digital products with intention.";
-    let imageUrl = "https://blissdezigns.vercel.app/assets/my-website-cover.png";
+    let imageUrl = "https://bliss.kre8mind.com/assets/my-website-cover.png";
 
     if (slug) {
         try {
@@ -67,7 +67,7 @@ module.exports = async (req, res) => {
 
     // Ensure imageUrl is an absolute URL
     if (imageUrl && !imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
-        imageUrl = `https://blissdezigns.vercel.app/${imageUrl.replace(/^\//, '')}`;
+        imageUrl = `https://bliss.kre8mind.com/${imageUrl.replace(/^\//, '')}`;
     }
 
     try {
@@ -93,17 +93,17 @@ module.exports = async (req, res) => {
         if (html.includes('property="og:title"')) {
             html = html.replace(/<meta property="og:title" content=".*?"/, `<meta property="og:title" content="${escapeHtml(title)}"`);
         } else {
-            html = html.replace('<!-- ─── Open Graph ─── -->', `<!-- ─── Open Graph ─── -->\n    <meta property="og:title" content="${escapeHtml(title)}">`);
+            html = html.replace('<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->', `<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->\n    <meta property="og:title" content="${escapeHtml(title)}">`);
         }
 
         // Canonical URL & OG URL
         if (slug) {
-            const currentUrl = `https://blissdezigns.vercel.app/post.html?slug=${encodeURIComponent(slug)}`;
+            const currentUrl = `https://bliss.kre8mind.com/post.html?slug=${encodeURIComponent(slug)}`;
             html = html.replace(/<link rel="canonical" href=".*?"/, `<link rel="canonical" href="${currentUrl}"`);
             if (html.includes('property="og:url"')) {
                 html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="${currentUrl}"`);
             } else {
-                html = html.replace('<!-- ─── Open Graph ─── -->', `<!-- ─── Open Graph ─── -->\n    <meta property="og:url" content="${currentUrl}">`);
+                html = html.replace('<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->', `<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->\n    <meta property="og:url" content="${currentUrl}">`);
             }
         }
 
@@ -114,3 +114,4 @@ module.exports = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
