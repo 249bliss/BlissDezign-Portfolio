@@ -1,9 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Analytics: Track Page View ---
     if (typeof supabaseClient !== 'undefined') {
-        supabaseClient.from('analytics').insert([
-            { page_path: window.location.pathname, event_type: 'view' }
-        ]).then(({ error }) => { if (error) console.error('Analytics Error:', error); });
+        const hasVisited = localStorage.getItem('unique_visitor_view');
+        if (!hasVisited) {
+            supabaseClient.from('analytics').insert([
+                { page_path: window.location.pathname, event_type: 'view' }
+            ]).then(({ error }) => { 
+                if (error) console.error('Analytics Error:', error); 
+                else localStorage.setItem('unique_visitor_view', 'true');
+            });
+        }
     }
 
     // Theme Toggle Logic

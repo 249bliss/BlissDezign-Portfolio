@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log("Admin Dashboard JS initialized");
 
     // Check if Supabase Client is initialized
@@ -259,7 +259,7 @@
             document.getElementById('stat-messages').innerText = '...';
             document.getElementById('stat-subscribers').innerText = '...';
 
-            let labelText = "Total Reach";
+            let labelText = "Unique Visitors";
             let leadsText = "Total Leads";
             let communityText = "Community";
             let isoDate = null;
@@ -272,7 +272,7 @@
                 let rangeLabel = `Last ${days} Days`;
                 if (days === 1) {
                     rangeLabel = "Today's Performance";
-                    labelText = "Daily Reach";
+                    labelText = "Daily Unique Visitors";
                     leadsText = "New Leads";
                     communityText = "Daily Growth";
                 }
@@ -453,7 +453,8 @@
             { name: 'Mobile Apps', value: 85 },
             { name: 'Web Design', value: 70 },
             { name: 'Product Design', value: 45 },
-            { name: 'UI/UX Strategy', value: 38 }
+            { name: 'UI/UX Strategy', value: 38 },
+            { name: 'App Store / Play Store Screenshot Design', value: 20 }
         ];
 
         categoryList.innerHTML = categories.map(cat => `
