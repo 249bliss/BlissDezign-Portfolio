@@ -280,14 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
             ['name','email','message'].forEach(clearError);
         }
 
-        // ── Button state check ───────────────────────────────────────────
-        if (submitBtn) submitBtn.disabled = true;
+        // ── Button state — always active on contact page (no name field required) ───
+        if (submitBtn) submitBtn.disabled = false;
 
         function checkFormFilled() {
-            const nameFilled  = nameInput  && nameInput.value.trim().length > 0;
-            const emailFilled = emailInput && emailInput.value.trim().length > 0;
-            // Message is optional — only name + email required to send
-            if (submitBtn) submitBtn.disabled = !(nameFilled && emailFilled);
+            // Only email is required now (name field was removed from redesigned form)
+            if (submitBtn) submitBtn.disabled = false;
         }
 
         // Listen to input + change (covers autofill from some browsers)
@@ -330,15 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-        if (messageInput) {
-            messageInput.addEventListener('blur', () => {
-                if (!messageInput.value.trim()) {
-                    showError('message', '↑ Tell me a bit about your project');
-                } else {
-                    clearError('message');
-                }
-            });
-        }
+        // Message is optional, no blur validation needed
 
         // ── Reset custom dropdown display ─────────────────────────────────
         function resetCustomSelect() {
@@ -354,11 +344,13 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Manual validation — name + email required, message is optional
+            // Manual validation — email required, message optional, name optional if removed from form
             let valid = true;
-            if (!nameInput || !nameInput.value.trim()) {
-                showError('name', '↑ Please enter your full name'); valid = false;
-            } else { clearError('name'); }
+            if (nameInput) {
+                if (!nameInput.value.trim()) {
+                    showError('name', '↑ Please enter your full name'); valid = false;
+                } else { clearError('name'); }
+            }
 
             const emailVal = emailInput ? emailInput.value.trim() : '';
             if (!emailVal) {
@@ -396,7 +388,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (response.ok) {
-                    // ✅ Branded success
+                    // ✅ Branded success with Modal & Confetti
+                    if (typeof confetti === 'function') {
+                        confetti({
+                            particleCount: 150,
+                            spread: 80,
+                            origin: { y: 0.6 },
+                            colors: ['#6c3bff', '#a855f7', '#ffffff']
+                        });
+                    }
+                    
+                    const successModal = document.getElementById('success-modal');
+                    if (successModal) {
+                        successModal.classList.remove('hidden');
+                    }
+                    
                     submitBtn.innerText = 'Message Sent ✓';
                     submitBtn.style.background = 'linear-gradient(135deg, #4c1d95 0%, #6c3bff 100%)';
                     submitBtn.style.boxShadow = '0 0 20px rgba(108, 59, 255, 0.35)';

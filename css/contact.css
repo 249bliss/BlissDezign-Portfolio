@@ -104,7 +104,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 40px;
+    padding: 30px;
 }
 
 .contact-form-block .contact-form {
@@ -114,7 +114,8 @@
     border-radius: 0;
 }
 
-.contact-form-block label {
+/* Only style 'regular' form labels — NOT service-option labels */
+.contact-form-block label:not(.service-option) {
     display: block;
     font-size: 0.78rem;
     font-weight: 500;
@@ -122,6 +123,18 @@
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+}
+
+/* Hard reset for service card label wrapper */
+.service-option {
+    cursor: pointer;
+    display: block;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    color: inherit !important;
+    margin-bottom: 0 !important;
 }
 
 .contact-form-block input::placeholder,
@@ -207,6 +220,252 @@ input:-webkit-autofill {
     animation-duration: 0.001s;
 }
 
+/* ─── New Contact Form Styles ─── */
+.form-section {
+    margin-bottom: 24px;
+}
+
+.last-section {
+    margin-bottom: 25px;
+}
+
+.form-section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.form-section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-section-header-row .form-section-header {
+    margin-bottom: 0;
+}
+
+.section-icon {
+    font-size: 1rem;
+    color: var(--accent-purple);
+    margin-top: 4px;
+}
+
+.form-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.optional {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.85rem;
+}
+
+.form-section-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.service-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.service-option.full-width {
+    grid-column: 1 / -1;
+}
+
+.service-option input[type="radio"] {
+    display: none;
+}
+
+/* Override global .service-card rules (from style.css homepage services section) */
+.service-selection-grid .service-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 16px 20px !important;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    height: 100% !important;
+    position: relative !important;
+    top: auto !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    cursor: pointer !important;
+}
+
+.service-selection-grid .service-card:hover {
+    border-color: rgba(108, 59, 255, 0.4) !important;
+    background: var(--bg-card) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: none !important;
+}
+
+.service-selection-grid .service-option:has(input:checked) .service-card {
+    border-color: var(--accent-purple) !important;
+    background: rgba(108, 59, 255, 0.05) !important;
+    box-shadow: 0 0 0 1px var(--accent-purple) !important;
+    transform: translateY(-2px) !important;
+}
+
+.service-selection-grid .service-option input[type="radio"]:checked + .service-card {
+    border-color: var(--accent-purple) !important;
+    background: rgba(168, 85, 247, 0.05) !important;
+}
+
+.service-icon {
+    font-size: 1rem;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.service-option input[type="radio"]:checked + .service-card .service-icon {
+    color: var(--accent-purple);
+}
+
+.service-selection-grid .service-card span {
+    font-size: 0.85rem;
+    font-weight: 400;
+    font-family: var(--font-main), inherit;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.service-text-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.service-text-group small {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.check-icon {
+    position: absolute;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-purple);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.6rem;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
+}
+
+.service-selection-grid .service-option input[type="radio"]:checked + .service-card .check-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.email-group {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.email-group input {
+    padding-left: 44px;
+    width: 100%;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: inherit;
+    transition: 0.3s ease;
+}
+
+.email-group input:focus {
+    border-color: var(--accent-purple);
+    outline: none;
+}
+
+.prefilled-badge {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.prefilled-badge i {
+    color: var(--accent-purple);
+}
+
+#message {
+    width: 100%;
+    padding: 16px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: inherit;
+    resize: vertical;
+    transition: 0.3s ease;
+}
+
+#message:focus {
+    border-color: var(--accent-purple);
+    outline: none;
+}
+
+.submit-inquiry-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    font-size: 1rem;
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 50px;
+}
+
+.form-footer-note {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.form-footer-note p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 /* Contact Page Responsive */
 @media (max-width: 992px) {
     .contact-page-grid {
@@ -262,4 +521,73 @@ input:-webkit-autofill {
         padding: 20px 16px;
         border-radius: 12px;
     }
+    
+    .service-selection-grid {
+        grid-template-columns: 1fr;
+    }
 }
+
+/* ─── Success Modal Styles ─── */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.success-modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(108, 59, 255, 0.2);
+    transform: translateY(0) scale(1);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-overlay.hidden .success-modal-content {
+    transform: translateY(20px) scale(0.95);
+}
+
+.success-icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+.success-modal-content h2 {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+    color: var(--text-main);
+}
+
+.success-modal-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.success-modal-content .btn {
+    width: 100%;
+}
+

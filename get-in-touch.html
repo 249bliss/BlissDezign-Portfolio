@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -58,7 +58,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css?v=6">
-    <link rel="stylesheet" href="css/contact.css">
+    <link rel="stylesheet" href="css/contact.css?v=9">
     <link rel="stylesheet" href="css/style-fixes.css?v=2">
 
     <!-- â”€â”€â”€ Structured Data (Schema.org) â”€â”€â”€ -->
@@ -148,7 +148,7 @@
         <section class="contact-page-hero">
             <div class="container text-center reveal-on-scroll">
                 <h1>Let's build something <br> <span class="gradient-text-gray">truly intentional.</span></h1>
-                <p class="hero-sub">Have a project in mind? Fill out the form below or book a discovery call to get started.</p>
+                <p class="hero-sub">Have a project in mind? Choose a service or reach out directly, and I’ll get back to you by email.</p>
             </div>
         </section>
 
@@ -184,56 +184,108 @@
 
                 <div class="contact-form-block reveal-on-scroll">
                     <form class="contact-form" action="https://formspree.io/f/mreowldn" method="POST" novalidate>
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name">
-                            <span class="field-error" id="name-error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="john@example.com" autocomplete="email">
-                            <span class="field-error" id="email-error"></span>
-                        </div>
-                        <div class="form-group custom-dropdown-group">
-                            <label for="project-type">Project Type (Optional)</label>
-                            
-                            <!-- Hidden Native Select for Form Submission -->
-                            <select id="project-type" name="project_type" style="display: none;">
-                                <option value="" disabled selected>Select a service</option>
-                                <option value="web-app-dashboard">Web App & Dashboard UI/UX Design</option>
-                                <option value="website-app-redesign">Website & App Redesign</option>
-                                <option value="landing-page">Landing Page Design</option>
-                                <option value="mobile-app">Mobile App UI/UX Design</option>
-                                <option value="full-website">Full Website Design</option>
-                                <option value="product-ux-audit">Product UX Audit</option>
-                                <option value="other">Other Inquiry</option>
-                            </select>
-
-                            <!-- Custom Select UI -->
-                            <div class="custom-select-wrapper" id="custom-service-select">
-                                <div class="custom-select-trigger">
-                                    <span class="custom-select-display">Select a service</span>
-                                    <svg class="custom-select-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                                <div class="custom-select-options">
-                                    <div class="custom-option" data-value="web-app-dashboard">Web App & Dashboard UI/UX Design</div>
-                                    <div class="custom-option" data-value="website-app-redesign">Website & App Redesign</div>
-                                    <div class="custom-option" data-value="landing-page">Landing Page Design</div>
-                                    <div class="custom-option" data-value="mobile-app">Mobile App UI/UX Design</div>
-                                    <div class="custom-option" data-value="full-website">Full Website Design</div>
-                                    <div class="custom-option" data-value="product-ux-audit">Product UX Audit</div>
-                                    <div class="custom-option" data-value="other">Other Inquiry</div>
+                        
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <div>
+                                    <h3 class="form-section-title">1. Select a service</h3>
+                                    <p class="form-section-subtitle">Choose what you need help with.</p>
                                 </div>
                             </div>
+                            
+                            <div class="service-selection-grid">
+                                <label class="service-option">
+                                    <input type="radio" name="project_type" value="web-app-dashboard">
+                                    <div class="service-card">
+                                        <span>Web App & Dashboard UI/UX</span>
+                                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                                    </div>
+                                </label>
+                                <label class="service-option">
+                                    <input type="radio" name="project_type" value="mobile-app">
+                                    <div class="service-card">
+                                        <span>Mobile App UI/UX</span>
+                                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                                    </div>
+                                </label>
+                                <label class="service-option">
+                                    <input type="radio" name="project_type" value="full-website">
+                                    <div class="service-card">
+                                        <span>Full Website Design</span>
+                                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                                    </div>
+                                </label>
+                                <label class="service-option">
+                                    <input type="radio" name="project_type" value="website-app-redesign">
+                                    <div class="service-card">
+                                        <span>Website & App Redesign</span>
+                                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                                    </div>
+                                </label>
+                                <label class="service-option">
+                                    <input type="radio" name="project_type" value="landing-page">
+                                    <div class="service-card">
+                                        <span>Landing Page Design</span>
+                                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                                    </div>
+                                </label>
+                                <label class="service-option">
+                                    <input type="radio" name="project_type" value="product-ux-audit">
+                                    <div class="service-card">
+                                        <span>Product UX Audit</span>
+                                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                                    </div>
+                                </label>
+                                <label class="service-option full-width">
+                                    <input type="radio" name="project_type" value="other">
+                                    <div class="service-card service-card--other">
+                                        <div class="service-text-group">
+                                            <span>Other Inquiry</span>
+                                            <small>I have something else in mind</small>
+                                        </div>
+                                        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="message">Project Details</label>
-                            <textarea id="message" name="message" rows="5" placeholder="Tell me a bit about your project..."></textarea>
-                            <span class="field-error" id="message-error"></span>
+
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <div>
+                                    <h3 class="form-section-title">2. Your email</h3>
+                                    <p class="form-section-subtitle">This is where I'll send you my response.</p>
+                                </div>
+                            </div>
+                            <div class="form-group email-group">
+                                <i class="fa-regular fa-envelope input-icon"></i>
+                                <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
+                            </div>
+                            <span class="field-error" id="email-error"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="contact-submit-btn" style="width: 100%; border-radius: 50px;">Send Inquiry â†—</button>
+
+                        <div class="form-section last-section">
+                            <div class="form-section-header-row">
+                                <div class="form-section-header">
+                                    <div>
+                                        <h3 class="form-section-title">3. Tell me about your project <span class="optional">(optional)</span></h3>
+                                    </div>
+                                </div>
+                                <span class="prefilled-badge">Pre-filled based on your selection <i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="message" name="message" rows="4" placeholder="Select a service above..."></textarea>
+                                <span class="field-error" id="message-error"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary submit-inquiry-btn" id="contact-submit-btn">
+                            <i class="fa-regular fa-paper-plane"></i> Send Inquiry
+                        </button>
+                        
+                        <div class="form-footer-note">
+                            <p><i class="fa-solid fa-wand-magic-sparkles"></i> You can send this even if you don't change anything.</p>
+                            <p><i class="fa-solid fa-lock"></i> Your email is safe with me.</p>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -288,79 +340,75 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=2"></script>
     <script src="js/script.js?v=2"></script>
     <script src="js/portx-motion.js?v=4"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const customWrapper = document.getElementById('custom-service-select');
-            const customTrigger = customWrapper.querySelector('.custom-select-trigger');
-            const customDisplay = customWrapper.querySelector('.custom-select-display');
-            const customOptions = customWrapper.querySelectorAll('.custom-option');
-            const nativeSelect = document.getElementById('project-type');
             const messageTextarea = document.getElementById('message');
-
-            const serviceNames = {
-                'web-app-dashboard': 'Web App & Dashboard UI/UX Design',
-                'website-app-redesign': 'Website & App Redesign',
-                'landing-page': 'Landing Page Design',
-                'mobile-app': 'Mobile App UI/UX Design',
-                'full-website': 'Full Website Design',
-                'product-ux-audit': 'Product UX Audit'
+            
+            const serviceMessages = {
+                'web-app-dashboard': "Hi Bliss,\n\nI'm interested in your Web App & Dashboard UI/UX service. I'd like to discuss my project and explore how we can work together.",
+                'website-app-redesign': "Hi Bliss,\n\nI'd like to redesign my existing website or app. I think a fresh UI/UX perspective would make a big difference and I'd love to explore that with you.",
+                'landing-page': "Hi Bliss,\n\nI need a high-converting landing page design. I'd love to discuss the goals and see how you can help.",
+                'mobile-app': "Hi Bliss,\n\nI'm looking for Mobile App UI/UX design. I'd like to discuss my app concept and see how we can bring it to life.",
+                'full-website': "Hi Bliss,\n\nI'm interested in a full website design. I'd love to talk through the scope and vision for the project.",
+                'product-ux-audit': "Hi Bliss,\n\nI'd like a UX audit of my product. I want to understand where users are dropping off and how the experience can be improved.",
+                'other': "Hi Bliss,\n\nI have a project in mind and I'd like to discuss it with you."
             };
 
-            // Toggle dropdown
-            customTrigger.addEventListener('click', () => {
-                customWrapper.classList.toggle('open');
-            });
+            function selectService(value) {
+                const radio = document.querySelector(`input[name="project_type"][value="${value}"]`);
+                if (radio) radio.checked = true;
+                if (messageTextarea) messageTextarea.value = serviceMessages[value] || '';
+            }
 
-            // Close when clicking outside
-            window.addEventListener('click', (e) => {
-                if (!customWrapper.contains(e.target)) {
-                    customWrapper.classList.remove('open');
-                }
-            });
+            function clearService() {
+                document.querySelectorAll('input[name="project_type"]').forEach(r => r.checked = false);
+                if (messageTextarea) messageTextarea.value = '';
+            }
 
-            function updateSelection(value, text) {
-                // Update native select
-                nativeSelect.value = value;
-                // Update display
-                customDisplay.textContent = text;
-                // Update active class
-                customOptions.forEach(o => {
-                    if (o.getAttribute('data-value') === value) {
-                        o.classList.add('selected');
+            // Toggle select/deselect on label click
+            document.querySelectorAll('.service-option').forEach(label => {
+                label.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (!radio) return;
+
+                    if (radio.checked) {
+                        // Deselect
+                        clearService();
                     } else {
-                        o.classList.remove('selected');
+                        // Select
+                        selectService(radio.value);
                     }
                 });
-                
-                // Pre-fill logic
-                if (value && value !== 'other') {
-                    const serviceName = serviceNames[value] || 'project';
-                    messageTextarea.value = `Hi Emmanuel,\n\nI am interested in discussing your ${serviceName} service. Here are a few details about my project:\n\n`;
-                }
-            }
-
-            // Handle option click
-            customOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const value = this.getAttribute('data-value');
-                    const text = this.textContent;
-                    updateSelection(value, text);
-                    customWrapper.classList.remove('open');
-                });
             });
 
-            // Handle URL param
+            // Handle URL param pre-selection
             const urlParams = new URLSearchParams(window.location.search);
             const serviceParam = urlParams.get('service');
-            
-            if (serviceParam && serviceNames[serviceParam]) {
-                updateSelection(serviceParam, serviceNames[serviceParam]);
+            if (serviceParam && serviceMessages[serviceParam]) {
+                selectService(serviceParam);
             }
         });
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            if (modal) modal.classList.add('hidden');
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal-overlay hidden">
+        <div class="success-modal-content">
+            <div class="success-icon">🎉</div>
+            <h2>Message Sent!</h2>
+            <p>You have successfully sent your inquiry. I'll get back to you shortly.</p>
+            <button class="btn btn-primary" onclick="closeSuccessModal()">Close</button>
+        </div>
+    </div>
 </body>
 </html>
 
