@@ -1163,10 +1163,10 @@ header.scrolled .nav-container {
 }
 
 .exp-desc {
-    color: var(--text-main);
+    color: var(--text-muted);
     font-size: 1rem;
     margin-bottom: 15px;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .exp-date-label {

@@ -270,6 +270,35 @@
                 </div>
             </section>
 
+            <!-- Behind the Scenes Section -->
+            <section style="padding: 80px 20px; border-top: 1px solid var(--border-color);">
+                <div class="container reveal-on-scroll" style="max-width: 1000px;">
+                    <div style="display: inline-block; padding: 6px 12px; background: var(--bg-section); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: var(--text-muted); margin-bottom: 20px;">Behind the Scenes</div>
+                    <h2 style="font-family: var(--font-heading); font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: 40px; font-weight: 500; color: var(--text-main);">Moments &amp; Inspiration</h2>
+                    <div class="life-gallery">
+                        <div class="life-gallery-fade-v">
+                            <div class="life-gallery-fade-h">
+                                <div class="life-grid reveal-on-scroll" id="life-gallery-container">
+                                    <!-- Fallback items in case Supabase is empty or loading -->
+                                    <div class="life-item"><img src="assets/modern_design_workspace.png" alt="Workspace"></div>
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop" alt="Team"></div>
+                                    <div class="life-item"><img src="assets/design_process_sketch.png" alt="Process"></div>
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop" alt="Coding"></div>
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop" alt="Collaboration"></div>
+                                    
+                                    <!-- Row 2 -->
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000&auto=format&fit=crop" alt="Laptop"></div>
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop" alt="Coffee"></div>
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1527689368864-3a821dbccc34?q=80&w=1000&auto=format&fit=crop" alt="Meeting"></div>
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1000&auto=format&fit=crop" alt="Brainstorming"></div>
+                                    <div class="life-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1000&auto=format&fit=crop" alt="Tech"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Outside Design -->
             <section style="padding: 80px 20px; border-top: 1px solid var(--border-color);">
                 <div class="container reveal-on-scroll" style="max-width: 1000px;">
@@ -351,7 +380,9 @@
     <script src="js/portx-motion.js?v=4"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // My Story scripts
+            if (window.CMSLoader) {
+                window.CMSLoader.loadLifeGallery('life-gallery-container');
+            }
         });
     </script>
 </body>
