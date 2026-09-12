@@ -960,26 +960,56 @@ body {
     flex-shrink: 0;
 }
 
-.marquee-track img {
-    height: 32px;
-    width: auto;
-    object-fit: contain;
-    /* Force all logos to white for dark mode */
-    filter: brightness(0) invert(1) opacity(0.5);
-    transition: filter 0.3s ease;
+.marquee-wrapper:hover .marquee-track {
+    animation-play-state: paused;
 }
 
-.marquee-track img:hover {
-    filter: brightness(0) invert(1) opacity(1);
+.marquee-logo-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.marquee-track .client-logo-light {
+    display: none;
+}
+
+.marquee-track .client-logo-dark {
+    display: block;
+}
+
+[data-theme="light"] .marquee-track .client-logo-light {
+    display: block;
+}
+
+[data-theme="light"] .marquee-track .client-logo-dark {
+    display: none;
+}
+
+.marquee-track img {
+    height: 34px;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.6);
+    transition: filter 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+    cursor: pointer;
+}
+
+.marquee-track img:hover,
+.marquee-logo-item:hover img {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.08);
 }
 
 [data-theme="light"] .marquee-track img {
-    /* Force all logos to black for light mode */
-    filter: brightness(0) opacity(0.5);
+    filter: grayscale(100%) opacity(0.65);
 }
 
-[data-theme="light"] .marquee-track img:hover {
-    filter: brightness(0) opacity(1);
+[data-theme="light"] .marquee-track img:hover,
+[data-theme="light"] .marquee-logo-item:hover img {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.08);
 }
 
 @keyframes scroll-marquee {
