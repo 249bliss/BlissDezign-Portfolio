@@ -551,6 +551,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('cancel-post-btn').style.display = 'none';
             document.getElementById('post-current-url').style.display = 'none';
         }
+        if (target === 'add-review-panel' && !document.getElementById('edit-rev-id').value) {
+            reviewsForm.reset();
+            document.getElementById('review-form-title').innerText = 'Add New Testimonial';
+            document.getElementById('submit-rev-btn').innerText = 'Publish Testimonial';
+            document.getElementById('cancel-rev-btn').style.display = 'none';
+            document.getElementById('rev-order').value = '0';
+            const avatarBox = document.getElementById('avatar-preview-box');
+            if (avatarBox) avatarBox.style.display = 'none';
+            const logoBox = document.getElementById('company-logo-preview-box');
+            if (logoBox) logoBox.style.display = 'none';
+        }
     };
 
     tabs.forEach(tab => {
@@ -975,8 +986,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (error) return console.error(error);
 
         data.sort((a, b) => {
-            let orderA = parseInt(a.display_order);
-            let orderB = parseInt(b.display_order);
+            let orderA = parseInt(a.display_order, 10);
+            let orderB = parseInt(b.display_order, 10);
             if (isNaN(orderA) || orderA === 0) orderA = 999;
             if (isNaN(orderB) || orderB === 0) orderB = 999;
 
@@ -986,15 +997,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             return orderA - orderB;
         });
 
-        reviewsList.innerHTML = data.length ? data.map(rev => `
+        reviewsList.innerHTML = data.length ? data.map(rev => {
+            const avatarParts = rev.avatar_url ? rev.avatar_url.split('|||') : [];
+            const avatarSrc = avatarParts[0] || '';
+            const logoSrc = avatarParts[1] || '';
+            const displayOrderNum = (rev.display_order !== undefined && rev.display_order !== null) ? rev.display_order : 0;
+            return `
             <div class="review-manage-card">
                 <div class="rmc-header">
                     <div class="rmc-avatar-wrapper">
-                        <img src="${rev.avatar_url}" alt="${rev.author_name}" class="rmc-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <img src="${avatarSrc}" alt="${rev.author_name}" class="rmc-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div class="rmc-avatar-fallback" style="display:none;">${rev.author_name.charAt(0).toUpperCase()}</div>
                     </div>
-                    <div class="rmc-author-info">
-                        <div class="rmc-name">${rev.author_name}</div>
+                    <div class="rmc-author-info" style="flex: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                            <div class="rmc-name">${rev.author_name}</div>
+                            <div class="pm-order-tag" style="padding: 2px 8px; font-size: 0.75rem; border-radius: 6px; background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); font-weight: 700;" title="Display Order">#${displayOrderNum}</div>
+                        </div>
                         <div class="rmc-role">${rev.author_role}</div>
                     </div>
                     <div class="rmc-quote-icon"><i class="fa-solid fa-quote-left"></i></div>
@@ -1009,7 +1028,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </button>
                 </div>
             </div>
-        `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 60px; grid-column: 1/-1; font-size: 1rem;">No testimonials yet. Add your first one!</p>';
+            `;
+        }).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 60px; grid-column: 1/-1; font-size: 1rem;">No testimonials yet. Add your first one!</p>';
 
         // Update counts in UI
         const reviewCounts = document.querySelectorAll('.review-count-badge');
@@ -1049,7 +1069,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('edit-rev-id').value = rev.id;
         document.getElementById('rev-name').value = rev.author_name;
         document.getElementById('rev-role').value = rev.author_role;
-        document.getElementById('rev-order').value = rev.display_order || 0;
+        document.getElementById('rev-order').value = (rev.display_order !== undefined && rev.display_order !== null) ? rev.display_order : 0;
         document.getElementById('rev-text').value = rev.review_text;
         
         const avatarBox = document.getElementById('avatar-preview-box');
