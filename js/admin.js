@@ -1012,7 +1012,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="rmc-author-info" style="flex: 1;">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                             <div class="rmc-name">${rev.author_name}</div>
-                            <div class="pm-order-tag" style="padding: 2px 8px; font-size: 0.75rem; border-radius: 6px; background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); font-weight: 700;" title="Display Order">#${displayOrderNum}</div>
+                            <div style="display: flex; align-items: center; gap: 4px;" title="Display Order (lower numbers appear first)">
+                                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Order:</span>
+                                <input type="number" min="0" value="${displayOrderNum}" 
+                                    onchange="window.quickUpdateReviewOrder('${rev.id}', this.value)"
+                                    style="width: 45px; padding: 2px 4px; font-size: 0.8rem; font-weight: 700; text-align: center; border-radius: 6px; border: 1px solid var(--border-glass); background: rgba(168, 85, 247, 0.12); color: var(--accent-purple);">
+                            </div>
                         </div>
                         <div class="rmc-role">${rev.author_role}</div>
                     </div>
@@ -1038,6 +1043,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             badge.style.display = data.length > 0 ? 'inline-block' : 'none';
         });
     }
+
+    window.quickUpdateReviewOrder = async (id, newOrder) => {
+        const orderNum = parseInt(newOrder, 10);
+        if (isNaN(orderNum) || orderNum < 0) return;
+        setLoading(true, 'Updating display order...');
+        try {
+            const { error } = await supabaseClient.from('reviews').update({ display_order: orderNum }).eq('id', id);
+            if (error) throw error;
+            setLoading(false);
+            showToast('Order updated!', 'success');
+            fetchReviews();
+        } catch (err) {
+            console.error('Failed to update review order:', err);
+            setLoading(false);
+            showAlert('Failed to update order: ' + err.message);
+            fetchReviews();
+        }
+    };
 
     window.deleteReview = async (id) => {
         showConfirm('Delete this review?', async () => {
@@ -1067,6 +1090,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         document.getElementById('edit-rev-id').value = rev.id;
+        const existingAvatarInput = document.getElementById('edit-rev-existing-avatar');
+        if (existingAvatarInput) existingAvatarInput.value = avatarUrl;
+        const existingLogoInput = document.getElementById('edit-rev-existing-logo');
+        if (existingLogoInput) existingLogoInput.value = logoUrl;
+
         document.getElementById('rev-name').value = rev.author_name;
         document.getElementById('rev-role').value = rev.author_role;
         document.getElementById('rev-order').value = (rev.display_order !== undefined && rev.display_order !== null) ? rev.display_order : 0;
@@ -1109,7 +1137,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         document.getElementById('review-form-title').innerText = 'Edit Testimonial';
-        document.getElementById('submit-rev-btn').innerText = 'Update Testimonial';
+        const submitBtn = document.getElementById('submit-rev-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Update Testimonial';
+        }
         document.getElementById('cancel-rev-btn').style.display = 'block';
         
         window.switchPanel('add-review-panel');
@@ -1120,9 +1152,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetReviewForm() {
         reviewsForm.reset();
         document.getElementById('edit-rev-id').value = '';
+        const existingAvatarInput = document.getElementById('edit-rev-existing-avatar');
+        if (existingAvatarInput) existingAvatarInput.value = '';
+        const existingLogoInput = document.getElementById('edit-rev-existing-logo');
+        if (existingLogoInput) existingLogoInput.value = '';
+
         document.getElementById('rev-order').value = '0';
         document.getElementById('review-form-title').innerText = 'Add New Testimonial';
-        document.getElementById('submit-rev-btn').innerText = 'Publish Testimonial';
+        const submitBtn = document.getElementById('submit-rev-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Publish Testimonial';
+        }
         document.getElementById('cancel-rev-btn').style.display = 'none';
         
         const avatarBox = document.getElementById('avatar-preview-box');
@@ -1149,27 +1190,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isEdit = !!editId;
 
         const submitBtn = document.getElementById('submit-rev-btn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = isEdit ? 'Updating...' : 'Saving...';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = isEdit ? 'Updating...' : 'Saving...';
+        }
 
-        setLoading(true, isEdit ? 'Updating review...' : 'Saving review...');
+        setLoading(true, isEdit ? 'Updating testimonial...' : 'Saving testimonial...');
         try {
-            const author_name = document.getElementById('rev-name').value;
-            const author_role = document.getElementById('rev-role').value;
-            const display_order = parseInt(document.getElementById('rev-order').value) || 0;
-            const review_text = document.getElementById('rev-text').value;
+            let display_order = parseInt(document.getElementById('rev-order').value, 10);
+            if (isNaN(display_order) || display_order < 0) display_order = 0;
             
-            // Parse existing URLs if we are editing
-            let existingAvatarUrl = '';
-            let existingLogoUrl = '';
-            if (isEdit) {
-                const { data } = await supabaseClient.from('reviews').select('avatar_url').eq('id', editId).single();
-                if (data && data.avatar_url) {
-                    const parts = data.avatar_url.split('|||');
-                    existingAvatarUrl = parts[0] || '';
-                    existingLogoUrl = parts[1] || '';
-                }
-            }
+            const existingAvatarUrl = document.getElementById('edit-rev-existing-avatar')?.value || '';
+            const existingLogoUrl = document.getElementById('edit-rev-existing-logo')?.value || '';
 
             let avatar_url_part = null;
             const avatarFile = document.getElementById('rev-avatar').files[0];
@@ -1178,7 +1210,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (isEdit && existingAvatarUrl) {
                 avatar_url_part = existingAvatarUrl;
             } else {
-                // Default fallback avatar if none provided for new review
                 avatar_url_part = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(author_name) + '&background=6C3BFF&color=fff&size=256';
             }
 
@@ -1186,12 +1217,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const logoFile = document.getElementById('rev-company-logo').files[0];
             if (logoFile) {
                 try {
-                    console.log(`Uploading company logo: ${logoFile.name} (${logoFile.type}, ${(logoFile.size/1024).toFixed(1)} KB)`);
                     logo_url_part = await uploadImage(logoFile, 'reviews');
-                    console.log('Company logo uploaded successfully:', logo_url_part);
                 } catch (logoErr) {
                     console.error('Company logo upload failed:', logoErr);
-                    throw new Error('Company logo upload failed: ' + logoErr.message + '. Try using a PNG file instead of SVG if the issue persists.');
+                    throw new Error('Company logo upload failed: ' + logoErr.message);
                 }
             } else if (isEdit && existingLogoUrl) {
                 logo_url_part = existingLogoUrl;
@@ -1202,38 +1231,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const reviewData = { author_name, author_role, review_text, avatar_url, display_order };
 
-            let opError;
             if (isEdit) {
-                const {error} = await supabaseClient.from('reviews').update(reviewData).eq('id', editId);
-                opError = error;
+                const { error: updateErr } = await supabaseClient.from('reviews').update(reviewData).eq('id', editId);
+                if (updateErr) throw updateErr;
             } else {
-                const {error} = await supabaseClient.from('reviews').insert([reviewData]);
-                opError = error;
+                const { error: insertErr } = await supabaseClient.from('reviews').insert([reviewData]);
+                if (insertErr) throw insertErr;
             }
 
-            if (opError && opError.message && opError.message.includes('display_order')) {
-                delete reviewData.display_order;
-                if (isEdit) {
-                    const {error} = await supabaseClient.from('reviews').update(reviewData).eq('id', editId);
-                    opError = error;
-                } else {
-                    const {error} = await supabaseClient.from('reviews').insert([reviewData]);
-                    opError = error;
-                }
-            }
-
-            if (opError) throw opError;
-
-            showToast('Review saved!', 'success');
+            setLoading(false);
+            showToast(isEdit ? 'Testimonial updated successfully!' : 'Testimonial created successfully!', 'success');
             resetReviewForm();
             fetchReviews();
         } catch (err) {
-            showAlert(err.message);
-            const submitBtn = document.getElementById('submit-rev-btn');
-            submitBtn.disabled = false;
-            submitBtn.innerText = !!document.getElementById('edit-rev-id').value ? 'Update Review' : 'Publish Testimonial';
+            console.error('Error saving review:', err);
+            setLoading(false);
+            showAlert('Error saving testimonial: ' + err.message);
         } finally {
             setLoading(false);
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = document.getElementById('edit-rev-id')?.value ? 'Update Testimonial' : 'Publish Testimonial';
+            }
         }
     });
 
