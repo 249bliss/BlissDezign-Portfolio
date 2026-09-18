@@ -1,4 +1,4 @@
-﻿export default async function handler(req, res) {
+export default async function handler(req, res) {
     // Enable CORS for local testing
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -30,7 +30,7 @@
                 from: 'BlissDezign <onboarding@resend.dev>', 
                 // Since there is no custom domain, Resend ONLY allows sending to the email that registered the account.
                 // We use Test Mode where it only sends a copy to your own email to prove the system works.
-                to: 'kelechik177@gmail.com',
+                to: 'bliss@kre8mind.com',
                 subject: `New Insight: ${title}`,
                 html: `
                     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">

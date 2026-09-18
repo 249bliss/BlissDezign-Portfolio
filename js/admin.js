@@ -1485,7 +1485,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // --- Specific Check for Resend Test Mode / Unverified Domain ---
                 if (errorMsg.includes('verify a domain') || errorMsg.includes('own email address')) {
-                    errorMsg = "Resend Error: You need to verify your domain to send to subscribers. Currently, you can only send to your own email address (workwithblissdezign@gmail.com).";
+                    errorMsg = "Resend Error: You need to verify your domain to send to subscribers. Currently, you can only send to your own email address (bliss@kre8mind.com).";
                     console.warn("Newsletter blocked by Resend Test Mode restrictions.");
                 }
 
