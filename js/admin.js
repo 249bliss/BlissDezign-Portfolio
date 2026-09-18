@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authError = document.getElementById('auth-error');
 
     // --- SECURITY: Master Whitelist ---
-    const WHITELISTED_ADMINS = ['workwithblissdezign@gmail.com'];
+    const WHITELISTED_ADMINS = ['bliss@kre8mind.com', 'workwithblissdezign@gmail.com'];
     const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit for Supabase Storage
     const logoutBtn = document.getElementById('logout-btn');
     const userDisplay = document.getElementById('user-display');
