@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5SS5K55EJ5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5SS5K55EJ5');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404: Document Not Found | Emmanuel Bliss Portfolio</title>
+    <meta name="description" content="The requested case study or document has been misplaced in the drafting archives. Return to the main desk.">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css?v=12">
+    <link rel="stylesheet" href="css/style-fixes.css?v=8">
+    <link rel="stylesheet" href="css/portfolio-refactor.css?v=31">
+
+    <!-- Vercel Web Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
+
+    <!-- Lenis Smooth Inertia Scrolling Engine -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <!-- GSAP for Smooth Physics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        .error-stage-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 140px 24px 70px 24px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        /* Hanging Physics Cards Stage */
+        .hanging-cards-rig {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 28px;
+            margin-bottom: 40px;
+            perspective: 1000px;
+        }
+
+        .hanging-card-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: 50% 0px;
+            will-change: transform;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .hanging-card-wrapper:active {
+            cursor: grabbing;
+        }
+
+        /* Hanging String / Wire */
+        .hanging-wire {
+            width: 2px;
+            height: 48px;
+            background: repeating-linear-gradient(to bottom, #777 0px, #777 3px, #444 3px, #444 6px);
+            position: relative;
+            z-index: 1;
+        }
+
+        [data-theme="dark"] .hanging-wire {
+            background: repeating-linear-gradient(to bottom, #888 0px, #888 3px, #222 3px, #222 6px);
+        }
+
+        /* Top Pushpin Wall Mount */
+        .wall-anchor-pin {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+        }
+
+        .wall-anchor-pin.coral { background: radial-gradient(circle at 35% 35%, #ff7b7b, #d9383a); }
+        .wall-anchor-pin.blue { background: radial-gradient(circle at 35% 35%, #60a5fa, #2563eb); }
+        .wall-anchor-pin.amber { background: radial-gradient(circle at 35% 35%, #fbbf24, #d97706); }
+
+        /* Tactile Physical Paper Number Card */
+        .hanging-number-card {
+            position: relative;
+            width: 105px;
+            height: 135px;
+            background-color: #ffffff;
+            background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.035) 24px);
+            border: 1px solid var(--paper-border);
+            border-radius: 6px;
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-sora, 'Sora', sans-serif);
+            font-size: 4.4rem;
+            font-weight: 800;
+            color: #171717;
+            z-index: 2;
+            transition: box-shadow 0.2s ease;
+        }
+
+        [data-theme="dark"] .hanging-number-card {
+            background-color: var(--paper-sheet-dark, #1c1b18);
+            background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(255, 255, 255, 0.03) 24px);
+            border-color: var(--paper-border-dark, rgba(255, 255, 255, 0.1));
+            color: #f3f3f0;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        .hanging-card-wrapper:hover .hanging-number-card {
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2);
+        }
+
+        .hanging-card-tape {
+            position: absolute;
+            top: -8px;
+            width: 38px;
+            height: 14px;
+            background: rgba(251, 191, 36, 0.65);
+            backdrop-filter: blur(1px);
+            border: 1px dashed rgba(217, 119, 6, 0.4);
+            transform: rotate(-2deg);
+            z-index: 3;
+        }
+
+        /* Error Text & Dispatch Card */
+        .error-dossier-card {
+            max-width: 580px;
+            background: #ffffff;
+            border: 1px solid var(--paper-border);
+            border-radius: 8px;
+            padding: 36px 40px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        [data-theme="dark"] .error-dossier-card {
+            background: var(--paper-sheet-dark, #191816);
+            border-color: var(--paper-border-dark, rgba(255, 255, 255, 0.1));
+            box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
+        }
+
+        .error-tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            color: #d9383a;
+            background: rgba(217, 56, 58, 0.08);
+            border: 1px solid rgba(217, 56, 58, 0.22);
+            padding: 5px 12px;
+            border-radius: 4px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        .error-title {
+            font-family: var(--font-newsreader, 'Newsreader', Georgia, serif);
+            font-size: 2.2rem;
+            font-weight: 500;
+            line-height: 1.25;
+            margin-bottom: 14px;
+            color: var(--text-primary);
+        }
+
+        .error-desc {
+            font-family: var(--font-body, 'Montserrat', sans-serif);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        .error-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .error-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 26px;
+            border-radius: 6px;
+            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .error-action-primary {
+            background: #171717;
+            color: #ffffff;
+            border: 1px solid #171717;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+        }
+
+        .error-action-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            background: #000000;
+        }
+
+        [data-theme="dark"] .error-action-primary {
+            background: #f0ede6;
+            color: #121212;
+            border-color: #f0ede6;
+        }
+
+        [data-theme="dark"] .error-action-primary:hover {
+            background: #ffffff;
+        }
+
+        .error-action-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--paper-border);
+        }
+
+        .error-action-secondary:hover {
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 560px) {
+            .hanging-number-card {
+                width: 78px;
+                height: 105px;
+                font-size: 3.2rem;
+            }
+            .hanging-cards-rig {
+                gap: 14px;
+            }
+            .error-dossier-card {
+                padding: 28px 22px;
+            }
+            .error-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="light">
+    <!-- Drop Menu Dimmer Backdrop -->
+    <div class="capsule-backdrop" id="capsule-backdrop"></div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="capsule-header-wrapper">
+            <nav class="capsule-nav" aria-label="Main Navigation">
+                <a href="/" class="capsule-identity">
+                    <div class="capsule-avatar-frame">
+                        <img src="assets/nav face logo.png" alt="Emmanuel Bliss" width="38" height="38">
+                    </div>
+                    <span class="capsule-brand-name">Bliss</span>
+                </a>
+                
+                <div class="capsule-actions">
+                    <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="capsule-cta-btn">
+                        Book a call
+                    </a>
+                    <button id="capsule-menu-trigger" class="capsule-menu-btn" aria-label="Toggle Navigation Menu" aria-expanded="false">
+                        <div class="soundwave-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Drop Menu -->
+            <div class="capsule-drop-card" id="capsule-drop-card" aria-hidden="true">
+                <ul class="drop-card-nav-list">
+                    <li><a href="/"><span>Home</span><i class="fa-solid fa-arrow-right link-arrow"></i></a></li>
+                    <li><a href="/projects"><span>Projects</span><i class="fa-solid fa-arrow-right link-arrow"></i></a></li>
+                    <li><a href="/my-story"><span>Story</span><i class="fa-solid fa-arrow-right link-arrow"></i></a></li>
+                    <li><a href="/blog"><span>Journal</span><i class="fa-solid fa-arrow-right link-arrow"></i></a></li>
+                    <li><a href="/get-in-touch"><span>Contact</span><i class="fa-solid fa-arrow-right link-arrow"></i></a></li>
+                </ul>
+                <div class="drop-card-footer">
+                    <div class="drop-card-status">
+                        <span class="status-indicator-dot"></span>
+                        <span>Available for Q2/Q3</span>
+                    </div>
+                    <button class="theme-toggle-btn" id="nav-theme-toggle" aria-label="Toggle Dark Mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="error-stage-container">
+        <!-- ── 3 HANGING PENDULUM CARDS RIG: [4] [0] [4] ── -->
+        <div class="hanging-cards-rig" id="hanging-rig">
+            <!-- Card 1: 4 -->
+            <div class="hanging-card-wrapper" id="hang-card-1" data-base-tilt="-6">
+                <div class="wall-anchor-pin coral"></div>
+                <div class="hanging-wire"></div>
+                <div class="hanging-card-tape"></div>
+                <div class="hanging-number-card">4</div>
+            </div>
+
+            <!-- Card 2: 0 -->
+            <div class="hanging-card-wrapper" id="hang-card-2" data-base-tilt="3">
+                <div class="wall-anchor-pin blue"></div>
+                <div class="hanging-wire" style="height: 58px;"></div>
+                <div class="hanging-card-tape" style="transform: rotate(2deg); background: rgba(96, 165, 250, 0.5);"></div>
+                <div class="hanging-number-card">0</div>
+            </div>
+
+            <!-- Card 3: 4 -->
+            <div class="hanging-card-wrapper" id="hang-card-3" data-base-tilt="7">
+                <div class="wall-anchor-pin amber"></div>
+                <div class="hanging-wire"></div>
+                <div class="hanging-card-tape" style="transform: rotate(-3deg);"></div>
+                <div class="hanging-number-card">4</div>
+            </div>
+        </div>
+
+        <!-- ── ERROR DOSSIER NOTE ── -->
+        <div class="error-dossier-card">
+            <div class="board-pushpin coral" style="top: -6px; left: 50%; transform: translateX(-50%); position: absolute;"></div>
+            <div class="error-tag-pill">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>DOCUMENT NOT LOCATED // ERROR 404</span>
+            </div>
+            <h1 class="error-title">Misplaced in the Archives</h1>
+            <p class="error-desc">
+                The requested case study, journal entry, or file cannot be located on this drafting board. It may have been renamed, archived, or filed under a different project drawer.
+            </p>
+            <div class="error-actions-row">
+                <a href="/" class="error-action-btn error-action-primary">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Return to Desk</span>
+                </a>
+                <a href="/projects" class="error-action-btn error-action-secondary">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Browse Work Archive</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Refactored Master Navigation & Theme Engine -->
+    <script src="js/portfolio-refactor.js?v=31"></script>
+
+    <!-- ── HANGING CARDS PENDULUM SHAKE & SWING ENGINE ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = [
+                { el: document.getElementById('hang-card-1'), baseRot: -6, delay: 0.05, amp: 14 },
+                { el: document.getElementById('hang-card-2'), baseRot: 3, delay: 0.18, amp: -11 },
+                { el: document.getElementById('hang-card-3'), baseRot: 7, delay: 0.12, amp: 15 }
+            ];
+
+            // 1. Initial drop down entrance & pendulum settle
+            cards.forEach(({ el, baseRot, delay, amp }) => {
+                if (!el || typeof gsap === 'undefined') return;
+
+                // Initial drop down and pendulum sway
+                gsap.fromTo(el,
+                    { y: -80, opacity: 0, rotation: baseRot + amp * 1.8 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        rotation: baseRot,
+                        duration: 1.4,
+                        delay: delay,
+                        ease: 'elastic.out(1.2, 0.3)'
+                    }
+                );
+
+                // Continuous subtle ambient breeze sway
+                gsap.to(el, {
+                    rotation: baseRot + (amp > 0 ? 3.5 : -3.5),
+                    duration: 2.8 + Math.random() * 0.8,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut',
+                    delay: delay + 1.2
+                });
+
+                // Interactive hover shake / swing reaction
+                el.addEventListener('mouseenter', () => {
+                    gsap.killTweensOf(el);
+                    gsap.timeline()
+                        .to(el, { rotation: baseRot + amp * 1.4, duration: 0.18, ease: 'power2.out' })
+                        .to(el, {
+                            rotation: baseRot,
+                            duration: 1.2,
+                            ease: 'elastic.out(1.4, 0.25)',
+                            onComplete: () => {
+                                // Resume ambient breeze
+                                gsap.to(el, {
+                                    rotation: baseRot + (amp > 0 ? 3.5 : -3.5),
+                                    duration: 3,
+                                    repeat: -1,
+                                    yoyo: true,
+                                    ease: 'sine.inOut'
+                                });
+                            }
+                        });
+                });
+
+                // Interactive drag swing reaction
+                let isDragging = false;
+                let startX = 0;
+
+                el.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.clientX;
+                    gsap.killTweensOf(el);
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    const deltaX = e.clientX - startX;
+                    const rot = baseRot + Math.max(-35, Math.min(35, deltaX * 0.35));
+                    gsap.to(el, { rotation: rot, duration: 0.08, ease: 'power1.out' });
+                });
+
+                window.addEventListener('mouseup', () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    gsap.to(el, {
+                        rotation: baseRot,
+                        duration: 1.4,
+                        ease: 'elastic.out(1.5, 0.2)',
+                        onComplete: () => {
+                            gsap.to(el, {
+                                rotation: baseRot + (amp > 0 ? 3.5 : -3.5),
+                                duration: 3,
+                                repeat: -1,
+                                yoyo: true,
+                                ease: 'sine.inOut'
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

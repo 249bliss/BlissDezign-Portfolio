@@ -1,5 +1,5 @@
-﻿const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Supabase configuration
 const SUPABASE_URL = 'https://tqryfaoihqblcgfnoqgc.supabase.co';
@@ -15,7 +15,7 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
     const project = req.query.project || req.query.id;
     let title = "Case Study | BlissDezign";
     let description = "Dive deep into the design journey behind my projects. Exploring the problem, solution, and results.";
@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
 
         // Canonical URL & OG URL
         if (project) {
-            const currentUrl = `https://bliss.kre8mind.com/case-study.html?project=${encodeURIComponent(project)}`;
+            const currentUrl = `https://bliss.kre8mind.com/case-study?project=${encodeURIComponent(project)}`;
             html = html.replace(/<link rel="canonical" href=".*?"/, `<link rel="canonical" href="${currentUrl}"`);
             if (html.includes('property="og:url"')) {
                 html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="${currentUrl}"`);
@@ -118,5 +118,4 @@ module.exports = async (req, res) => {
         console.error("Error reading case-study-template.html:", err);
         res.status(500).send("Internal Server Error");
     }
-};
-
+}

@@ -1,5 +1,5 @@
-﻿const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Supabase configuration
 const SUPABASE_URL = 'https://tqryfaoihqblcgfnoqgc.supabase.co';
@@ -15,9 +15,9 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
     const slug = req.query.slug || req.query.id;
-    let title = "Article | Bliss â€“ Product Designer Insights";
+    let title = "Article | Bliss - Product Designer Insights";
     let description = "Thoughts and insights on product design, mobile apps, and building digital products with intention.";
     let imageUrl = "https://bliss.kre8mind.com/assets/my-website-cover.png";
 
@@ -53,15 +53,16 @@ module.exports = async (req, res) => {
 
             if (data && data.length > 0) {
                 const post = data[0];
-                title = post.title || title;
-                description = post.excerpt || post.description || description;
+                title = post.title ? post.title : title;
+                description = post.excerpt || post.subtitle || description;
+                
                 const cover = post.cover_image || post.image_url || post.hero_image || post.thumbnail;
                 if (cover) {
                     imageUrl = cover;
                 }
             }
         } catch (err) {
-            console.error("Error fetching post metadata from Supabase:", err);
+            console.error("Error fetching blog post metadata from Supabase:", err);
         }
     }
 
@@ -75,7 +76,7 @@ module.exports = async (req, res) => {
         let html = fs.readFileSync(htmlPath, 'utf8');
 
         // Replace Title tag
-        html = html.replace(/<title>.*?<\/title>/, `<title>${escapeHtml(title)} | Bliss Blog</title>`);
+        html = html.replace(/<title>.*?<\/title>/, `<title>${escapeHtml(title)} | BlissDezign Journal</title>`);
         
         // Replace Meta Description tags
         html = html.replace(/<meta name="description"[\s\S]*?content=".*?"/, `<meta name="description" content="${escapeHtml(description)}"`);
@@ -89,7 +90,7 @@ module.exports = async (req, res) => {
         // Replace Twitter Title tag
         html = html.replace(/<meta name="twitter:title" content=".*?"/, `<meta name="twitter:title" content="${escapeHtml(title)}"`);
 
-        // Replace Open Graph Title tag
+        // Add or Replace Open Graph Title tag
         if (html.includes('property="og:title"')) {
             html = html.replace(/<meta property="og:title" content=".*?"/, `<meta property="og:title" content="${escapeHtml(title)}"`);
         } else {
@@ -98,7 +99,7 @@ module.exports = async (req, res) => {
 
         // Canonical URL & OG URL
         if (slug) {
-            const currentUrl = `https://bliss.kre8mind.com/post.html?slug=${encodeURIComponent(slug)}`;
+            const currentUrl = `https://bliss.kre8mind.com/post?slug=${encodeURIComponent(slug)}`;
             html = html.replace(/<link rel="canonical" href=".*?"/, `<link rel="canonical" href="${currentUrl}"`);
             if (html.includes('property="og:url"')) {
                 html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="${currentUrl}"`);
@@ -113,5 +114,4 @@ module.exports = async (req, res) => {
         console.error("Error reading post-template.html:", err);
         res.status(500).send("Internal Server Error");
     }
-};
-
+}
