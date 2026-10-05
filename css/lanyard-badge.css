@@ -1,0 +1,930 @@
+/* ================================================================
+   BLISSDEZIGN STUDIO PASS & LANYARD INTERACTIVE STAGE v2
+   Realistic Physical Lanyard, Studio Pass, & Tilted Folder Cards
+   ================================================================ */
+
+/* ── 1. HUD Telemetry Bar (Top of Viewport) ───────────────────── */
+.site-hud-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 32px;
+    z-index: 1250;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgba(220, 219, 216, 0.85), transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(20, 20, 20, 0.06);
+    padding: 0 20px;
+}
+
+[data-theme="dark"] .site-hud-bar {
+    background: linear-gradient(to bottom, rgba(23, 23, 23, 0.88), transparent);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.hud-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--text-muted, #5e5d59);
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.hud-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.hud-dim {
+    opacity: 0.55;
+    font-weight: 500;
+}
+
+.hud-val {
+    font-weight: 600;
+    color: var(--text-main, #141414);
+}
+
+.hud-accent {
+    color: var(--text-main, #141414);
+}
+
+.hud-pulse-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-main, #141414);
+    display: inline-block;
+    opacity: 0.75;
+}
+
+.hud-pass-btn {
+    pointer-events: auto;
+    background: rgba(20, 20, 20, 0.06);
+    border: 1px solid rgba(20, 20, 20, 0.1);
+    border-radius: 999px;
+    padding: 2px 9px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.hud-pass-btn:hover {
+    background: var(--text-main, #141414);
+    color: var(--bg-main, #dcdbd8);
+    border-color: transparent;
+}
+
+[data-theme="dark"] .hud-pass-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .hud-pass-btn:hover {
+    background: #ffffff;
+    color: #121212;
+}
+
+@media (max-width: 820px) {
+    .hud-hide-mobile {
+        display: none !important;
+    }
+    .hud-inner {
+        gap: 10px;
+        font-size: 9.5px;
+    }
+}
+
+/* ── 2. Realistic 3D Lanyard Rope & Hardware ─────────────────── */
+.lanyard-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: visible;
+}
+
+.lanyard-strap-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.lanyard-assembly {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top center;
+    pointer-events: auto;
+    will-change: transform;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Realistic Metal Clasp Hardware */
+.lanyard-hardware {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: -16px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Woven ribbon crimp bracket clamp */
+.strap-metal-buckle {
+    width: 34px;
+    height: 12px;
+    background: linear-gradient(180deg, #444 0%, #1f1f1f 50%, #2f2f2f 100%);
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.strap-metal-buckle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    right: 4px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Metallic Swivel Ring */
+.strap-swivel-ring {
+    width: 14px;
+    height: 14px;
+    border: 3px solid #333;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    margin: -3px 0;
+}
+
+/* Black Gunmetal Lobster Snap Clasp */
+.strap-swivel-clasp {
+    width: 18px;
+    height: 30px;
+    background: linear-gradient(135deg, #505050 0%, #222222 50%, #444444 100%);
+    border-radius: 5px 5px 8px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+.strap-swivel-clasp::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border: 3px solid #252525;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    background: transparent;
+}
+
+/* ── 3. The Realistic Physical ID Badge Holder ───────────────── */
+.lanyard-badge-card {
+    position: relative;
+    width: 290px;
+    height: 420px;
+    background: #141414; /* Deep matte silicone / acrylic bezel */
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 
+        0 40px 90px -15px rgba(0, 0, 0, 0.35),
+        0 16px 36px -6px rgba(0, 0, 0, 0.22),
+        inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    transform-origin: top center;
+    transition: box-shadow 0.25s ease;
+    will-change: transform;
+    perspective: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 14px;
+    text-decoration: none;
+}
+
+.lanyard-badge-card.is-grabbing {
+    cursor: grabbing !important;
+    box-shadow: 
+        0 50px 110px -15px rgba(0, 0, 0, 0.45),
+        0 20px 45px -6px rgba(0, 0, 0, 0.3);
+}
+
+/* Oval lanyard slot hole through top bezel */
+.badge-lanyard-slot {
+    width: 44px;
+    height: 8px;
+    background: #080808;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.9);
+    margin-bottom: 10px;
+}
+
+/* Inner Pass Card Surface (High-end off-white cardstock) */
+.badge-paper-face {
+    position: relative;
+    width: calc(100% - 24px);
+    height: calc(100% - 36px);
+    background: #ebe9e4;
+    border-radius: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px 18px;
+    overflow: hidden;
+    color: #141414;
+}
+
+[data-theme="dark"] .badge-paper-face {
+    background: #1c1c1c;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f0f0ef;
+}
+
+/* Dynamic Gloss Acrylic Plastic Sleeve Reflection */
+.badge-hologram-shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.05) 40%, transparent 60%);
+    mix-blend-mode: overlay;
+    transition: opacity 0.3s ease;
+}
+
+/* Top metadata */
+.badge-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    z-index: 2;
+}
+
+.badge-tag-pill {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.06);
+    color: #1a1a1a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .badge-tag-pill {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.badge-year-tag {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #555;
+}
+
+[data-theme="dark"] .badge-year-tag {
+    color: #aaa;
+}
+
+/* Center Emblem / App Tile */
+.badge-emblem-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px 0;
+    z-index: 2;
+}
+
+.badge-emblem-tile {
+    width: 90px;
+    height: 90px;
+    border-radius: 22.4%;
+    background: #0f0f10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 12px 28px -4px rgba(0, 0, 0, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.badge-avatar-img {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    display: block;
+}
+
+.badge-emblem-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Typography on Pass */
+.badge-name {
+    font-family: 'Sora', 'Montserrat', sans-serif;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: inherit;
+    text-align: center;
+    margin: 0 0 3px 0;
+    line-height: 1.15;
+}
+
+.badge-role {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6a6966;
+    text-align: center;
+    margin: 0;
+}
+
+[data-theme="dark"] .badge-role {
+    color: #9e9d99;
+}
+
+/* Footer on Pass */
+.badge-footer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="dark"] .badge-footer-row {
+    border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.badge-location-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #555;
+}
+
+[data-theme="dark"] .badge-location-row {
+    color: #999;
+}
+
+/* Barcode */
+.badge-barcode-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.badge-barcode {
+    display: flex;
+    align-items: flex-end;
+    gap: 2.5px;
+    height: 16px;
+}
+
+.badge-barcode span {
+    display: inline-block;
+    height: 100%;
+    background: currentColor;
+    border-radius: 0.5px;
+}
+
+.badge-serial {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    opacity: 0.65;
+}
+
+/* ── 4. Interactive Cue Hint Below Badge ─────────────────────── */
+.lanyard-hint {
+    margin-top: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted, #5e5d59);
+    letter-spacing: 0.02em;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    user-select: none;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .lanyard-hint {
+    background: rgba(28, 28, 28, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #a0a0a0;
+}
+
+.lanyard-hint a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.lanyard-hint i {
+    font-size: 11px;
+    color: #6C3BFF;
+}
+
+/* ── 5. Hero Center Stage (Clean, No Photo Clutter) ──────────── */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+    padding-bottom: 60px;
+    background: transparent !important;
+}
+
+.hero-story-center-stage {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    z-index: 10;
+}
+
+.hero-content.hero-content-centered,
+.hero-content-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+    animation: none !important;
+    opacity: 0;
+    transform: translate3d(0, 30px, 0) scale(0.97);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.hero-eyebrow-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(20, 20, 20, 0.06);
+    border: 1px solid rgba(20, 20, 20, 0.08);
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-main, #141414);
+    margin-bottom: 24px;
+}
+
+[data-theme="dark"] .hero-eyebrow-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6C3BFF;
+}
+
+.hero-title-centered {
+    font-family: 'Sora', 'Montserrat', sans-serif;
+    font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--text-main, #141414);
+    margin-bottom: 24px;
+}
+
+.hero-title-centered .accent-dot {
+    color: #6C3BFF;
+}
+
+.hero-intro-centered {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    line-height: 1.65;
+    color: var(--text-muted, #5e5d59);
+    max-width: 680px;
+    margin: 0 auto 36px auto;
+    font-weight: 400;
+}
+
+.hero-actions-centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* ── 6. "How I Help" 2x2 Tilted Physical Folder Cards ────────── */
+.services {
+    padding: 100px 0;
+    background: transparent !important;
+}
+
+.services-header {
+    margin-bottom: 50px;
+}
+
+.services-eyebrow {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6C3BFF;
+    margin-bottom: 12px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted, #5e5d59);
+    max-width: 600px;
+    margin: 12px auto 0 auto;
+}
+
+.folder-services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+.folder-col {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+/* Individual Physical Tilted Folder Card */
+.tilted-folder-card {
+    position: relative;
+    background: #e6e5e1;
+    border-radius: 24px;
+    border: 1px solid rgba(20, 20, 20, 0.1);
+    box-shadow: 
+        0 14px 34px -10px rgba(0, 0, 0, 0.08),
+        0 4px 10px rgba(0, 0, 0, 0.03);
+    padding: 36px 32px 32px 32px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .tilted-folder-card {
+    background: #1f1f1f;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Left column resting tilts */
+.folder-col-left .folder-card-1 {
+    transform: rotate(-2.5deg);
+}
+
+.folder-col-left .folder-card-2 {
+    transform: rotate(-1.5deg);
+}
+
+/* Right column resting tilts */
+.folder-col-right .folder-card-3 {
+    transform: rotate(2.5deg);
+}
+
+.folder-col-right .folder-card-4 {
+    transform: rotate(1.5deg);
+}
+
+/* On Hover: Un-tilt, lift, and deepen elevation */
+.tilted-folder-card:hover,
+.tilted-folder-card:focus-visible {
+    transform: translateY(-8px) rotate(0deg) scale(1.02) !important;
+    border-color: rgba(108, 59, 255, 0.35);
+    box-shadow: 
+        0 26px 60px -12px rgba(0, 0, 0, 0.16),
+        0 8px 20px rgba(0, 0, 0, 0.06);
+    z-index: 5;
+}
+
+/* Folder Tab Lip */
+.folder-tab {
+    position: absolute;
+    top: 0;
+    left: 28px;
+    background: #d8d7d3;
+    border: 1px solid rgba(20, 20, 20, 0.1);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 4px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted, #5e5d59);
+}
+
+[data-theme="dark"] .folder-tab {
+    background: #282828;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.folder-tab-num {
+    color: #6C3BFF;
+}
+
+.folder-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.folder-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: rgba(20, 20, 20, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+}
+
+[data-theme="dark"] .folder-icon-box {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.folder-icon-box img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.folder-title {
+    font-family: 'Sora', 'Montserrat', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-main, #141414);
+    margin: 0;
+}
+
+.folder-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-muted, #5e5d59);
+    margin: 0;
+}
+
+/* Hover expandable tags */
+.folder-hover-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(20, 20, 20, 0.1);
+}
+
+[data-theme="dark"] .folder-hover-meta {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.folder-tag {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(20, 20, 20, 0.05);
+    color: var(--text-main, #141414);
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid rgba(20, 20, 20, 0.06);
+}
+
+[data-theme="dark"] .folder-tag {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #dedede;
+}
+
+/* Mobile responsive for services */
+@media (max-width: 820px) {
+    .folder-services-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .folder-col-left .folder-card-1,
+    .folder-col-left .folder-card-2,
+    .folder-col-right .folder-card-3,
+    .folder-col-right .folder-card-4 {
+        transform: none !important;
+    }
+}
+
+/* ── 7. Unify All Section Backgrounds (Zero Color Breaks) ─────── */
+.trusted-by,
+.services,
+.selected-projects,
+.experience,
+.testimonials-modern,
+.cta-modern,
+footer {
+    background: transparent !important;
+}
+
+/* ── 8. My Story Editorial Showcase & Portrait ────────────────── */
+.story-editorial-hero {
+    padding: 60px 40px 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.story-hero-inner {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.story-portrait-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.story-portrait-glow {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(108, 59, 255, 0.22) 0%, rgba(108, 59, 255, 0.05) 50%, transparent 70%);
+    filter: blur(50px);
+    z-index: 1;
+    pointer-events: none;
+    top: 8%;
+}
+
+.story-portrait-card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 390px;
+    background: #ebe9e4;
+    border: 1px solid rgba(20, 20, 20, 0.1);
+    border-radius: 28px;
+    padding: 22px 22px 0 22px;
+    box-shadow: 
+        0 30px 70px -15px rgba(0, 0, 0, 0.12),
+        0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+[data-theme="dark"] .story-portrait-card {
+    background: #1c1c1c;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7);
+}
+
+.story-portrait-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 
+        0 40px 90px -15px rgba(0, 0, 0, 0.2),
+        0 14px 35px -5px rgba(0, 0, 0, 0.08);
+}
+
+.story-portrait-img-box {
+    position: relative;
+    width: 100%;
+    height: 440px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(108, 59, 255, 0.08) 100%);
+}
+
+.story-portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    filter: contrast(1.02) brightness(1.01);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.story-portrait-card:hover .story-portrait-img {
+    transform: scale(1.03);
+}
+
+.story-portrait-footer {
+    margin: 0 -22px 0 -22px;
+    padding: 18px 22px;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (max-width: 900px) {
+    .story-hero-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .story-editorial-hero {
+        padding: 40px 20px 60px;
+    }
+}
+

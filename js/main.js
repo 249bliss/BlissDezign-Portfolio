@@ -12,83 +12,69 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Theme Toggle Logic
-    const themeToggle = document.getElementById('theme-toggle');
+    // Theme Logic - Pure Crisp Light Mode
     const body = document.body;
+    body.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
 
-    // Check for saved theme in localStorage
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    body.setAttribute('data-theme', savedTheme);
+    // Update Cal.com config for light theme
+    document.querySelectorAll('a[href*="cal.com/blissdezigns"]').forEach(link => {
+        link.setAttribute('data-cal-config', JSON.stringify({
+            layout: 'month_view',
+            theme: 'light'
+        }));
+    });
 
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    // ─── Floating Pill Capsule Drop Navigation Logic ──────────────────
+    const capsuleMenuTrigger = document.getElementById('capsule-menu-trigger');
+    const capsuleDropCard = document.getElementById('capsule-drop-card');
+    const capsuleBackdrop = document.getElementById('capsule-backdrop');
+    const dropNavLinks = document.querySelectorAll('.drop-card-nav-list a');
 
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+    const toggleCapsuleMenu = (open) => {
+        const shouldOpen = typeof open === 'boolean' ? open : !capsuleDropCard?.classList.contains('active');
+        if (!capsuleDropCard) return;
 
-            // Update Cal.com config dynamically on theme toggle
-            document.querySelectorAll('a[href*="cal.com/blissdezigns"]').forEach(link => {
-                link.setAttribute('data-cal-config', JSON.stringify({
-                    layout: 'month_view',
-                    theme: newTheme
-                }));
-            });
+        if (shouldOpen) {
+            capsuleDropCard.classList.add('active');
+            capsuleMenuTrigger?.classList.add('active');
+            capsuleBackdrop?.classList.add('active');
+            capsuleMenuTrigger?.setAttribute('aria-expanded', 'true');
+        } else {
+            capsuleDropCard.classList.remove('active');
+            capsuleMenuTrigger?.classList.remove('active');
+            capsuleBackdrop?.classList.remove('active');
+            capsuleMenuTrigger?.setAttribute('aria-expanded', 'false');
+        }
+    };
 
-            // Subtle feedback
-            themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
-            setTimeout(() => {
-                themeToggle.style.transform = '';
-            }, 300);
-        });
-    }
-
-    // Mobile Navigation Logic
-    const mobileBtn = document.getElementById('mobile-menu-btn');
-    const mobileOverlay = document.getElementById('mobile-overlay');
-    const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
-    const headerEl = document.querySelector('header');
-
-    if (mobileBtn && mobileOverlay) {
-        // Prevent 300ms tap delay on tablets (iOS/Android)
-        mobileBtn.setAttribute('touch-action', 'manipulation');
-
-        let isToggling = false; // debounce guard
-
-        // Toggle menu visibility and animated burger state
-        mobileBtn.addEventListener('click', (e) => {
+    if (capsuleMenuTrigger && capsuleDropCard) {
+        capsuleMenuTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (isToggling) return;
-            isToggling = true;
-            setTimeout(() => { isToggling = false; }, 400);
-
-            mobileBtn.classList.toggle('active');
-            mobileOverlay.classList.toggle('active');
-            if (headerEl) headerEl.classList.toggle('menu-open');
-
-            // Prevent body scrolling when menu is open
-            body.style.overflow = mobileOverlay.classList.contains('active') ? 'hidden' : '';
+            toggleCapsuleMenu();
         });
 
-        // Close when tapping outside the overlay (on the dimmed area)
-        mobileOverlay.addEventListener('click', (e) => {
-            if (e.target === mobileOverlay) {
-                mobileBtn.classList.remove('active');
-                mobileOverlay.classList.remove('active');
-                if (headerEl) headerEl.classList.remove('menu-open');
-                body.style.overflow = '';
+        if (capsuleBackdrop) {
+            capsuleBackdrop.addEventListener('click', () => toggleCapsuleMenu(false));
+        }
+
+        // Close on clicking outside the capsule drop menu
+        document.addEventListener('click', (e) => {
+            if (!capsuleDropCard.contains(e.target) && !capsuleMenuTrigger.contains(e.target)) {
+                toggleCapsuleMenu(false);
             }
         });
 
-        // Close mobile overlay whenever a link is clicked to navigate
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileBtn.classList.remove('active');
-                mobileOverlay.classList.remove('active');
-                if (headerEl) headerEl.classList.remove('menu-open');
-                body.style.overflow = '';
-            });
+        // Close on pressing Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && capsuleDropCard.classList.contains('active')) {
+                toggleCapsuleMenu(false);
+            }
+        });
+
+        // Close on navigating
+        dropNavLinks.forEach(link => {
+            link.addEventListener('click', () => toggleCapsuleMenu(false));
         });
     }
 
@@ -413,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     const data = await response.json();
                     if (Object.hasOwn(data, 'errors')) {
-                        submitBtn.innerText = 'Error — Try Again ✗';
+                        submitBtn.innerText = 'Error : Try Again ✗';
                         submitBtn.style.background = 'linear-gradient(135deg, #3b0a0a 0%, #7f1d1d 100%)';
                         submitBtn.style.color = '#fca5a5';
                         console.error('Submission errors:', data.errors.map(e => e.message).join(', '));
@@ -422,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             } catch (error) {
-                submitBtn.innerText = 'Error — Try Again ✗';
+                submitBtn.innerText = 'Error : Try Again ✗';
                 submitBtn.style.background = 'linear-gradient(135deg, #3b0a0a 0%, #7f1d1d 100%)';
                 submitBtn.style.color = '#fca5a5';
                 console.error('Submission error:', error);
@@ -655,4 +641,512 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- Localized Spotlight Grayscale, Particle Emitter & Spring Pill Tooltip with Alpha-Hit Testing ---
+    const portraitWrap = document.querySelector('.hero-portrait-wrap');
+    const baseImg = document.querySelector('.hero-portrait-base');
+    const monoLayer = document.getElementById('hero-portrait-mono');
+    const canvas = document.getElementById('hero-particle-canvas');
+    const pill = document.getElementById('hero-cursor-pill');
+    const pillText = document.getElementById('hero-pill-text');
+
+    if (portraitWrap && canvas && baseImg) {
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let particleAnimId = null;
+        let isOverOpaquePixel = false;
+        let isInsideWrap = false;
+
+        // Offscreen Hit-Test Canvas for alpha detection
+        const hitCanvas = document.createElement('canvas');
+        const hitCtx = hitCanvas.getContext('2d', { willReadFrequently: true });
+        let hitData = null;
+        let hitWidth = 0;
+        let hitHeight = 0;
+
+        const updateHitMap = () => {
+            const imgEl = baseImg;
+            if (!imgEl.naturalWidth || !imgEl.naturalHeight) return;
+            hitWidth = Math.min(250, imgEl.naturalWidth);
+            hitHeight = Math.round(hitWidth * (imgEl.naturalHeight / imgEl.naturalWidth));
+            hitCanvas.width = hitWidth;
+            hitCanvas.height = hitHeight;
+            hitCtx.clearRect(0, 0, hitWidth, hitHeight);
+            hitCtx.drawImage(imgEl, 0, 0, hitWidth, hitHeight);
+            try {
+                hitData = hitCtx.getImageData(0, 0, hitWidth, hitHeight).data;
+            } catch (err) {
+                hitData = null;
+            }
+        };
+
+        if (baseImg.complete) {
+            updateHitMap();
+        } else {
+            baseImg.addEventListener('load', updateHitMap);
+        }
+
+        const isPixelOpaque = (clientX, clientY) => {
+            if (!hitData || !hitWidth || !hitHeight) return true; // Fallback
+            const rect = baseImg.getBoundingClientRect();
+            if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+                return false;
+            }
+            const normalizedX = (clientX - rect.left) / rect.width;
+            const normalizedY = (clientY - rect.top) / rect.height;
+            const px = Math.min(hitWidth - 1, Math.max(0, Math.floor(normalizedX * hitWidth)));
+            const py = Math.min(hitHeight - 1, Math.max(0, Math.floor(normalizedY * hitHeight)));
+            const alphaIndex = (py * hitWidth + px) * 4 + 3;
+            return hitData[alphaIndex] > 25; // Opaque silhouette threshold
+        };
+
+        // --- Text Cycling Setup ---
+        const phrases = [
+            "Clarity by Design.",
+            "Bliss is your designer.",
+            "Let's grow the business."
+        ];
+        let currentPhraseIdx = 0;
+        let cycleTimer = null;
+        let isTransitioningText = false;
+
+        const cycleToNextPhrase = () => {
+            if (!pillText || isTransitioningText) return;
+            isTransitioningText = true;
+            currentPhraseIdx = (currentPhraseIdx + 1) % phrases.length;
+            const nextText = phrases[currentPhraseIdx];
+
+            // Slide up & fade out
+            pillText.classList.add('slide-out');
+
+            setTimeout(() => {
+                pillText.textContent = nextText;
+                pillText.classList.remove('slide-out');
+                pillText.classList.add('slide-in-prep');
+
+                // Force layout reflow
+                void pillText.offsetHeight;
+
+                pillText.classList.remove('slide-in-prep');
+                pillText.classList.add('slide-in');
+
+                setTimeout(() => {
+                    pillText.classList.remove('slide-in');
+                    isTransitioningText = false;
+                }, 280);
+            }, 260);
+        };
+
+        const startTextCycleTimer = () => {
+            stopTextCycleTimer();
+            cycleTimer = setInterval(() => {
+                if (isOverOpaquePixel) {
+                    cycleToNextPhrase();
+                }
+            }, 2500); // cycle every 2.5s while over silhouette
+        };
+
+        const stopTextCycleTimer = () => {
+            if (cycleTimer) {
+                clearInterval(cycleTimer);
+                cycleTimer = null;
+            }
+        };
+
+        // --- Spring Physics for Floating Pill ---
+        let mouseX = -100;
+        let mouseY = -100;
+        let pillX = -100;
+        let pillY = -100;
+        let pillVx = 0;
+        let pillVy = 0;
+        let currentScale = 0;
+        let targetScale = 0;
+        let currentOpacity = 0;
+        let targetOpacity = 0;
+        let springAnimId = null;
+
+        const springStiffness = 0.14; // Elasticity
+        const springDamping = 0.72;   // Fluid smoothing drag
+
+        const updateSpringPhysics = () => {
+            const ax = (mouseX - pillX) * springStiffness;
+            const ay = (mouseY - pillY) * springStiffness;
+
+            pillVx = (pillVx + ax) * springDamping;
+            pillVy = (pillVy + ay) * springDamping;
+
+            pillX += pillVx;
+            pillY += pillVy;
+
+            currentScale += (targetScale - currentScale) * 0.18;
+            currentOpacity += (targetOpacity - currentOpacity) * 0.2;
+
+            if (pill) {
+                pill.style.transform = `translate(${pillX}px, ${pillY}px) translate(-50%, -50%) scale(${currentScale})`;
+                pill.style.opacity = currentOpacity;
+            }
+
+            if (isInsideWrap || currentScale > 0.01) {
+                springAnimId = requestAnimationFrame(updateSpringPhysics);
+            } else {
+                if (pill) {
+                    pill.style.opacity = '0';
+                    pill.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(0)`;
+                }
+                springAnimId = null;
+            }
+        };
+
+        const resizeCanvas = () => {
+            const rect = portraitWrap.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.resetTransform();
+            ctx.scale(dpr, dpr);
+            updateHitMap();
+        };
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class SharpParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 0.5 + Math.random() * 2.0;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                
+                this.size = 2 + Math.random() * 2.5;
+                this.isSquare = Math.random() > 0.5;
+                
+                const grayValue = Math.floor(190 + Math.random() * 65);
+                this.baseColor = `${grayValue}, ${grayValue}, ${grayValue}`;
+                
+                this.alpha = 0.95;
+                this.decay = 0.04 + Math.random() * 0.04;
+            }
+
+            update(boundsWidth, boundsHeight) {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+
+                if (this.x < 0 || this.x > boundsWidth || this.y < 0 || this.y > boundsHeight) {
+                    this.alpha = 0;
+                }
+            }
+
+            draw(ctx) {
+                if (this.alpha <= 0) return;
+                ctx.save();
+                ctx.fillStyle = `rgba(${this.baseColor}, ${this.alpha})`;
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
+
+                if (this.isSquare) {
+                    ctx.fillRect(Math.round(this.x - this.size / 2), Math.round(this.y - this.size / 2), this.size, this.size);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        const renderParticles = () => {
+            const rect = portraitWrap.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update(rect.width, rect.height);
+                p.draw(ctx);
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            if (particles.length > 0 || isInsideWrap) {
+                particleAnimId = requestAnimationFrame(renderParticles);
+            } else {
+                particleAnimId = null;
+            }
+        };
+
+        const onMouseMove = (e) => {
+            const rect = portraitWrap.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            mouseX = x;
+            mouseY = y;
+
+            const overOpaque = isPixelOpaque(e.clientX, e.clientY);
+
+            if (overOpaque) {
+                if (!isOverOpaquePixel) {
+                    // Just entered silhouette: activate dimming + spotlight + tooltip
+                    isOverOpaquePixel = true;
+                    portraitWrap.classList.add('is-hovered');
+                    targetScale = 1;
+                    targetOpacity = 1;
+                    cycleToNextPhrase();
+                    startTextCycleTimer();
+                }
+
+                // 1. Update Spotlight Radial Mask Coordinates
+                if (monoLayer) {
+                    monoLayer.style.setProperty('--mouse-x', `${x}px`);
+                    monoLayer.style.setProperty('--mouse-y', `${y}px`);
+                }
+
+                // 2. Emit Sharp Non-Glowing Particles (only on opaque body)
+                const count = 2 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < count; i++) {
+                    particles.push(new SharpParticle(x, y));
+                }
+            } else {
+                if (isOverOpaquePixel) {
+                    // Moved into transparent empty space around silhouette
+                    isOverOpaquePixel = false;
+                    portraitWrap.classList.remove('is-hovered');
+                    targetScale = 0;
+                    targetOpacity = 0;
+                    stopTextCycleTimer();
+                }
+            }
+
+            if (!particleAnimId) {
+                particleAnimId = requestAnimationFrame(renderParticles);
+            }
+            if (!springAnimId) {
+                springAnimId = requestAnimationFrame(updateSpringPhysics);
+            }
+        };
+
+        portraitWrap.addEventListener('mouseenter', (e) => {
+            isInsideWrap = true;
+            resizeCanvas();
+
+            const rect = portraitWrap.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+            pillX = mouseX;
+            pillY = mouseY;
+            pillVx = 0;
+            pillVy = 0;
+
+            onMouseMove(e);
+        });
+
+        portraitWrap.addEventListener('mousemove', onMouseMove);
+
+        portraitWrap.addEventListener('mouseleave', () => {
+            isInsideWrap = false;
+            isOverOpaquePixel = false;
+            portraitWrap.classList.remove('is-hovered');
+            targetScale = 0;
+            targetOpacity = 0;
+            stopTextCycleTimer();
+        });
+    }
+
+    // --- Hero Section Motion Handled by js/lanyard-badge.js ---
+    // (Old blur sink removed so hero storytelling stays crisp and legible as ID card pulls up)
+
+    // --- Studio-Style Case Study Modal Viewer Controller ---
+    const modal = document.getElementById('project-modal');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalShareBtn = document.getElementById('modal-share-btn');
+    const modalBrandTitle = document.getElementById('modal-brand-title');
+    const modalBodyContent = document.getElementById('modal-body-content');
+
+    let currentModalProjectId = null;
+
+    window.openProjectModal = async (projectId) => {
+        if (!modal) return;
+        currentModalProjectId = projectId;
+        
+        // Show modal and lock background scroll
+        modal.classList.add('is-active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+
+        if (modalBodyContent) {
+            modalBodyContent.innerHTML = `
+                <div class="modal-loading-state">
+                    <div class="modal-spinner"></div>
+                    <p>Loading project story...</p>
+                </div>
+            `;
+        }
+
+        try {
+            // Fetch project & case study details
+            const [projRes, csRes] = await Promise.all([
+                supabaseClient.from('projects').select('*').eq('id', projectId).single(),
+                supabaseClient.from('case_studies').select('*').eq('id', projectId).single()
+            ]);
+
+            const project = projRes.data;
+            const caseStudy = csRes.data;
+
+            if (!project) {
+                throw new Error("Project not found");
+            }
+
+            if (modalBrandTitle) {
+                modalBrandTitle.textContent = project.title || 'CASE STUDY';
+            }
+
+            const visualsArray = caseStudy && Array.isArray(caseStudy.full_image_chunks) ? caseStudy.full_image_chunks : [];
+            const validVisuals = visualsArray.filter(v => typeof v === 'string' && v.trim() !== '');
+
+            const role = (caseStudy && caseStudy.role) || 'Product Designer';
+            const duration = (caseStudy && caseStudy.duration) || 'Varies';
+            const tools = (caseStudy && caseStudy.tools) || 'Figma, Prototyping';
+            const industry = (caseStudy && caseStudy.industry) || 'Digital Product';
+            const projectLink = (caseStudy && caseStudy.project_link) || null;
+            const categoryTag = (project.category_tags && project.category_tags[0]) || 'CASE STUDY';
+
+            modalBodyContent.innerHTML = `
+                <div class="modal-content-hero">
+                    <div class="modal-main-info">
+                        <span class="modal-tag">${categoryTag}</span>
+                        <h1 class="modal-title">${project.title}</h1>
+                        <p class="modal-subtitle">${project.subtitle || 'End-to-end design direction and user experience optimization.'}</p>
+                    </div>
+                    <div class="modal-meta-col">
+                        <div class="modal-meta-item">
+                            <h4>Services / Skills</h4>
+                            <p>${tools}</p>
+                        </div>
+                        <div class="modal-meta-item">
+                            <h4>Timeline</h4>
+                            <p>${duration}</p>
+                        </div>
+                        <div class="modal-meta-item">
+                            <h4>Role</h4>
+                            <p>${role}</p>
+                        </div>
+                        ${projectLink ? `
+                        <div class="modal-meta-item">
+                            <h4>Live Experience</h4>
+                            <a href="${projectLink}" target="_blank" class="live-link">
+                                VISIT LIVE <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8em; margin-left: 4px;"></i>
+                            </a>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="modal-visuals-stream">
+                    ${validVisuals.length > 0 
+                        ? validVisuals.map(url => {
+                            const isVideo = typeof url === 'string' && url.split('?')[0].split('#')[0].match(/\.(mp4|webm|ogg|mov)$/i);
+                            if (isVideo) {
+                                return `<video src="${url}" autoplay muted loop playsinline></video>`;
+                            }
+                            return `<img src="${url}" alt="${project.title} Visual" loading="lazy">`;
+                        }).join('')
+                        : (project.hero_image 
+                            ? `<img src="${project.hero_image}" alt="${project.title} Cover" style="width: 100%; border-radius: 16px;">`
+                            : `<div style="padding: 80px 20px; text-align: center; color: var(--text-muted);">Visual documentation in progress.</div>`
+                        )
+                    }
+                </div>
+
+                <!-- Custom Studio CTA Banner (No Services Button) -->
+                <div class="modal-cta-banner">
+                    <div class="modal-cta-left">
+                        <h3>Interested in a similar redesign?</h3>
+                        <p>I partner with high-conviction teams to design and build digital products that earn trust and retain users.</p>
+                    </div>
+                    <div class="modal-cta-actions">
+                        <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" class="modal-cta-btn-primary">
+                            <span>Book a Call</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            modalBodyContent.scrollTop = 0;
+        } catch (err) {
+            console.error("Modal fetch error:", err);
+            if (modalBodyContent) {
+                modalBodyContent.innerHTML = `
+                    <div style="padding: 100px 20px; text-align: center;">
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">Could not load modal details.</p>
+                        <a href="case-study.html?project=${projectId}" class="btn btn-primary">Open Dedicated Page</a>
+                    </div>
+                `;
+            }
+        }
+    };
+
+    window.closeProjectModal = () => {
+        if (!modal) return;
+        modal.classList.remove('is-active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        currentModalProjectId = null;
+    };
+
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', window.closeProjectModal);
+    }
+    if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', window.closeProjectModal);
+    }
+
+    // Share button in modal
+    if (modalShareBtn) {
+        modalShareBtn.addEventListener('click', () => {
+            if (!currentModalProjectId) return;
+            const shareUrl = `${window.location.origin}/case-study.html?project=${currentModalProjectId}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const span = modalShareBtn.querySelector('span');
+                if (span) {
+                    span.textContent = 'Copied!';
+                    setTimeout(() => {
+                        span.textContent = 'Share';
+                    }, 2000);
+                }
+            }).catch(err => {
+                console.error("Failed to copy modal link", err);
+            });
+        });
+    }
+
+    // Guarantee mousewheel scrolling inside modal regardless of where mouse is positioned
+    if (modal) {
+        modal.addEventListener('wheel', (e) => {
+            if (modal.classList.contains('is-active') && modalBodyContent) {
+                // If cursor is on modal window or backdrop, scroll modal body directly
+                if (e.target !== modalBodyContent && !modalBodyContent.contains(e.target)) {
+                    modalBodyContent.scrollTop += e.deltaY;
+                    e.preventDefault();
+                }
+            }
+        }, { passive: false });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && modal.classList.contains('is-active')) {
+            window.closeProjectModal();
+        }
+    });
 });
+
+
+
+
+

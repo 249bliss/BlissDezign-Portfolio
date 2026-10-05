@@ -29,18 +29,18 @@ const CMSLoader = {
         return `<img src="${url}" alt="${alt}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`;
     },
 
-    // 1. Fetch Projects for Homepage (Selected Projects)
+    // 1. Fetch Projects for Homepage (3D Physical Glass Folder Showcase)
     loadHomeProjects: async (containerId) => {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        console.log("Fetching home projects...");
+        console.log("Fetching home projects for 3D Physical Folder...");
         const { data: projects, error } = await supabaseClient
             .from('projects')
             .select('*')
             .eq('is_featured', true)
             .order('display_order', { ascending: true })
-            .limit(4); // Only 4 items for the new layout
+            .limit(6);
 
         if (error) {
             console.error("Error loading home projects:", error);
@@ -52,27 +52,167 @@ const CMSLoader = {
             return;
         }
 
-        container.innerHTML = projects.map((project, index) => {
+        let currentIndex = 0;
+
+        const renderSleeve = (project) => {
+            const tagsHtml = (project.category_tags || []).map(t => `<span class="sleeve-tag-pill">${t}</span>`).join('');
             return `
-                <a href="case-study.html?project=${project.id}" class="portfolio-card-large reveal-on-scroll" style="text-decoration: none; color: inherit;">
-                    <div class="portfolio-image-wrapper" data-cursor="view" style="width: 100%; border-radius: 20px; overflow: hidden; margin-bottom: 40px; position: relative;">
+                <div class="folder-sheet-sleeve" id="current-folder-sleeve" data-project-id="${project.id}">
+                    <div class="sleeve-media-viewport">
                         ${CMSLoader.renderMedia(project.hero_image, project.title)}
+                        <div class="sleeve-hover-curtain">
+                            <span class="sleeve-inspect-chip">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Case Study
+                            </span>
+                        </div>
                     </div>
-                    <div class="portfolio-card-bottom" style="display: flex; justify-content: space-between; align-items: flex-end;">
-                        <div class="portfolio-card-info">
-                            <h3 style="font-size: 2.5rem; font-weight: 500; font-family: var(--font-heading); margin: 0 0 12px 0;">${project.title}</h3>
-                            <div class="portfolio-tags" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                ${(project.category_tags || []).map(tag => `<span style="padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; font-size: 0.85rem; text-transform: uppercase;">${tag}</span>`).join('')}
+                    <div class="sleeve-info-row">
+                        <div class="sleeve-text-box">
+                            <h3>${project.title}</h3>
+                            <div class="sleeve-tags-wrap">
+                                ${tagsHtml}
                             </div>
                         </div>
-                        <div class="portfolio-card-icon" style="width: 50px; height: 50px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
-                            <i class="fa-solid fa-chevron-right"></i>
+                        <button class="sleeve-action-btn" id="sleeve-open-cta" data-project-id="${project.id}">
+                            <span>View Project</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderIndicators = () => {
+            return projects.map((_, i) => `
+                <button class="folder-thumb-dot ${i === currentIndex ? 'active' : ''}" data-index="${i}" aria-label="Project ${i+1}"></button>
+            `).join('');
+        };
+
+        container.innerHTML = `
+            <div class="real-3d-folder-wrapper reveal-on-scroll">
+                <div class="real-3d-folder">
+                    <div class="folder-top-tab-lip">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span>Bliss Works Archive</span>
+                    </div>
+
+                    <div class="folder-controls-bar">
+                        <span class="folder-counter-tag" id="folder-step-counter">
+                            PROJECT ${String(currentIndex + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}
+                        </span>
+                        <div class="folder-arrow-actions">
+                            <button class="folder-arrow-btn" id="folder-prev-btn" aria-label="Previous Project" ${currentIndex === 0 ? 'disabled' : ''}>
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button class="folder-arrow-btn" id="folder-next-btn" aria-label="Next Project" ${currentIndex === projects.length - 1 ? 'disabled' : ''}>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
-                </a>
-            `;
-        }).join('');
 
+                    <div class="folder-pocket-stage" id="folder-pocket-stage">
+                        ${renderSleeve(projects[currentIndex])}
+                    </div>
+
+                    <div class="folder-footer-strip">
+                        <div class="folder-thumbnail-pills" id="folder-thumb-pills">
+                            ${renderIndicators()}
+                        </div>
+                        <a href="projects.html" class="folder-all-projects-btn">
+                            <span>View All Projects</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const pocketStage = container.querySelector('#folder-pocket-stage');
+        const prevBtn = container.querySelector('#folder-prev-btn');
+        const nextBtn = container.querySelector('#folder-next-btn');
+        const stepCounter = container.querySelector('#folder-step-counter');
+        const thumbPills = container.querySelector('#folder-thumb-pills');
+
+        const bindSleeveClicks = () => {
+            const sleeve = container.querySelector('#current-folder-sleeve');
+            const ctaBtn = container.querySelector('#sleeve-open-cta');
+
+            const handleOpen = (e) => {
+                const id = e.currentTarget.getAttribute('data-project-id');
+                if (window.openProjectModal) {
+                    window.openProjectModal(id);
+                } else {
+                    window.location.href = `case-study.html?project=${id}`;
+                }
+            };
+
+            if (sleeve) sleeve.addEventListener('click', handleOpen);
+            if (ctaBtn) ctaBtn.addEventListener('click', handleOpen);
+        };
+
+        const updateStage = (direction = 1) => {
+            const project = projects[currentIndex];
+            stepCounter.textContent = `PROJECT ${String(currentIndex + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}`;
+            
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === projects.length - 1;
+
+            thumbPills.innerHTML = renderIndicators();
+            bindThumbClicks();
+
+            // 3D slide sheet out & in
+            const currentSleeve = container.querySelector('#current-folder-sleeve');
+            if (currentSleeve) {
+                currentSleeve.style.transform = `rotateX(${direction * 8}deg) translateY(${direction * -40}px) scale(0.92)`;
+                currentSleeve.style.opacity = '0';
+                currentSleeve.style.transition = 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+            }
+
+            setTimeout(() => {
+                pocketStage.innerHTML = renderSleeve(project);
+                const newSleeve = container.querySelector('#current-folder-sleeve');
+                if (newSleeve) {
+                    newSleeve.style.transform = `rotateX(${direction * -8}deg) translateY(${direction * 40}px) scale(0.92)`;
+                    newSleeve.style.opacity = '0';
+                    setTimeout(() => {
+                        newSleeve.style.transition = 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+                        newSleeve.style.transform = 'rotateX(2deg) translateY(-4px)';
+                        newSleeve.style.opacity = '1';
+                    }, 20);
+                }
+                bindSleeveClicks();
+            }, 200);
+        };
+
+        const bindThumbClicks = () => {
+            container.querySelectorAll('.folder-thumb-dot').forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const idx = parseInt(dot.getAttribute('data-index'), 10);
+                    if (idx !== currentIndex) {
+                        const dir = idx > currentIndex ? 1 : -1;
+                        currentIndex = idx;
+                        updateStage(dir);
+                    }
+                });
+            });
+        };
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateStage(-1);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < projects.length - 1) {
+                currentIndex++;
+                updateStage(1);
+            }
+        });
+
+        bindSleeveClicks();
+        bindThumbClicks();
         CMSLoader.triggerReveal(container);
     },
 
@@ -81,7 +221,7 @@ const CMSLoader = {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        console.log("Fetching all projects...");
+        console.log("Fetching all projects for physical drafting gallery...");
         const { data: projects, error } = await supabaseClient
             .from('projects')
             .select('*')
@@ -93,43 +233,268 @@ const CMSLoader = {
         }
 
         if (!projects || projects.length === 0) {
-            container.innerHTML = '<p class="text-muted">No projects found.</p>';
+            container.innerHTML = '<p class="text-muted text-center" style="grid-column: 1 / -1; font-family: var(--font-mono); padding: 40px;">No projects found in archive.</p>';
             return;
         }
 
+        const pinColors = ['coral', 'blue', 'amber', 'purple'];
+
         container.innerHTML = projects.map((project, index) => {
-            const filterClass = (project.category_tags || [])
-                .map(t => t.toLowerCase().replace(/\s+/g, '-'))
-                .join(' ');
+            const rawTags = project.category_tags || [];
+            const primaryTag = (rawTags.length > 0 && rawTags[0]) ? String(rawTags[0]).toUpperCase() : 'CASE STUDY';
+            const categoriesJoined = rawTags.join(' ').toLowerCase();
+            const pinColor = pinColors[index % pinColors.length];
+            const numStr = String(index + 1).padStart(2, '0');
+            const rotDeg = ((index % 5) - 2) * 0.7; // Subtle tactile rotation (-1.4deg to +1.4deg)
+            const safeDesc = (project.description || project.headline || '').replace(/"/g, '&quot;');
+            const safeTitle = (project.title || 'Untitled Project').replace(/"/g, '&quot;');
+
+            const isVideo = CMSLoader.isMediaVideo(project.hero_image);
+            const mediaHtml = isVideo
+                ? `<video src="${project.hero_image}" autoplay muted loop playsinline></video>`
+                : `<img src="${project.hero_image}" alt="${safeTitle}" loading="lazy">`;
 
             return `
-                <a href="case-study.html?project=${project.id}" 
-                   class="portfolio-card-large filter-item ${filterClass} reveal-on-scroll" 
-                   data-reveal style="text-decoration: none; color: inherit;">
-                    <div class="portfolio-image-wrapper" data-cursor="view" style="width: 100%; border-radius: 20px; overflow: hidden; margin-bottom: 40px; position: relative;">
-                        ${CMSLoader.renderMedia(project.hero_image, project.title)}
-                    </div>
-                    <div class="portfolio-card-bottom" style="display: flex; justify-content: space-between; align-items: flex-end;">
-                        <div class="portfolio-card-info">
-                            <h3 style="font-size: 2.5rem; font-weight: 500; font-family: var(--font-heading); margin: 0 0 12px 0;">${project.title}</h3>
-                            <div class="portfolio-tags" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                ${(project.category_tags || []).map(tag => `<span style="padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; font-size: 0.85rem; text-transform: uppercase;">${tag}</span>`).join('')}
-                            </div>
+                <div class="landscape-post-card project-grid-card"
+                     data-project-id="${project.id}"
+                     data-project-title="${safeTitle}"
+                     data-project-tag="${primaryTag} // CASE STUDY"
+                     data-project-desc="${safeDesc}"
+                     data-project-img="${project.hero_image || ''}"
+                     data-project-link="case-study.html?project=${encodeURIComponent(project.id)}"
+                     data-categories="${categoriesJoined}"
+                     style="--card-base-rot: ${rotDeg}deg; transform: rotate(${rotDeg}deg);">
+                    <!-- Tactile Physical Pushpin -->
+                    <div class="board-pushpin ${pinColor}" style="top: -8px; left: 50%; transform: translateX(-50%); z-index: 10;"></div>
+                    <div class="card-inner-surface">
+                        <div class="card-media-box">
+                            ${mediaHtml}
+                            <div class="card-expand-badge"><i class="fa-solid fa-expand"></i> View</div>
                         </div>
-                        <div class="portfolio-card-icon" style="width: 50px; height: 50px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
-                            <i class="fa-solid fa-chevron-right"></i>
+                        <div class="card-meta-bar">
+                            <span class="card-number">${numStr}</span>
+                            <span class="card-title">${safeTitle.toUpperCase()}</span>
+                            <span class="card-tag">${primaryTag} ↗</span>
                         </div>
                     </div>
-                </a>
+                </div>
             `;
         }).join('');
 
-        CMSLoader.triggerReveal(container);
-        
-        // Re-initialize filtering logic if on work page
-        if (typeof window.initProjectFilters === 'function') {
-            window.initProjectFilters();
+        // Filtering engine for washi tape filter chips
+        const filterChips = document.querySelectorAll('.project-filter-chip');
+        const projectCards = container.querySelectorAll('.project-grid-card');
+
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                filterChips.forEach(c => {
+                    c.classList.remove('active');
+                    c.setAttribute('aria-selected', 'false');
+                });
+                chip.classList.add('active');
+                chip.setAttribute('aria-selected', 'true');
+
+                const filter = chip.getAttribute('data-filter') || 'all';
+
+                projectCards.forEach(card => {
+                    const categories = card.getAttribute('data-categories') || '';
+                    let match = false;
+
+                    if (filter === 'all') {
+                        match = true;
+                    } else if (filter === 'mobile' && (categories.includes('mobile') || categories.includes('app'))) {
+                        match = true;
+                    } else if (filter === 'website' && (categories.includes('web') || categories.includes('site') || categories.includes('landing'))) {
+                        match = true;
+                    } else if (filter === 'fintech' && categories.includes('fintech')) {
+                        match = true;
+                    } else if (filter === 'dashboard' && (categories.includes('dashboard') || categories.includes('saas'))) {
+                        match = true;
+                    } else if (filter === 'saas' && (categories.includes('saas') || categories.includes('ai') || categories.includes('tech'))) {
+                        match = true;
+                    } else if (categories.includes(filter)) {
+                        match = true;
+                    }
+
+                    const baseRot = parseFloat(card.dataset.baseRot) || 0;
+                    const pin = card.querySelector('.board-pushpin');
+
+                    if (match) {
+                        card.classList.remove('is-filtered-out');
+                        if (card._st) card._st.enable();
+                        if (typeof gsap !== 'undefined') {
+                            gsap.killTweensOf(card);
+                            if (pin) gsap.killTweensOf(pin);
+                            gsap.to(card, {
+                                opacity: 1,
+                                scale: 1,
+                                y: 0,
+                                rotation: baseRot,
+                                duration: 0.3,
+                                ease: 'power2.out'
+                            });
+                            if (pin) gsap.to(pin, { scale: 1, rotation: 0, y: 0, duration: 0.3 });
+                        } else {
+                            card.style.opacity = '1';
+                        }
+                    } else {
+                        card.classList.add('is-filtered-out');
+                        if (card._st) card._st.disable();
+                    }
+                });
+
+                // Crucial: Recalculate all scroll trigger positions immediately
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.refresh();
+                }
+                if (window.lenis) {
+                    window.lenis.resize();
+                }
+            });
+        });
+
+        // ── TESTIMONIAL-STYLE SCROLL-TRIGGERED PUNCH-PINNING & TACTILE PHYSICS ──
+        if (typeof gsap !== 'undefined') {
+            projectCards.forEach((card, idx) => {
+                const baseRot = parseFloat(card.style.getPropertyValue('--card-base-rot')) || 0;
+                card.dataset.baseRot = baseRot;
+                const pin = card.querySelector('.board-pushpin');
+                const isEven = idx % 2 === 0;
+
+                // Hardware-accelerated transform origin around the top pushpin
+                card.style.transformOrigin = '50% 6px';
+                card.style.willChange = 'transform, opacity';
+
+                const rect = card.getBoundingClientRect();
+                const inInitialViewport = rect.top < window.innerHeight;
+
+                if (inInitialViewport) {
+                    // Cards already in viewport start pinned and visible
+                    gsap.set(card, {
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                        rotation: baseRot
+                    });
+                    if (pin) {
+                        gsap.set(pin, { scale: 1, rotation: 0, y: 0 });
+                    }
+                } else {
+                    // Cards below viewport are lifted slightly off drafting board
+                    gsap.set(card, {
+                        opacity: 0,
+                        scale: 1.10,
+                        y: -44,
+                        rotation: baseRot + (isEven ? -3.5 : 3.5)
+                    });
+                    if (pin) {
+                        gsap.set(pin, {
+                            scale: 1.3,
+                            rotation: isEven ? -16 : 16,
+                            y: -6
+                        });
+                    }
+                }
+
+                if (typeof ScrollTrigger !== 'undefined') {
+                    card._st = ScrollTrigger.create({
+                        trigger: card,
+                        start: 'top 90%',
+                        end: 'bottom 10%',
+                        onEnter: () => {
+                            gsap.killTweensOf(card);
+                            if (pin) gsap.killTweensOf(pin);
+
+                            // Visibly punches / slams onto drafting board in the viewport!
+                            gsap.timeline()
+                                .to(card, {
+                                    opacity: 1,
+                                    scale: 0.98,
+                                    y: 0,
+                                    rotation: baseRot + (isEven ? 2.5 : -2.5),
+                                    duration: 0.28,
+                                    ease: 'back.out(2)'
+                                })
+                                .to(card, {
+                                    scale: 1,
+                                    rotation: baseRot,
+                                    duration: 0.22,
+                                    ease: 'power2.out'
+                                });
+
+                            if (pin) {
+                                gsap.to(pin, {
+                                    scale: 1,
+                                    rotation: 0,
+                                    y: 0,
+                                    duration: 0.36,
+                                    ease: 'elastic.out(1.2, 0.4)'
+                                });
+                            }
+                        },
+                        onEnterBack: () => {
+                            gsap.killTweensOf(card);
+                            if (pin) gsap.killTweensOf(pin);
+                            gsap.to(card, {
+                                opacity: 1,
+                                scale: 1,
+                                y: 0,
+                                rotation: baseRot,
+                                duration: 0.25,
+                                ease: 'power2.out'
+                            });
+                            if (pin) {
+                                gsap.to(pin, { scale: 1, rotation: 0, y: 0, duration: 0.25 });
+                            }
+                        },
+                        onLeaveBack: () => {
+                            // Guard: ONLY unpin if card has scrolled completely below the viewport
+                            const currentRect = card.getBoundingClientRect();
+                            if (currentRect.top >= window.innerHeight) {
+                                gsap.killTweensOf(card);
+                                if (pin) gsap.killTweensOf(pin);
+                                gsap.to(card, {
+                                    opacity: 0,
+                                    scale: 1.10,
+                                    y: -38,
+                                    rotation: baseRot + (isEven ? -3.5 : 3.5),
+                                    duration: 0.22,
+                                    ease: 'power2.in'
+                                });
+                                if (pin) {
+                                    gsap.to(pin, {
+                                        scale: 1.3,
+                                        rotation: isEven ? -16 : 16,
+                                        y: -6,
+                                        duration: 0.22
+                                    });
+                                }
+                            } else {
+                                // Keep visible and pinned if in view or above
+                                gsap.killTweensOf(card);
+                                if (pin) gsap.killTweensOf(pin);
+                                gsap.to(card, { opacity: 1, scale: 1, y: 0, rotation: baseRot, duration: 0.2 });
+                                if (pin) gsap.to(pin, { scale: 1, rotation: 0, y: 0, duration: 0.2 });
+                            }
+                        }
+                    });
+                } else {
+                    gsap.to(card, { opacity: 1, scale: 1, y: 0, rotation: baseRot, duration: 0.4 });
+                }
+            });
+
+            if (typeof ScrollTrigger !== 'undefined') {
+                ScrollTrigger.refresh();
+            }
+
+            if (window.initTactilePinSwingPhysics) {
+                window.initTactilePinSwingPhysics();
+            }
+        } else {
+            projectCards.forEach(c => { c.style.opacity = '1'; });
         }
+
+        CMSLoader.triggerReveal(container);
     },
 
     // 3. Fetch Testimonials for Grid/Vertical List
@@ -254,6 +619,10 @@ const CMSLoader = {
         }
 
         if (!posts || posts.length === 0) {
+            if (container.classList.contains('book-content-scroll')) {
+                // Keep the tactile folder book's curated entries intact
+                return;
+            }
             container.innerHTML = `
                 <div class="empty-blog-state reveal-on-scroll" style="grid-column: 1/-1; padding: 100px 20px; text-align: center; width: 100%;">
                     <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.12); padding: 60px 40px; border-radius: 32px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); max-width: 550px; margin: 0 auto; box-shadow: 0 8px 32px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
@@ -265,6 +634,20 @@ const CMSLoader = {
                 </div>
             `;
             CMSLoader.triggerReveal(container);
+            return;
+        }
+
+        if (container.classList.contains('book-content-scroll')) {
+            container.innerHTML = posts.map(post => `
+                <a href="post.html?slug=${post.slug}" class="book-entry-card">
+                    <div>
+                        <div class="book-entry-date">${new Date(post.published_at || post.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} // ESSAY</div>
+                        <h3 class="book-entry-title">${post.title}</h3>
+                        <p class="book-entry-snippet">${post.excerpt || ''}</p>
+                    </div>
+                    <span class="book-entry-link">Read Entry &rarr;</span>
+                </a>
+            `).join('');
             return;
         }
 
