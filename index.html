@@ -97,6 +97,17 @@
 </head>
 
 <body data-theme="light">
+    <!-- Universal Zero-Stall Splash Screen Failsafe -->
+    <script>
+        (function() {
+            setTimeout(function() {
+                var s = document.getElementById('architect-splash');
+                if (s && !s.classList.contains('is-hidden')) {
+                    s.classList.add('is-hidden');
+                }
+            }, 850);
+        })();
+    </script>
     <!-- ── FULL-SCREEN ARCHITECTURAL SPLASH INTRO (OPTION 3) ── -->
     <div class="architect-splash" id="architect-splash" aria-hidden="true">
         <span class="splash-crop crop-tl">+</span>

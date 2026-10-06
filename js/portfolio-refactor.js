@@ -1,9 +1,4 @@
-/**
- * PORTFOLIO REDESIGN : PHYSICAL MOOD BOARD & STORYBOARD INTERACTION ENGINE
- * Emmanuel Bliss : Product Designer & UX Therapist
- */
-
-document.addEventListener('DOMContentLoaded', () => {
+function initPortfolioRefactor() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // ── 0. LENIS LUXURIOUS SMOOTH SCROLL (FRAMER MOTION FEEL) ───────────────
@@ -422,8 +417,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const loaderPct = document.getElementById('splash-loader-pct');
         const loaderWrap = document.querySelector('.splash-loader-wrap');
 
-        if (!splash || !seal || prefersReducedMotion || typeof gsap === 'undefined') {
-            if (splash) splash.classList.add('is-hidden');
+        if (!splash) return;
+
+        // Failsafe: guarantee splash screen is NEVER stuck on screen
+        const failsafeTimeout = setTimeout(() => {
+            if (splash && !splash.classList.contains('is-hidden')) {
+                splash.classList.add('is-hidden');
+                if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+            }
+        }, 800);
+
+        if (!seal || prefersReducedMotion || typeof gsap === 'undefined') {
+            clearTimeout(failsafeTimeout);
+            splash.classList.add('is-hidden');
             return;
         }
 
@@ -443,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tl = gsap.timeline({
             onComplete: () => {
+                clearTimeout(failsafeTimeout);
                 splash.classList.add('is-hidden');
                 if (typeof ScrollTrigger !== 'undefined') {
                     ScrollTrigger.refresh();
@@ -2708,11 +2715,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.initTactilePinSwingPhysics = initTactilePinSwingPhysics;
-
     initServiceMenuAndFinalNotePhysics();
     initJournalDossiers();
     initContactDeskAndSignaturePad();
     initAboutStoryPinning();
     initTactilePinSwingPhysics();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPortfolioRefactor);
+} else {
+    initPortfolioRefactor();
+}

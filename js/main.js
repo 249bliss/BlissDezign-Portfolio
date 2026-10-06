@@ -80,24 +80,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Scroll Effect for Header (Optimized with IntersectionObserver)
     const header = document.querySelector('header');
-    const headerSentinel = document.createElement('div');
-    headerSentinel.style.position = 'absolute';
-    headerSentinel.style.top = '0';
-    headerSentinel.style.height = '50px';
-    headerSentinel.style.width = '1px';
-    headerSentinel.style.pointerEvents = 'none';
-    document.body.prepend(headerSentinel);
+    if (header) {
+        const headerSentinel = document.createElement('div');
+        headerSentinel.style.position = 'absolute';
+        headerSentinel.style.top = '0';
+        headerSentinel.style.height = '50px';
+        headerSentinel.style.width = '1px';
+        headerSentinel.style.pointerEvents = 'none';
+        document.body.prepend(headerSentinel);
 
-    const headerObserver = new IntersectionObserver((entries) => {
-        const isOffTop = !entries[0].isIntersecting;
-        if (isOffTop) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    }, { threshold: 0 });
+        const headerObserver = new IntersectionObserver((entries) => {
+            const isOffTop = !entries[0].isIntersecting;
+            if (isOffTop) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }, { threshold: 0 });
 
-    headerObserver.observe(headerSentinel);
+        headerObserver.observe(headerSentinel);
+    }
 
     // Scroll To Top Logic (Optimized)
     const scrollTopBtn = document.getElementById('scroll-top-btn');
