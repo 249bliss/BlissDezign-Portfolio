@@ -2854,6 +2854,7 @@ header.scrolled .nav-container {
 
 /* Update hero and stats when followed by a full image */
 .case-study-template .cs-hero {
+    padding-top: 170px !important;
     padding-bottom: 40px;
 }
 

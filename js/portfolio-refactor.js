@@ -1022,6 +1022,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 deckTimeline = null;
             }
 
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                // On mobile, reset GSAP inline transforms so CSS lays out cards in a clean vertical column
+                gsap.set(cards, { clearProps: "all" });
+                if (deckHeadline) gsap.set(deckHeadline, { clearProps: "all" });
+                return;
+            }
+
             const { xDist, yDist } = getDeckGeometry();
             const startDeckStates = getStartDeckStates();
 
@@ -1052,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 gsap.set(deckHeadline, { scale: 0.96, opacity: 1 });
             }
 
-            // GSAP Continuous Subpixel Scrub Timeline (No Hanging, Silky Smooth)
+            // GSAP Continuous Subpixel Scrub Timeline (Desktop only)
             deckTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: workSection,
@@ -1105,25 +1113,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 150);
             });
         } else {
-            const { xDist, yDist } = getDeckGeometry();
-            const targetCornerStates = [
-                { x: -xDist, y: -yDist, rot: -5.5 },
-                { x: xDist, y: -yDist * 0.94, rot: 4.5 },
-                { x: -xDist * 0.96, y: yDist, rot: 3.0 },
-                { x: xDist * 0.98, y: yDist * 0.96, rot: -4.0 }
-            ];
-            cards.forEach((card, idx) => {
-                const target = targetCornerStates[idx] || targetCornerStates[0];
-                gsap.set(card, {
-                    xPercent: -50,
-                    yPercent: -50,
-                    x: target.x,
-                    y: target.y,
-                    rotation: target.rot,
-                    scale: 1,
-                    opacity: 1
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                gsap.set(cards, { clearProps: "all" });
+                if (deckHeadline) gsap.set(deckHeadline, { clearProps: "all" });
+            } else {
+                const { xDist, yDist } = getDeckGeometry();
+                const targetCornerStates = [
+                    { x: -xDist, y: -yDist, rot: -5.5 },
+                    { x: xDist, y: -yDist * 0.94, rot: 4.5 },
+                    { x: -xDist * 0.96, y: yDist, rot: 3.0 },
+                    { x: xDist * 0.98, y: yDist * 0.96, rot: -4.0 }
+                ];
+                cards.forEach((card, idx) => {
+                    const target = targetCornerStates[idx] || targetCornerStates[0];
+                    gsap.set(card, {
+                        xPercent: -50,
+                        yPercent: -50,
+                        x: target.x,
+                        y: target.y,
+                        rotation: target.rot,
+                        scale: 1,
+                        opacity: 1
+                    });
                 });
-            });
+            }
         }
 
         // Supabase dynamic background sync (updates data-attributes and media if Supabase responds)
@@ -1716,78 +1730,39 @@ document.addEventListener('DOMContentLoaded', () => {
     function initStatsMemos() {
         const section = document.querySelector('.board-stats-section');
         const notes = document.querySelectorAll('.stat-paper-note');
-        if (!section || notes.length === 0 || prefersReducedMotion || typeof gsap === 'undefined') return;
+        if (!section || notes.length === 0) return;
 
         const baseRots = [-2.5, 1.8, -1.2, 2.8];
 
         notes.forEach((note, idx) => {
             const baseRot = baseRots[idx] || 0;
             note.dataset.baseRot = baseRot;
+            // Always ensure fully visible by default!
             gsap.set(note, {
-                opacity: 0,
-                y: -30,
-                rotation: baseRot + (idx % 2 === 0 ? -4 : 4)
+                opacity: 1,
+                y: 0,
+                rotation: baseRot
             });
         });
 
-        let isPinned = false;
-
-        function playStatsSequence() {
-            if (isPinned) return;
-            isPinned = true;
-
-            notes.forEach((note, idx) => {
-                gsap.killTweensOf(note);
-                const baseRot = parseFloat(note.dataset.baseRot) || 0;
-                const delay = idx * 0.1;
-                const isPin = note.dataset.statType === 'pin';
-
-                gsap.timeline({ delay })
-                    .to(note, {
-                        opacity: 1,
-                        y: 0,
-                        rotation: baseRot + (isPin ? 3.5 : -2.0),
-                        duration: 0.24,
-                        ease: isPin ? 'back.out(1.8)' : 'power2.out'
-                    })
-                    .to(note, {
-                        rotation: baseRot,
-                        duration: 0.28,
-                        ease: 'sine.out'
-                    });
-            });
-        }
-
-        function leaveStatsSequence() {
-            if (!isPinned) return;
-            isPinned = false;
-
-            notes.forEach((note, idx) => {
-                gsap.killTweensOf(note);
-                const baseRot = parseFloat(note.dataset.baseRot) || 0;
-                gsap.to(note, {
-                    opacity: 0,
-                    y: -24,
-                    rotation: baseRot + (idx % 2 === 0 ? -4 : 4),
-                    duration: 0.25,
-                    delay: idx * 0.04,
-                    ease: 'power2.in'
-                });
-            });
-        }
+        if (prefersReducedMotion || typeof gsap === 'undefined') return;
 
         if (typeof ScrollTrigger !== 'undefined') {
             ScrollTrigger.create({
                 trigger: section,
-                start: 'top 85%',
-                end: 'bottom 15%',
-                onEnter: () => playStatsSequence(),
-                onEnterBack: () => playStatsSequence(),
-                onLeave: () => leaveStatsSequence(),
-                onLeaveBack: () => leaveStatsSequence()
+                start: 'top 88%',
+                once: true,
+                onEnter: () => {
+                    notes.forEach((note, idx) => {
+                        const baseRot = parseFloat(note.dataset.baseRot) || 0;
+                        const isPin = note.dataset.statType === 'pin';
+                        gsap.fromTo(note,
+                            { y: -16, rotation: baseRot + (isPin ? 3 : -2) },
+                            { y: 0, rotation: baseRot, duration: 0.35, delay: idx * 0.08, ease: isPin ? 'back.out(1.6)' : 'power2.out' }
+                        );
+                    });
+                }
             });
-        } else {
-            playStatsSequence();
         }
 
         // Interactive hover: Pinned notes (Card 2 & 4) shake; Taped notes (Card 1 & 3) lift
@@ -1797,7 +1772,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (isPin) {
                 note.addEventListener('mouseenter', () => {
-                    if (!isPinned) return;
                     gsap.killTweensOf(note);
                     gsap.timeline()
                         .to(note, { rotation: baseRot + 5.5, duration: 0.16, ease: 'sine.out' })
@@ -1807,11 +1781,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             } else {
                 note.addEventListener('mouseenter', () => {
-                    if (!isPinned) return;
                     gsap.to(note, { y: -5, scale: 1.02, duration: 0.22, ease: 'power2.out' });
                 });
                 note.addEventListener('mouseleave', () => {
-                    if (!isPinned) return;
                     gsap.to(note, { y: 0, scale: 1, duration: 0.3, ease: 'power2.out' });
                 });
             }
@@ -1823,88 +1795,49 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── 7. TESTIMONIALS: INDIVIDUAL SCROLL-TRIGGERED PUNCH-PINNING ──────────
     function initTestimonialsPinning() {
         const cards = document.querySelectorAll('.testimonials-storyboard-canvas .modern-test-card');
-        if (cards.length === 0 || prefersReducedMotion || typeof gsap === 'undefined') return;
+        if (cards.length === 0) return;
 
         const baseRots = [-2.2, 2.8, -1.5, -2.4];
 
         cards.forEach((card, idx) => {
             const baseRot = baseRots[idx] || 0;
             card.dataset.baseRot = baseRot;
-            const pin = card.querySelector('.board-pushpin, .washi-tape-strip');
-
-            // Initially card is lifted off the wall
+            // Always ensure fully visible by default!
             gsap.set(card, {
-                opacity: 0,
-                scale: 1.14,
-                y: -48,
-                rotation: baseRot + (idx % 2 === 0 ? -4 : 4)
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                rotation: baseRot
             });
+        });
 
-            if (typeof ScrollTrigger !== 'undefined') {
+        if (prefersReducedMotion || typeof gsap === 'undefined') return;
+
+        if (typeof ScrollTrigger !== 'undefined') {
+            cards.forEach((card, idx) => {
+                const baseRot = parseFloat(card.dataset.baseRot) || 0;
+                const pin = card.querySelector('.board-pushpin, .washi-tape-strip');
+
                 ScrollTrigger.create({
                     trigger: card,
-                    start: 'top 82%',
-                    end: 'bottom 15%',
+                    start: 'top 85%',
+                    once: true,
                     onEnter: () => {
-                        gsap.killTweensOf(card);
-                        // Visibly punches / slams onto the board right in the viewport!
-                        gsap.timeline()
-                            .to(card, {
-                                opacity: 1,
-                                scale: 0.98,
-                                y: 0,
-                                rotation: baseRot + (idx % 2 === 0 ? 3 : -3),
-                                duration: 0.28,
-                                ease: 'back.out(2)'
-                            })
-                            .to(card, {
-                                scale: 1,
-                                rotation: baseRot,
-                                duration: 0.22,
-                                ease: 'power2.out'
-                            });
+                        gsap.fromTo(card,
+                            { y: -24, scale: 1.03, rotation: baseRot + (idx % 2 === 0 ? 2.5 : -2.5) },
+                            { y: 0, scale: 1, rotation: baseRot, duration: 0.36, ease: 'power2.out' }
+                        );
 
                         if (pin) {
                             gsap.fromTo(pin,
-                                { rotation: -14, scale: 1.25 },
-                                { rotation: 0, scale: 1, duration: 0.35, ease: 'elastic.out(1, 0.4)' }
+                                { rotation: -12, scale: 1.2 },
+                                { rotation: 0, scale: 1, duration: 0.32, ease: 'elastic.out(1, 0.4)' }
                             );
-                        }
-                    },
-                    onEnterBack: () => {
-                        gsap.killTweensOf(card);
-                        gsap.to(card, {
-                            opacity: 1,
-                            scale: 1,
-                            y: 0,
-                            rotation: baseRot,
-                            duration: 0.26,
-                            ease: 'power2.out'
-                        });
-                    },
-                    onLeaveBack: () => {
-                        const rect = card.getBoundingClientRect();
-                        if (rect.top >= window.innerHeight * 0.85) {
-                            gsap.killTweensOf(card);
-                            // Unpins / lifts off the wall as user scrolls up
-                            gsap.to(card, {
-                                opacity: 0,
-                                scale: 1.1,
-                                y: -36,
-                                rotation: baseRot + (idx % 2 === 0 ? -4 : 4),
-                                duration: 0.24,
-                                ease: 'power2.in'
-                            });
-                        } else {
-                            gsap.killTweensOf(card);
-                            gsap.to(card, { opacity: 1, scale: 1, y: 0, rotation: baseRot, duration: 0.2 });
                         }
                     }
                 });
-            } else {
-                gsap.to(card, { opacity: 1, scale: 1, y: 0, rotation: baseRot, duration: 0.3 });
-            }
-        });
+            });
+        }
     }
 
     initTestimonialsPinning();

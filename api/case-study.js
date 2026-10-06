@@ -98,7 +98,7 @@ export default async function handler(req, res) {
         if (html.includes('property="og:title"')) {
             html = html.replace(/<meta property="og:title" content=".*?"/, `<meta property="og:title" content="${escapeHtml(title)}"`);
         } else {
-            html = html.replace('<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->', `<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->\n    <meta property="og:title" content="${escapeHtml(title)}">`);
+            html = html.replace('<!-- Open Graph -->', `<!-- Open Graph -->\n    <meta property="og:title" content="${escapeHtml(title)}">`);
         }
 
         // Canonical URL & OG URL
@@ -108,7 +108,7 @@ export default async function handler(req, res) {
             if (html.includes('property="og:url"')) {
                 html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="${currentUrl}"`);
             } else {
-                html = html.replace('<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->', `<!-- â”€â”€â”€ Open Graph â”€â”€â”€ -->\n    <meta property="og:url" content="${currentUrl}">`);
+                html = html.replace('<!-- Open Graph -->', `<!-- Open Graph -->\n    <meta property="og:url" content="${currentUrl}">`);
             }
         }
 

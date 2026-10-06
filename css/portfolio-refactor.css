@@ -5246,79 +5246,118 @@ body[data-theme="dark"] {
         height: 32px !important;
     }
 
-    /* 2. Selected Works Deck Stage on Mobile */
+    /* 2. Selected Works: Vertical Flow on Mobile (Clean Linear Card Stack) */
     .selected-works-deck-stage {
-        min-height: 100vh;
-        height: 100vh;
-        padding: 80px 16px 40px;
+        height: auto !important;
+        min-height: auto !important;
+        padding: 60px 16px 60px 16px !important;
+        position: relative !important;
+        overflow: visible !important;
+    }
+
+    .deck-stage-inner {
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 28px !important;
+        width: 100% !important;
+        max-width: 480px !important;
+        margin: 0 auto !important;
     }
 
     .deck-center-headline {
-        max-width: 92vw;
-        padding: 0 10px;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        text-align: center !important;
+        margin-bottom: 4px !important;
     }
 
     .deck-eyebrow {
-        font-size: 9px !important;
-        letter-spacing: 0.1em !important;
-        margin-bottom: 6px !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.12em !important;
+        margin-bottom: 8px !important;
     }
 
     .deck-main-title {
-        font-size: 1.5rem !important;
-        line-height: 1.18 !important;
+        font-size: 1.65rem !important;
+        line-height: 1.2 !important;
         letter-spacing: -0.02em !important;
     }
 
     .deck-title-badge {
-        padding: 1px 10px !important;
+        padding: 2px 10px !important;
         font-size: 0.8em !important;
     }
 
     .deck-sub-text {
-        font-size: 0.8rem !important;
-        line-height: 1.45 !important;
-        max-width: 300px !important;
-        margin: 8px auto 0 !important;
+        font-size: 0.85rem !important;
+        line-height: 1.5 !important;
+        max-width: 320px !important;
+        margin: 10px auto 0 !important;
     }
 
     .deck-hint-pill {
-        margin-top: 10px !important;
-        padding: 3px 10px !important;
-        font-size: 9px !important;
+        margin-top: 12px !important;
+        padding: 4px 12px !important;
+        font-size: 9.5px !important;
     }
 
-    /* Scaled down landscape cards for mobile deal-out */
+    .deck-cards-wrap {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 24px !important;
+        align-items: center !important;
+        pointer-events: auto !important;
+    }
+
     .landscape-post-card {
-        width: clamp(170px, 46vw, 210px) !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 460px !important;
+        aspect-ratio: 16 / 10.5 !important;
+        margin: 0 auto !important;
     }
 
     .card-inner-surface {
-        padding: 5px 5px 6px 5px !important;
-        border-radius: 3px !important;
+        padding: 8px 8px 10px 8px !important;
+        border-radius: 4px !important;
     }
 
     .card-meta-bar {
-        padding-top: 3px !important;
-        gap: 4px !important;
+        padding-top: 6px !important;
+        gap: 6px !important;
     }
 
     .card-number {
-        font-size: 8px !important;
+        font-size: 9.5px !important;
     }
 
     .card-title {
-        font-size: 8px !important;
+        font-size: 10px !important;
         letter-spacing: 0.02em !important;
     }
 
     .card-tag {
-        font-size: 7.5px !important;
+        font-size: 9px !important;
     }
 
     .card-expand-badge {
-        font-size: 8px !important;
-        padding: 2px 6px !important;
+        font-size: 9px !important;
+        padding: 3px 8px !important;
+        white-space: nowrap !important;
     }
 
     /* 3. Pinned Client Labels Mobile Grid */
@@ -5342,7 +5381,44 @@ body[data-theme="dark"] {
         max-width: 80px !important;
     }
 
-    /* 4. Shared Binder Footer Links on Mobile (Prevent Awkward Word Breaks) */
+    /* 4. Subpage Hero Clearances from Floating Capsule Header */
+    .cs-hero,
+    .case-study-template .cs-hero,
+    .about-hero,
+    .work-hero,
+    .post-hero,
+    .contact-hero {
+        padding-top: 110px !important;
+    }
+
+    /* 5. Services Menu & Final Note on Mobile */
+    .service-menu-row {
+        gap: 12px !important;
+        padding: 14px 10px !important;
+    }
+
+    .service-menu-title {
+        font-size: 13.5px !important;
+    }
+
+    .service-menu-arrow {
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        font-size: 11px !important;
+    }
+
+    .final-note-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    .final-note-cta-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+    }
+
+    /* 6. Shared Binder Footer Links on Mobile (Prevent Awkward Word Breaks) */
     .binder-footer-row {
         flex-direction: column !important;
         align-items: flex-start !important;

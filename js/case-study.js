@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         let content = `
             <section class="cs-hero">
                 <div class="container text-center">
-                    <div class="cs-back-container">
-                        <a href="projects.html" class="back-link">← Back to Projects</a>
+                    <div class="cs-back-container" style="margin-bottom: 24px;">
+                        <a href="projects.html" class="back-link" style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap !important;">← Back to Projects</a>
                     </div>
                     <h1 style="margin-bottom: 16px;">${data.title}</h1>
                     <p class="gradient-text-gray" style="font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0 auto; max-width: 700px;">${data.subtitle}</p>
@@ -209,13 +209,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             </section>
             ` : ''}
 
-            <section class="vision-cta-section" style="padding: 100px 0;">
+            <section class="vision-cta-section" style="padding: 100px 0 80px 0;">
                 <div class="container text-center">
                     <h2>Liked what you saw?</h2>
-                    <p>Tell me what you're building, and let's explore what's possible.</p>
-                    <div class="hero-actions" style="justify-content: center; margin-top: 40px; flex-wrap: wrap; gap: 15px;">
-                        <a href="get-in-touch.html" class="btn btn-primary" style="min-width: 210px; justify-content: center; text-align: center;">Get in Touch</a>
-                        <a href="projects.html" class="btn btn-secondary" style="min-width: 210px; justify-content: center; text-align: center;">Back to Projects</a>
+                    <p style="margin-top: 8px;">Tell me what you're building, and let's explore what's possible.</p>
+                    <div class="hero-actions" style="justify-content: center; margin-top: 36px; flex-wrap: wrap; gap: 14px;">
+                        <a href="get-in-touch.html" class="btn btn-primary" style="min-width: 200px; justify-content: center; text-align: center; white-space: nowrap !important;">Get in Touch</a>
+                        <a href="projects.html" class="btn btn-secondary" style="min-width: 200px; justify-content: center; text-align: center; white-space: nowrap !important;">Back to Projects</a>
                     </div>
                 </div>
             </section>
