@@ -680,138 +680,56 @@ function initPortfolioRefactor() {
     const handwriter = handwriteEl ? createHandwriter(handwriteEl) : null;
 
     if (lanyardBadge && heroPullWrap && heroTextLayer) {
-        if (typeof ScrollTrigger !== 'undefined' && heroSection && typeof gsap !== 'undefined') {
-            const totalChars = typewriterChars.length;
+        const totalChars = typewriterChars.length;
 
-            function applyHeroState(p) {
-                // 1. Studio Pass ID Card: Elevates and fades cleanly out of the way EARLY (0.00 -> 0.22)
-                const cardProg = clamp(p / 0.22, 0, 1);
-                const cardEase = Math.pow(cardProg, 1.4);
-                const cardY = -cardEase * (window.innerHeight * 1.15);
-                const cardAlpha = Math.max(0, 1 - cardProg * 1.25);
+        function revealHeroInstantly() {
+            heroTextLayer.style.opacity = '1';
+            heroTextLayer.style.pointerEvents = 'auto';
+            heroTextLayer.style.transform = 'translate(-50%, -50%)';
 
-                heroPullWrap.style.transform = `translate3d(0, ${cardY.toFixed(1)}px, 0)`;
-                heroPullWrap.style.opacity = cardAlpha.toFixed(3);
-                heroPullWrap.style.pointerEvents = p < 0.08 ? 'auto' : 'none';
-
-                if (strapRibbon) {
-                    strapRibbon.style.opacity = Math.max(0, 1 - cardProg * 2.2).toFixed(3);
-                }
-                if (p > 0.02) {
-                    dismissLanyardHint();
-                }
-                if (lanyardHint) {
-                    if (hintDismissed) {
-                        lanyardHint.style.opacity = '0';
-                        lanyardHint.style.pointerEvents = 'none';
-                    } else {
-                        lanyardHint.style.opacity = Math.max(0, 1 - cardProg * 3.0).toFixed(3);
+            // Animate typewriter characters briskly on load
+            typewriterChars.forEach((ch, idx) => {
+                setTimeout(() => {
+                    ch.classList.add('revealed');
+                    if (caret && idx === totalChars - 1) {
+                        ch.after(caret);
+                        caret.classList.add('active');
                     }
-                }
-                if (navStrapAnchor) {
-                    navStrapAnchor.classList.toggle('is-detached', p > 0.16);
-                }
+                }, 60 + idx * 24);
+            });
 
-                // 2. The Text Layer: Centered & ascending gently into view (0.06 -> 0.28)
-                const textProg = clamp((p - 0.06) / 0.22, 0, 1);
-                const textAlpha = Math.min(1, textProg * 1.5);
-                const textY = (1 - textProg) * 20;
-                heroTextLayer.style.transform = `translate(-50%, -50%) translate3d(0, ${textY.toFixed(1)}px, 0)`;
-                heroTextLayer.style.opacity = textAlpha.toFixed(3);
-                heroTextLayer.style.pointerEvents = p > 0.40 ? 'auto' : 'none';
-
-                // 3. Typewriter Character Reveal (letters appear smoothly from p = 0.12 to 0.40)
-                if (totalChars > 0) {
-                    const typeStart = 0.12;
-                    const typeEnd = 0.40;
-                    let revealedIndex = -1;
-
-                    if (p >= typeStart) {
-                        const typeProg = clamp((p - typeStart) / (typeEnd - typeStart), 0, 1);
-                        revealedIndex = Math.min(totalChars - 1, Math.floor(typeProg * totalChars));
-                    }
-
-                    for (let idx = 0; idx < totalChars; idx++) {
-                        if (idx <= revealedIndex) {
-                            typewriterChars[idx].classList.add('revealed');
-                        } else {
-                            typewriterChars[idx].classList.remove('revealed');
-                        }
-                    }
-
-                    // Sleek active typewriter caret
-                    if (caret) {
-                        if (revealedIndex >= 0 && revealedIndex < totalChars - 1 && p >= typeStart && p < typeEnd) {
-                            if (typewriterChars[revealedIndex]) {
-                                typewriterChars[revealedIndex].after(caret);
-                            }
-                            caret.classList.add('active');
-                        } else {
-                            caret.classList.remove('active');
-                        }
-                    }
-                }
-
-                // 4. Subtitle handwriting reveal (p = 0.38 to 0.82)
-                if (heroSub) {
-                    heroSub.style.opacity = p > 0.32 ? '1' : '0';
-                }
-                if (handwriter) {
-                    const subStart = 0.38;
-                    const subEnd = 0.82;
-                    const subProg = clamp((p - subStart) / (subEnd - subStart), 0, 1);
-                    handwriter.setProgress(subProg);
-                }
-
-                // 5. Action buttons illuminate cleanly (p = 0.78 to 0.90)
-                if (heroActions) {
-                    const btnStart = 0.78;
-                    const btnEnd = 0.90;
-                    const btnProg = clamp((p - btnStart) / (btnEnd - btnStart), 0, 1);
-                    if (btnProg > 0) {
-                        heroActions.style.opacity = btnProg.toFixed(3);
-                        heroActions.style.transform = `translate3d(0, ${((1 - btnProg) * 12).toFixed(1)}px, 0)`;
-                        heroActions.style.pointerEvents = btnProg > 0.6 ? 'auto' : 'none';
-                        heroActions.classList.toggle('active', btnProg >= 0.5);
-                    } else {
-                        heroActions.style.opacity = '0';
-                        heroActions.style.pointerEvents = 'none';
-                        heroActions.classList.remove('active');
-                    }
-                }
+            if (heroSub) {
+                setTimeout(() => {
+                    heroSub.style.opacity = '1';
+                    if (handwriter) handwriter.setProgress(1);
+                }, 350);
             }
 
-            // Initial render
-            applyHeroState(0);
+            if (heroActions) {
+                setTimeout(() => {
+                    heroActions.style.opacity = '1';
+                    heroActions.style.pointerEvents = 'auto';
+                    heroActions.classList.add('active');
+                    heroActions.style.transform = 'translate3d(0, 0, 0)';
+                }, 500);
+            }
+        }
 
-            // GSAP 60fps/120fps physics tween with 0.8s inertial scrub
-            // Provides continuous floating-point updates with zero wheel jumping
-            const heroState = { p: 0 };
-            gsap.to(heroState, {
-                p: 1,
+        revealHeroInstantly();
+
+        // Smooth natural parallax on scroll without pinning or scroll hijacking
+        if (typeof ScrollTrigger !== 'undefined' && heroSection && typeof gsap !== 'undefined' && !prefersReducedMotion) {
+            gsap.to(heroPullWrap, {
+                y: -140,
+                opacity: 0.2,
                 ease: 'none',
-                onUpdate: () => {
-                    applyHeroState(heroState.p);
-                },
                 scrollTrigger: {
                     trigger: heroSection,
                     start: 'top top',
-                    end: '+=260%',
-                    pin: true,
-                    scrub: 0.8,
-                    anticipatePin: 1,
-                    invalidateOnRefresh: true,
-                    onUpdate: (self) => {
-                        if (self.progress === 0) applyHeroState(0);
-                    }
+                    end: 'bottom top',
+                    scrub: 0.6
                 }
             });
-        } else {
-            // Fallback if ScrollTrigger is disabled or unavailable
-            if (heroSub) heroSub.style.opacity = '1';
-            if (handwriter) handwriter.revealAll();
-            if (typewriterChars) typewriterChars.forEach(c => c.classList.add('revealed'));
-            if (heroActions) heroActions.classList.add('active');
         }
     }
 
@@ -979,7 +897,7 @@ function initPortfolioRefactor() {
 
     initPinnedLabels();
 
-    // ── 2. SELECTED WORKS: LANDSCAPE CARD FAN-OUT DECK ──
+    // ── 2. SELECTED WORKS: AUTOMATIC SELF-DEALING CORNER DECK ──
     function initSelectedWorksDeck() {
         const workSection = document.getElementById('work');
         const cards = document.querySelectorAll('#deck-cards-wrap .landscape-post-card');
@@ -994,144 +912,33 @@ function initPortfolioRefactor() {
             const isMobile = w < 768;
 
             return {
-                xDist: isMobile ? Math.min(95, w * 0.25) : Math.min(540, Math.max(290, w * 0.35)),
-                yDist: isMobile ? Math.min(230, h * 0.30) : Math.min(250, Math.max(170, h * 0.30)),
-                bottomDockY: isMobile ? Math.min(240, h * 0.32) : Math.min(320, h * 0.35),
+                xDist: isMobile ? 0 : Math.min(520, Math.max(300, w * 0.33)),
+                yDist: isMobile ? 0 : Math.min(260, Math.max(170, h * 0.27)),
                 isMobile
             };
         }
 
-        // Stacked deck coordinates at scroll progress = 0: docked cleanly at bottom edge (Stories in Motion reference)
-        function getStartDeckStates() {
-            const { bottomDockY, isMobile } = getDeckGeometry();
-            if (isMobile) {
-                return [
-                    { x: -42, y: bottomDockY + 12, rot: -6.5, scale: 0.88, zIndex: 1 },
-                    { x: -14, y: bottomDockY + 6,  rot: -3.0, scale: 0.90, zIndex: 2 },
-                    { x: 14,  y: bottomDockY + 4,  rot: 2.5,  scale: 0.92, zIndex: 3 },
-                    { x: 42,  y: bottomDockY + 10, rot: 5.5,  scale: 0.90, zIndex: 4 }
-                ];
-            }
-            return [
-                { x: -65, y: bottomDockY + 16, rot: -7.5, scale: 0.86, zIndex: 1 },
-                { x: -22, y: bottomDockY + 8,  rot: -3.5, scale: 0.88, zIndex: 2 },
-                { x: 22,  y: bottomDockY + 6,  rot: 3.0,  scale: 0.90, zIndex: 3 },
-                { x: 65,  y: bottomDockY + 14, rot: 6.8,  scale: 0.88, zIndex: 4 }
-            ];
-        }
+        let isDealt = false;
 
-        let deckTimeline = null;
-
-        function buildDeckTimeline() {
-            if (deckTimeline) {
-                if (deckTimeline.scrollTrigger) deckTimeline.scrollTrigger.kill();
-                deckTimeline.kill();
-                deckTimeline = null;
-            }
-
+        function applyDeckLayout() {
             const isMobile = window.innerWidth < 768;
             if (isMobile) {
-                // On mobile, reset GSAP inline transforms so CSS lays out cards in a clean vertical column
                 gsap.set(cards, { clearProps: "all" });
                 if (deckHeadline) gsap.set(deckHeadline, { clearProps: "all" });
                 return;
             }
 
             const { xDist, yDist } = getDeckGeometry();
-            const startDeckStates = getStartDeckStates();
 
-            // Target fanned-out corner coordinates at progress = 1
+            // Open fanned-out corner coordinates
             const targetCornerStates = [
-                { x: -xDist, y: -yDist, rot: -5.5 },        // 0: Top-Left
-                { x: xDist, y: -yDist * 0.94, rot: 4.5 },   // 1: Top-Right
-                { x: -xDist * 0.96, y: yDist, rot: 3.0 },   // 2: Bottom-Left
-                { x: xDist * 0.98, y: yDist * 0.96, rot: -4.0 } // 3: Bottom-Right
+                { x: -xDist, y: -yDist, rot: -4.5, zIndex: 11 },        // 0: Top-Left
+                { x: xDist, y: -yDist * 0.94, rot: 4.0, zIndex: 12 },   // 1: Top-Right
+                { x: -xDist * 0.96, y: yDist, rot: 2.5, zIndex: 13 },   // 2: Bottom-Left
+                { x: xDist * 0.98, y: yDist * 0.96, rot: -3.5, zIndex: 14 } // 3: Bottom-Right
             ];
 
-            // Position cards initially docked cleanly at bottom
-            cards.forEach((card, idx) => {
-                const start = startDeckStates[idx] || startDeckStates[0];
-                gsap.set(card, {
-                    xPercent: -50,
-                    yPercent: -50,
-                    x: start.x,
-                    y: start.y,
-                    rotation: start.rot,
-                    scale: start.scale,
-                    opacity: 1,
-                    zIndex: start.zIndex
-                });
-            });
-
-            if (deckHeadline) {
-                gsap.set(deckHeadline, { scale: 0.96, opacity: 1 });
-            }
-
-            // GSAP Continuous Subpixel Scrub Timeline (Desktop only)
-            deckTimeline = gsap.timeline({
-                scrollTrigger: {
-                    trigger: workSection,
-                    start: 'top top',
-                    end: '+=160%',
-                    pin: true,
-                    scrub: 1.2,
-                    anticipatePin: 1,
-                    invalidateOnRefresh: true,
-                    onUpdate: (self) => {
-                        const isExpanded = self.progress > 0.4;
-                        cards.forEach((card, idx) => {
-                            card.style.zIndex = isExpanded ? (10 + idx) : (startDeckStates[idx]?.zIndex || 1);
-                        });
-                    }
-                }
-            });
-
-            cards.forEach((card, idx) => {
-                const target = targetCornerStates[idx] || targetCornerStates[0];
-                deckTimeline.to(card, {
-                    x: target.x,
-                    y: target.y,
-                    rotation: target.rot,
-                    scale: 1,
-                    ease: 'power1.inOut',
-                    duration: 1
-                }, 0);
-            });
-
-            if (deckHeadline) {
-                deckTimeline.to(deckHeadline, {
-                    scale: 1.02,
-                    ease: 'power1.inOut',
-                    duration: 1
-                }, 0);
-            }
-        }
-
-        // Initialize or fallback
-        if (typeof ScrollTrigger !== 'undefined' && !prefersReducedMotion) {
-            buildDeckTimeline();
-
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    buildDeckTimeline();
-                    ScrollTrigger.refresh();
-                }, 150);
-            });
-        } else {
-            const isMobile = window.innerWidth < 768;
-            if (isMobile) {
-                gsap.set(cards, { clearProps: "all" });
-                if (deckHeadline) gsap.set(deckHeadline, { clearProps: "all" });
-            } else {
-                const { xDist, yDist } = getDeckGeometry();
-                const targetCornerStates = [
-                    { x: -xDist, y: -yDist, rot: -5.5 },
-                    { x: xDist, y: -yDist * 0.94, rot: 4.5 },
-                    { x: -xDist * 0.96, y: yDist, rot: 3.0 },
-                    { x: xDist * 0.98, y: yDist * 0.96, rot: -4.0 }
-                ];
+            if (prefersReducedMotion || typeof gsap === 'undefined') {
                 cards.forEach((card, idx) => {
                     const target = targetCornerStates[idx] || targetCornerStates[0];
                     gsap.set(card, {
@@ -1141,11 +948,99 @@ function initPortfolioRefactor() {
                         y: target.y,
                         rotation: target.rot,
                         scale: 1,
-                        opacity: 1
+                        opacity: 1,
+                        zIndex: target.zIndex
                     });
                 });
+                return;
             }
+
+            // Animate cards pulling up & dealing out automatically into their corner positions
+            gsap.killTweensOf(cards);
+            if (deckHeadline) {
+                gsap.fromTo(deckHeadline,
+                    { opacity: 0, y: 24, scale: 0.96 },
+                    { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power3.out' }
+                );
+            }
+
+            cards.forEach((card, idx) => {
+                const target = targetCornerStates[idx] || targetCornerStates[0];
+                gsap.fromTo(card,
+                    {
+                        xPercent: -50,
+                        yPercent: -50,
+                        x: target.x * 0.35,
+                        y: target.y + 40,
+                        rotation: target.rot * 0.2,
+                        scale: 0.88,
+                        opacity: 0
+                    },
+                    {
+                        x: target.x,
+                        y: target.y,
+                        rotation: target.rot,
+                        scale: 1,
+                        opacity: 1,
+                        zIndex: target.zIndex,
+                        duration: 0.7,
+                        delay: idx * 0.09,
+                        ease: 'back.out(1.5)'
+                    }
+                );
+            });
+
+            isDealt = true;
         }
+
+        // Trigger automatic pull up when user scrolls to the section (no scroll lock!)
+        if (typeof ScrollTrigger !== 'undefined' && !prefersReducedMotion) {
+            ScrollTrigger.create({
+                trigger: workSection,
+                start: 'top 75%',
+                once: true,
+                onEnter: () => applyDeckLayout()
+            });
+
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (isDealt) applyDeckLayout();
+                }, 150);
+            });
+        } else {
+            applyDeckLayout();
+        }
+
+        // Interactive hover: Card elevates, scales slightly, and brings zIndex to top
+        cards.forEach((card, idx) => {
+            card.addEventListener('mouseenter', () => {
+                if (window.innerWidth < 768) return;
+                const rots = [-4.5, 4.0, 2.5, -3.5];
+                const baseRot = rots[idx] || 0;
+                gsap.to(card, {
+                    scale: 1.04,
+                    rotation: baseRot + (idx % 2 === 0 ? -1.5 : 1.5),
+                    zIndex: 35,
+                    duration: 0.22,
+                    ease: 'power2.out'
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                if (window.innerWidth < 768) return;
+                const rots = [-4.5, 4.0, 2.5, -3.5];
+                const baseRot = rots[idx] || 0;
+                gsap.to(card, {
+                    scale: 1,
+                    rotation: baseRot,
+                    zIndex: 10 + idx,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
 
         // Supabase dynamic background sync (updates data-attributes and media if Supabase responds)
         async function syncSupabaseProjects() {
