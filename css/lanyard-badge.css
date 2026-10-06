@@ -303,15 +303,17 @@
 
 .badge-tag-pill {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     background: rgba(0, 0, 0, 0.06);
     color: #1a1a1a;
-    padding: 4px 8px;
+    padding: 3px 7px;
     border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.08);
+    white-space: nowrap !important;
+    display: inline-block;
 }
 
 [data-theme="dark"] .badge-tag-pill {
@@ -322,10 +324,12 @@
 
 .badge-year-tag {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 10.5px;
+    font-size: 9.5px;
     font-weight: 700;
     letter-spacing: 0.06em;
     color: #555;
+    white-space: nowrap !important;
+    display: inline-block;
 }
 
 [data-theme="dark"] .badge-year-tag {
@@ -927,4 +931,87 @@ footer {
         padding: 40px 20px 60px;
     }
 }
+
+/* ── 9. Mobile Lanyard Badge Proportional Scaling ─────────────────── */
+@media (max-width: 520px) {
+    .lanyard-badge-card {
+        width: 250px !important;
+        height: 365px !important;
+        border-radius: 24px !important;
+        padding-top: 10px !important;
+    }
+
+    .badge-lanyard-slot {
+        width: 36px !important;
+        height: 6px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .badge-flip-trigger-chip {
+        top: 8px !important;
+        right: 12px !important;
+        font-size: 8px !important;
+        padding: 2px 6px !important;
+    }
+
+    .badge-paper-face {
+        width: calc(100% - 16px) !important;
+        height: calc(100% - 24px) !important;
+        padding: 12px 12px !important;
+        border-radius: 14px !important;
+    }
+
+    .badge-header-row {
+        gap: 4px !important;
+    }
+
+    .badge-tag-pill {
+        font-size: 8px !important;
+        padding: 2px 5px !important;
+        white-space: nowrap !important;
+    }
+
+    .badge-year-tag {
+        font-size: 8px !important;
+        white-space: nowrap !important;
+    }
+
+    .badge-emblem-tile {
+        width: 66px !important;
+        height: 66px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .badge-avatar-img {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .badge-name {
+        font-size: 16px !important;
+        margin-bottom: 2px !important;
+    }
+
+    .badge-role {
+        font-size: 9px !important;
+    }
+
+    .badge-footer-row {
+        padding-top: 6px !important;
+        gap: 4px !important;
+    }
+
+    .badge-location-row {
+        font-size: 8px !important;
+    }
+
+    .badge-barcode {
+        height: 12px !important;
+    }
+
+    .badge-serial {
+        font-size: 8px !important;
+    }
+}
+
 

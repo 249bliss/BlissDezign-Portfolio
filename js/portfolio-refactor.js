@@ -987,16 +987,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const isMobile = w < 768;
 
             return {
-                xDist: isMobile ? Math.min(160, w * 0.22) : Math.min(540, Math.max(290, w * 0.35)),
-                yDist: isMobile ? Math.min(190, h * 0.26) : Math.min(250, Math.max(170, h * 0.30)),
-                bottomDockY: isMobile ? Math.min(270, h * 0.36) : Math.min(320, h * 0.35),
+                xDist: isMobile ? Math.min(95, w * 0.25) : Math.min(540, Math.max(290, w * 0.35)),
+                yDist: isMobile ? Math.min(230, h * 0.30) : Math.min(250, Math.max(170, h * 0.30)),
+                bottomDockY: isMobile ? Math.min(240, h * 0.32) : Math.min(320, h * 0.35),
                 isMobile
             };
         }
 
         // Stacked deck coordinates at scroll progress = 0: docked cleanly at bottom edge (Stories in Motion reference)
         function getStartDeckStates() {
-            const { bottomDockY } = getDeckGeometry();
+            const { bottomDockY, isMobile } = getDeckGeometry();
+            if (isMobile) {
+                return [
+                    { x: -42, y: bottomDockY + 12, rot: -6.5, scale: 0.88, zIndex: 1 },
+                    { x: -14, y: bottomDockY + 6,  rot: -3.0, scale: 0.90, zIndex: 2 },
+                    { x: 14,  y: bottomDockY + 4,  rot: 2.5,  scale: 0.92, zIndex: 3 },
+                    { x: 42,  y: bottomDockY + 10, rot: 5.5,  scale: 0.90, zIndex: 4 }
+                ];
+            }
             return [
                 { x: -65, y: bottomDockY + 16, rot: -7.5, scale: 0.86, zIndex: 1 },
                 { x: -22, y: bottomDockY + 8,  rot: -3.5, scale: 0.88, zIndex: 2 },

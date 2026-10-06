@@ -5213,3 +5213,178 @@ body[data-theme="dark"] {
 [data-theme="dark"] .dispatch-sent-sub {
     color: #d1d5db !important;
 }
+
+/* ================================================================
+   MOBILE RESPONSIVENESS & TOUCH PRECISION SYSTEM
+   ================================================================ */
+
+@media (max-width: 768px) {
+    /* 1. Header & Navbar Mobile Clearance (No clipping / notch overlap) */
+    header,
+    header.scrolled {
+        padding-top: 36px !important;
+    }
+
+    .capsule-nav {
+        gap: 8px !important;
+        padding: 4px 8px !important;
+    }
+
+    .capsule-brand-name {
+        font-size: 0.88rem !important;
+    }
+
+    .capsule-cta-btn {
+        padding: 0 12px !important;
+        height: 32px !important;
+        font-size: 0.72rem !important;
+        white-space: nowrap !important;
+    }
+
+    .capsule-menu-btn {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    /* 2. Selected Works Deck Stage on Mobile */
+    .selected-works-deck-stage {
+        min-height: 100vh;
+        height: 100vh;
+        padding: 80px 16px 40px;
+    }
+
+    .deck-center-headline {
+        max-width: 92vw;
+        padding: 0 10px;
+    }
+
+    .deck-eyebrow {
+        font-size: 9px !important;
+        letter-spacing: 0.1em !important;
+        margin-bottom: 6px !important;
+    }
+
+    .deck-main-title {
+        font-size: 1.5rem !important;
+        line-height: 1.18 !important;
+        letter-spacing: -0.02em !important;
+    }
+
+    .deck-title-badge {
+        padding: 1px 10px !important;
+        font-size: 0.8em !important;
+    }
+
+    .deck-sub-text {
+        font-size: 0.8rem !important;
+        line-height: 1.45 !important;
+        max-width: 300px !important;
+        margin: 8px auto 0 !important;
+    }
+
+    .deck-hint-pill {
+        margin-top: 10px !important;
+        padding: 3px 10px !important;
+        font-size: 9px !important;
+    }
+
+    /* Scaled down landscape cards for mobile deal-out */
+    .landscape-post-card {
+        width: clamp(170px, 46vw, 210px) !important;
+    }
+
+    .card-inner-surface {
+        padding: 5px 5px 6px 5px !important;
+        border-radius: 3px !important;
+    }
+
+    .card-meta-bar {
+        padding-top: 3px !important;
+        gap: 4px !important;
+    }
+
+    .card-number {
+        font-size: 8px !important;
+    }
+
+    .card-title {
+        font-size: 8px !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    .card-tag {
+        font-size: 7.5px !important;
+    }
+
+    .card-expand-badge {
+        font-size: 8px !important;
+        padding: 2px 6px !important;
+    }
+
+    /* 3. Pinned Client Labels Mobile Grid */
+    .pinned-labels-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px 10px !important;
+        max-width: 360px !important;
+        margin: 0 auto !important;
+    }
+
+    .pinned-client-label {
+        min-width: unset !important;
+        width: 100% !important;
+        height: 50px !important;
+        padding: 8px 12px !important;
+    }
+
+    .pinned-client-label img {
+        max-height: 22px !important;
+        max-width: 80px !important;
+    }
+
+    /* 4. Shared Binder Footer Links on Mobile (Prevent Awkward Word Breaks) */
+    .binder-footer-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 18px !important;
+    }
+
+    .binder-footer-links {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px 18px !important;
+        align-items: center !important;
+    }
+
+    .binder-footer-links a {
+        white-space: nowrap !important;
+        display: inline-block !important;
+        font-size: 10.5px !important;
+    }
+
+    .binder-footer-socials-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .binder-social-chips {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .binder-social-chip {
+        padding: 6px 12px !important;
+        font-size: 10.5px !important;
+        white-space: nowrap !important;
+    }
+
+    .binder-footer-bottom {
+        flex-direction: column !important;
+        gap: 6px !important;
+        align-items: flex-start !important;
+        font-size: 9px !important;
+    }
+}
+
