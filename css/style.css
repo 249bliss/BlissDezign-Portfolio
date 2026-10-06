@@ -2852,10 +2852,110 @@ header.scrolled .nav-container {
     }
 }
 
+/* Dedicated Case Study Navigation & Header */
+.case-study-dedicated-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    padding: 14px 24px;
+}
+
+[data-theme="dark"] .case-study-dedicated-header {
+    background: rgba(18, 18, 20, 0.92);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.cs-header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cs-header-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--pen-ink, #141416);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    white-space: nowrap !important;
+}
+
+[data-theme="dark"] .cs-header-back-btn {
+    color: #f0f0ed;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.cs-header-back-btn:hover {
+    background: var(--accent-purple, #6C3BFF);
+    color: #ffffff;
+    border-color: var(--accent-purple, #6C3BFF);
+}
+
+.cs-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.cs-header-author {
+    font-family: var(--font-heading, sans-serif);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--pen-ink, #141416);
+}
+
+[data-theme="dark"] .cs-header-author {
+    color: #ffffff;
+}
+
+.cs-header-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #141416;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap !important;
+}
+
+[data-theme="dark"] .cs-header-cta-btn {
+    background: #ffffff;
+    color: #141416;
+}
+
+.cs-header-cta-btn:hover {
+    background: var(--accent-purple, #6C3BFF);
+    color: #ffffff;
+}
+
 /* Update hero and stats when followed by a full image */
 .case-study-template .cs-hero {
-    padding-top: 170px !important;
-    padding-bottom: 40px;
+    padding-top: 130px !important;
+    padding-bottom: 30px;
 }
 
 .case-study-template .cs-stats {

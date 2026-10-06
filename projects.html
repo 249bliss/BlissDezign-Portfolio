@@ -248,31 +248,74 @@
             </div>
         </section>
 
-        <!-- "Entering the Card" Zoom-to-Expand Case Study Modal Overlay -->
+        <!-- Full In-Modal Case Study Reader Overlay -->
         <div class="case-study-expand-modal" id="case-study-expand-modal" data-lenis-prevent="true" aria-hidden="true">
             <div class="expand-modal-backdrop" id="expand-modal-backdrop"></div>
             <div class="expand-modal-card" id="expand-modal-card" data-lenis-prevent="true">
-                <button class="expand-modal-close" id="expand-modal-close" aria-label="Close Case Study Viewer">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                <div class="expand-modal-media-wrap" id="expand-modal-media-wrap">
-                    <img id="modal-project-img" src="" alt="Case Study Preview">
-                </div>
-                <div class="expand-modal-body" data-lenis-prevent="true">
-                    <div class="expand-modal-meta">
-                        <span class="expand-modal-tag" id="modal-project-tag">FINTECH // MOBILE APP</span>
-                        <span class="expand-modal-status">● CASE STUDY</span>
+                <!-- Sticky Top Navigation Bar -->
+                <div class="expand-modal-top-bar">
+                    <div class="modal-top-bar-info">
+                        <span class="modal-top-tag" id="modal-project-tag">CASE STUDY</span>
+                        <span class="modal-top-title" id="modal-top-bar-title">Project Title</span>
                     </div>
-                    <h3 class="expand-modal-title" id="modal-project-title">Project Title</h3>
-                    <p class="expand-modal-desc" id="modal-project-desc">Project description...</p>
-                    <div class="expand-modal-actions">
-                        <a href="#" class="btn-modal-read-study" id="modal-project-link">
-                            <span>Read Full Case Study</span>
-                            <span>↗</span>
+                    <div class="modal-top-bar-actions">
+                        <a href="#" target="_blank" class="modal-live-link" id="modal-live-project-btn" style="display: none;">
+                            <span>Visit Live</span> ↗
                         </a>
-                        <button type="button" class="btn-modal-dismiss" id="modal-dismiss-btn">
-                            Return to Gallery
+                        <button class="expand-modal-close" id="expand-modal-close" aria-label="Close Case Study Viewer">
+                            <span>Close</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Scrollable Full Case Study Reader Container -->
+                <div class="expand-modal-scroll-area" id="expand-modal-scroll-area" data-lenis-prevent="true">
+                    <!-- Hero Section -->
+                    <div class="modal-cs-hero">
+                        <h2 class="modal-cs-title" id="modal-project-title">Project Title</h2>
+                        <p class="modal-cs-subtitle" id="modal-project-desc">Project description...</p>
+                        
+                        <div class="modal-cs-stats-grid" id="modal-project-stats-grid">
+                            <div class="modal-cs-stat-item">
+                                <span class="modal-stat-label">Role</span>
+                                <span class="modal-stat-val" id="modal-stat-role">Product Designer</span>
+                            </div>
+                            <div class="modal-cs-stat-item">
+                                <span class="modal-stat-label">Duration</span>
+                                <span class="modal-stat-val" id="modal-stat-duration">Varies</span>
+                            </div>
+                            <div class="modal-cs-stat-item">
+                                <span class="modal-stat-label">Tools</span>
+                                <span class="modal-stat-val" id="modal-stat-tools">Figma</span>
+                            </div>
+                            <div class="modal-cs-stat-item">
+                                <span class="modal-stat-label">Industry</span>
+                                <span class="modal-stat-val" id="modal-stat-industry">Digital Product</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full Visual Chunks (Images & Videos) -->
+                    <div class="modal-cs-visuals-container" id="modal-cs-visuals-container">
+                        <div class="modal-cs-loading" id="modal-cs-loading" style="display: none;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading Case Study Visuals...
+                        </div>
+                        <div class="modal-cs-visuals-inner" id="modal-cs-visuals-inner">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Bottom Return & Contact Bar (No site footer!) -->
+                    <div class="modal-cs-bottom-bar">
+                        <div class="modal-bottom-cta">
+                            <h3>Liked what you saw?</h3>
+                            <p>Let's build something people genuinely trust.</p>
+                            <div class="modal-bottom-actions">
+                                <a href="https://cal.com/blissdezigns/discovery-call" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="white-space: nowrap !important;">Book a Call</a>
+                                <button type="button" class="btn btn-secondary modal-close-trigger-btn" style="white-space: nowrap !important;">Return to Portfolio</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1115,6 +1115,7 @@ p, li, a, span, label,
 }
 
 /* ── "ENTERING THE CARD" ZOOM & EXPAND MODAL OVERLAY ───────────────────── */
+/* ── FULL IN-MODAL CASE STUDY READER OVERLAY ───────────────────────── */
 .case-study-expand-modal {
     position: fixed;
     top: 0;
@@ -1127,7 +1128,7 @@ p, li, a, span, label,
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .case-study-expand-modal.active {
@@ -1141,22 +1142,24 @@ p, li, a, span, label,
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(14, 14, 16, 0.72);
-    backdrop-filter: blur(14px);
+    background: rgba(10, 10, 12, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .expand-modal-card {
     position: relative;
-    width: min(840px, 92vw);
-    max-height: 88vh;
+    width: min(1080px, 94vw);
+    height: 92vh;
+    max-height: 92vh;
     background: #ffffff;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
     z-index: 2;
     display: flex;
     flex-direction: column;
-    transform: scale(0.92);
+    transform: scale(0.94);
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     overscroll-behavior: contain !important;
@@ -1167,187 +1170,341 @@ p, li, a, span, label,
 }
 
 [data-theme="dark"] .expand-modal-card {
-    background: #18181b;
-    border-color: rgba(255, 255, 255, 0.12);
+    background: #141416;
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
-.expand-modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(18, 18, 20, 0.65);
-    backdrop-filter: blur(10px);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: transform 0.2s ease, background 0.2s ease;
+@media (max-width: 768px) {
+    .expand-modal-card {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        border: none !important;
+    }
 }
 
-.expand-modal-close:hover {
-    background: #000000;
-    transform: scale(1.08);
-}
-
-.expand-modal-media-wrap {
-    width: 100%;
-    height: clamp(260px, 42vh, 420px);
-    background: #08080a;
-    overflow: hidden;
-    position: relative;
-}
-
-.expand-modal-media-wrap img,
-.expand-modal-media-wrap video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.expand-modal-body {
-    padding: 28px 34px 34px 34px;
-    background: #ffffff;
-    overflow-y: auto;
-    overscroll-behavior: contain !important;
-    -webkit-overflow-scrolling: touch;
-}
-
-[data-theme="dark"] .expand-modal-body {
-    background: #18181b;
-}
-
-.expand-modal-meta {
+/* Sticky Modal Top Bar */
+.expand-modal-top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    padding: 12px 22px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-shrink: 0;
 }
 
-.expand-modal-tag {
-    color: var(--accent-purple);
+[data-theme="dark"] .expand-modal-top-bar {
+    background: rgba(20, 20, 22, 0.94);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
-.expand-modal-status {
-    color: #71717a;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    font-weight: 500;
-}
-
-[data-theme="dark"] .expand-modal-status {
-    color: #a1a1aa;
-}
-
-/* 2026 Seamless View Transition: Modal expands into full Case Study */
-.case-study-expand-modal.is-transitioning {
-    pointer-events: none !important;
-}
-
-.case-study-expand-modal.is-transitioning .expand-modal-backdrop {
-    opacity: 1 !important;
-    background: #000000 !important;
-    transition: opacity 0.42s ease, background 0.42s ease;
-}
-
-.case-study-expand-modal.is-transitioning .expand-modal-card {
-    transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.42s ease, opacity 0.42s ease !important;
-}
-
-.case-study-expand-modal.is-transitioning .expand-modal-body,
-.case-study-expand-modal.is-transitioning .expand-modal-close {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: opacity 0.2s ease !important;
-}
-
-.expand-modal-title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
-    font-weight: 500 !important;
-    color: #111;
-    margin: 0 0 12px 0;
-}
-
-[data-theme="dark"] .expand-modal-title {
-    color: #ffffff;
-}
-
-.expand-modal-desc {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: #555;
-    margin: 0 0 24px 0;
-    max-width: 720px;
-}
-
-[data-theme="dark"] .expand-modal-desc {
-    color: #aaa;
-}
-
-.expand-modal-actions {
+.modal-top-bar-info {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
-.btn-modal-read-study {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #171717;
-    color: #ffffff;
-    padding: 12px 26px;
-    border-radius: 12px;
+.modal-top-tag {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--accent-purple, #6C3BFF);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.modal-top-title {
     font-family: var(--font-heading);
     font-size: 13.5px;
     font-weight: 500;
+    color: var(--pen-ink, #141416);
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    padding-left: 12px;
+}
+
+[data-theme="dark"] .modal-top-title {
+    color: #f0f0ed;
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.modal-top-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-live-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-purple, #6C3BFF);
     text-decoration: none;
-    transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.btn-modal-read-study:hover {
-    background: var(--accent-purple);
-    transform: translateY(-2px);
-}
-
-.btn-modal-dismiss {
-    background: transparent;
-    color: #666;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    padding: 12px 22px;
-    border-radius: 12px;
-    font-family: var(--font-heading);
-    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(108, 59, 255, 0.08);
     font-weight: 500;
+    white-space: nowrap !important;
+}
+
+.expand-modal-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #141416;
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    white-space: nowrap !important;
+}
+
+[data-theme="dark"] .expand-modal-close {
+    background: #ffffff;
+    color: #141416;
+}
+
+.expand-modal-close:hover {
+    background: var(--accent-purple, #6C3BFF);
+    color: #ffffff;
+    transform: scale(1.04);
+}
+
+/* Scroll Area & Hero */
+.expand-modal-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain !important;
+    background: #ffffff;
+}
+
+[data-theme="dark"] .expand-modal-scroll-area {
+    background: #141416;
+}
+
+.modal-cs-hero {
+    padding: 44px 24px 28px 24px;
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.modal-cs-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    color: var(--pen-ink);
+    margin: 0 0 14px 0;
+}
+
+[data-theme="dark"] .modal-cs-title {
+    color: var(--pen-ink-dark);
+}
+
+.modal-cs-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(14px, 1.3vw, 16px);
+    line-height: 1.6;
+    color: #555552;
+    max-width: 620px;
+    margin: 0 auto 32px auto;
+}
+
+[data-theme="dark"] .modal-cs-subtitle {
+    color: #a8a8a4;
+}
+
+.modal-cs-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.025);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    margin-top: 10px;
+}
+
+[data-theme="dark"] .modal-cs-stats-grid {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 600px) {
+    .modal-cs-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+.modal-cs-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888884;
+}
+
+.modal-stat-val {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pen-ink);
+}
+
+[data-theme="dark"] .modal-stat-val {
+    color: var(--pen-ink-dark);
+}
+
+/* Full Visual Chunks */
+.modal-cs-visuals-container {
+    width: 100%;
+    margin-top: 24px;
+    background: #0d0d0f;
+    min-height: 180px;
+}
+
+.modal-cs-loading {
+    padding: 60px 20px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: #888;
+}
+
+.modal-cs-visuals-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.modal-cs-visuals-inner img,
+.modal-cs-visuals-inner video {
+    width: 100%;
+    display: block;
+    height: auto;
+    border: none;
+    margin: -1px 0;
+    padding: 0;
+}
+
+/* Bottom Bar */
+.modal-cs-bottom-bar {
+    padding: 60px 24px 70px 24px;
+    text-align: center;
+    background: #ffffff;
+}
+
+[data-theme="dark"] .modal-cs-bottom-bar {
+    background: #141416;
+}
+
+.modal-bottom-cta {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.modal-bottom-cta h3 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--pen-ink);
+}
+
+[data-theme="dark"] .modal-bottom-cta h3 {
+    color: var(--pen-ink-dark);
+}
+
+.modal-bottom-cta p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+[data-theme="dark"] .modal-bottom-cta p {
+    color: #a8a8a4;
+}
+
+.modal-bottom-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.modal-bottom-actions .btn {
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap !important;
 }
 
-[data-theme="dark"] .btn-modal-dismiss {
-    color: #bbb;
-    border-color: rgba(255, 255, 255, 0.15);
+.modal-bottom-actions .btn-primary {
+    background: #141416;
+    color: #ffffff;
+    border: 1px solid #141416;
 }
 
-.btn-modal-dismiss:hover {
-    color: #000;
-    border-color: #000;
+[data-theme="dark"] .modal-bottom-actions .btn-primary {
+    background: #ffffff;
+    color: #141416;
+    border-color: #ffffff;
 }
 
-[data-theme="dark"] .btn-modal-dismiss:hover {
-    color: #fff;
-    border-color: #fff;
+.modal-bottom-actions .btn-primary:hover {
+    background: var(--accent-purple, #6C3BFF);
+    border-color: var(--accent-purple, #6C3BFF);
+    color: #ffffff;
+}
+
+.modal-bottom-actions .btn-secondary {
+    background: transparent;
+    color: var(--pen-ink, #141416);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .modal-bottom-actions .btn-secondary {
+    color: #f0f0ed;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-bottom-actions .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: var(--pen-ink, #141416);
+}
+
+[data-theme="dark"] .modal-bottom-actions .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff;
 }
 
 /* ── 6. CURRICULUM VITAE: ARCHIVAL TYPED LEDGER SHEET ───────────────────── */

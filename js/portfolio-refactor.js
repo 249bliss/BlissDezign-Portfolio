@@ -1202,50 +1202,127 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initSelectedWorksDeck();
 
-    // ── CASE STUDY EXPAND MODAL & SEAMLESS TRANSITION ENGINE ──
+    // ── FULL IN-MODAL CASE STUDY READER ENGINE ──
     function initCaseStudyExpandModal() {
         const modal = document.getElementById('case-study-expand-modal');
         const modalCard = document.getElementById('expand-modal-card');
         const modalBackdrop = document.getElementById('expand-modal-backdrop');
         const modalCloseBtn = document.getElementById('expand-modal-close');
-        const modalDismissBtn = document.getElementById('modal-dismiss-btn');
-        const modalReadStudyBtn = document.getElementById('modal-project-link');
+        const modalScrollArea = document.getElementById('expand-modal-scroll-area');
 
         if (!modal || !modalCard) return;
 
         let activeSourceCard = null;
 
-        function openCardModal(card) {
-            const title = card.dataset.projectTitle || card.querySelector('.card-title')?.textContent || '';
-            const tag = card.dataset.projectTag || card.querySelector('.card-tag')?.textContent || 'FEATURED CASE STUDY';
-            const desc = card.dataset.projectDesc || '';
-            const link = card.dataset.projectLink || '#';
+        // Static fallback case study visual assets dictionary for instant zero-latency loading
+        const fallbackCaseStudies = {
+            'swychr': {
+                role: 'Lead Product Designer',
+                duration: '6 months',
+                tools: 'Figma, Principle, Next.js',
+                industry: 'Fintech & Cross-Border Payments',
+                projectLink: 'https://swychr.com',
+                fullVisuals: [
+                    'assets/Aaron.webp',
+                    'assets/final-cover.webp'
+                ]
+            },
+            'neura': {
+                role: 'Senior UI/UX Designer',
+                duration: '3 weeks',
+                tools: 'Figma, Blender',
+                industry: 'AI E-Commerce',
+                projectLink: null,
+                fullVisuals: []
+            },
+            'wagestream': {
+                role: 'Product Designer (UX/UI)',
+                duration: '2 weeks',
+                tools: 'Figma, AI',
+                industry: 'Fintech & Financial Wellness',
+                projectLink: null,
+                fullVisuals: []
+            },
+            'riki-ai': {
+                role: 'Founding Designer',
+                duration: '4 months',
+                tools: 'Figma, Framer, React',
+                industry: 'AI Productivity & Knowledge Systems',
+                projectLink: null,
+                fullVisuals: []
+            }
+        };
+
+        async function openCardModal(card) {
+            const rawTitle = card.dataset.projectTitle || card.querySelector('.card-title, .project-title')?.textContent?.trim() || 'Featured Case Study';
+            const rawTag = card.dataset.projectTag || card.querySelector('.card-tag, .project-tag')?.textContent?.trim() || 'CASE STUDY';
+            const rawDesc = card.dataset.projectDesc || card.querySelector('.project-desc')?.textContent?.trim() || '';
+            const link = card.dataset.projectLink || '';
             const imgSrc = card.dataset.projectImg || card.querySelector('img, video')?.src || '';
 
-            const mediaWrap = document.getElementById('expand-modal-media-wrap');
-            const modalTitle = document.getElementById('modal-project-title');
+            // Extract project id
+            let projectId = card.dataset.projectId || '';
+            if (!projectId && link) {
+                try {
+                    const url = new URL(link, window.location.origin);
+                    projectId = url.searchParams.get('project') || '';
+                } catch(e) {
+                    const m = link.match(/project=([^&]+)/);
+                    if (m) projectId = decodeURIComponent(m[1]);
+                }
+            }
+            if (!projectId) {
+                projectId = rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            }
+
             const modalTag = document.getElementById('modal-project-tag');
+            const modalTopTitle = document.getElementById('modal-top-bar-title');
+            const modalTitle = document.getElementById('modal-project-title');
             const modalDesc = document.getElementById('modal-project-desc');
-            const modalLink = document.getElementById('modal-project-link');
+            const modalRole = document.getElementById('modal-stat-role');
+            const modalDuration = document.getElementById('modal-stat-duration');
+            const modalTools = document.getElementById('modal-stat-tools');
+            const modalIndustry = document.getElementById('modal-stat-industry');
+            const modalLiveBtn = document.getElementById('modal-live-project-btn');
+            const visualsInner = document.getElementById('modal-cs-visuals-inner');
+            const visualsLoading = document.getElementById('modal-cs-loading');
 
-            const isVideo = imgSrc && (imgSrc.toLowerCase().endsWith('.mp4') || imgSrc.toLowerCase().includes('.mp4'));
+            if (modalTag) modalTag.textContent = rawTag;
+            if (modalTopTitle) modalTopTitle.textContent = rawTitle;
+            if (modalTitle) modalTitle.textContent = rawTitle;
+            if (modalDesc) modalDesc.textContent = rawDesc || 'A comprehensive product design case study exploring end-to-end user journeys, systems design, and interface metrics.';
 
-            if (mediaWrap) {
-                if (isVideo) {
-                    mediaWrap.innerHTML = `<video src="${imgSrc}" autoplay loop muted playsinline controls style="width:100%;height:100%;object-fit:cover;"></video>`;
+            // Reset initial stats with fallback defaults
+            const fb = fallbackCaseStudies[projectId.toLowerCase()] || fallbackCaseStudies[projectId.toLowerCase().replace(/redesign/g, '').trim()] || {};
+            if (modalRole) modalRole.textContent = fb.role || 'Product Designer';
+            if (modalDuration) modalDuration.textContent = fb.duration || 'Varies';
+            if (modalTools) modalTools.textContent = fb.tools || 'Figma';
+            if (modalIndustry) modalIndustry.textContent = fb.industry || rawTag || 'Digital Product';
+
+            if (modalLiveBtn) {
+                if (fb.projectLink) {
+                    modalLiveBtn.href = fb.projectLink;
+                    modalLiveBtn.style.display = 'inline-flex';
                 } else {
-                    mediaWrap.innerHTML = `<img id="modal-project-img" src="${imgSrc}" alt="${title}" style="width:100%;height:100%;object-fit:cover;">`;
+                    modalLiveBtn.style.display = 'none';
                 }
             }
 
-            if (modalTitle) modalTitle.textContent = title;
-            if (modalTag) modalTag.textContent = tag;
-            if (modalDesc) modalDesc.textContent = desc;
-            if (modalLink) modalLink.href = link;
+            // Clear previous visuals and show loading
+            if (visualsInner) {
+                visualsInner.innerHTML = '';
+                if (imgSrc) {
+                    const isVideo = imgSrc.toLowerCase().match(/\.(mp4|webm|mov)$/i);
+                    visualsInner.innerHTML = isVideo 
+                        ? `<video src="${imgSrc}" autoplay loop muted playsinline style="width:100%; display:block; border:none; margin:-1px 0;"></video>`
+                        : `<img src="${imgSrc}" alt="${rawTitle}" style="width:100%; display:block; border:none; margin:-1px 0;">`;
+                }
+            }
+            if (visualsLoading) visualsLoading.style.display = 'block';
 
             activeSourceCard = card;
 
-            // Compute exact offset from clicked card center to viewport center
+            // Compute center-to-center zoom origin
             const rect = card.getBoundingClientRect();
             const sourceCenterX = rect.left + rect.width / 2;
             const sourceCenterY = rect.top + rect.height / 2;
@@ -1253,15 +1330,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const screenCenterY = window.innerHeight / 2;
             const startDx = sourceCenterX - screenCenterX;
             const startDy = sourceCenterY - screenCenterY;
-            const targetModalWidth = Math.min(840, window.innerWidth * 0.92);
-            const startScale = Math.max(0.28, rect.width / targetModalWidth);
+            const targetModalWidth = Math.min(1080, window.innerWidth * 0.94);
+            const startScale = Math.max(0.25, rect.width / targetModalWidth);
 
             modal.classList.add('active');
             modal.setAttribute('aria-hidden', 'false');
-            modal.setAttribute('data-lenis-prevent', 'true');
-            modalCard.setAttribute('data-lenis-prevent', 'true');
-            const modalBody = modalCard.querySelector('.expand-modal-body');
-            if (modalBody) modalBody.setAttribute('data-lenis-prevent', 'true');
+            if (modalScrollArea) modalScrollArea.scrollTop = 0;
 
             document.body.classList.add('modal-scroll-locked');
             document.body.style.overflow = 'hidden';
@@ -1270,22 +1344,19 @@ document.addEventListener('DOMContentLoaded', () => {
             gsap.killTweensOf(modalCard);
             if (modalBackdrop) gsap.killTweensOf(modalBackdrop);
 
-            // Zoom expansion: card expands forward from its place on the drafting board
             gsap.fromTo(modalCard,
                 {
                     x: startDx,
                     y: startDy,
                     scale: startScale,
-                    opacity: 0.4,
-                    borderRadius: '16px'
+                    opacity: 0.4
                 },
                 {
                     x: 0,
                     y: 0,
                     scale: 1,
                     opacity: 1,
-                    borderRadius: '20px',
-                    duration: 0.45,
+                    duration: 0.42,
                     ease: 'power3.out'
                 }
             );
@@ -1293,8 +1364,46 @@ document.addEventListener('DOMContentLoaded', () => {
             if (modalBackdrop) {
                 gsap.fromTo(modalBackdrop,
                     { opacity: 0 },
-                    { opacity: 1, duration: 0.32, ease: 'power2.out' }
+                    { opacity: 1, duration: 0.3, ease: 'power2.out' }
                 );
+            }
+
+            // Fetch case study details & full visual chunks asynchronously from Supabase
+            try {
+                if (typeof supabaseClient !== 'undefined') {
+                    // Try fetch by project ID
+                    const { data: csData } = await supabaseClient
+                        .from('case_studies')
+                        .select('*')
+                        .or(`id.eq.${projectId},id.ilike.%${projectId}%`)
+                        .limit(1)
+                        .maybeSingle();
+
+                    if (csData) {
+                        if (modalRole && csData.role) modalRole.textContent = csData.role;
+                        if (modalDuration && csData.duration) modalDuration.textContent = csData.duration;
+                        if (modalTools && csData.tools) modalTools.textContent = csData.tools;
+                        if (modalIndustry && csData.industry) modalIndustry.textContent = csData.industry;
+                        if (modalLiveBtn && csData.project_link) {
+                            modalLiveBtn.href = csData.project_link;
+                            modalLiveBtn.style.display = 'inline-flex';
+                        }
+
+                        const visuals = Array.isArray(csData.full_image_chunks) ? csData.full_image_chunks.filter(v => typeof v === 'string' && v.trim() !== '') : [];
+                        if (visuals.length > 0 && visualsInner) {
+                            visualsInner.innerHTML = visuals.map(url => {
+                                const isVideo = url.match(/\.(mp4|webm|mov)$/i);
+                                return isVideo 
+                                    ? `<video src="${url}" autoplay loop muted playsinline style="width:100%; display:block; border:none; margin:-1px 0;"></video>`
+                                    : `<img src="${url}" alt="${rawTitle} Visual" loading="lazy" style="width:100%; display:block; border:none; margin:-1px 0;">`;
+                            }).join('');
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("In-modal case study fetch:", err);
+            } finally {
+                if (visualsLoading) visualsLoading.style.display = 'none';
             }
         }
 
@@ -1307,11 +1416,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modal.setAttribute('aria-hidden', 'true');
 
-            // Pause any playing video in modal
-            const activeVideo = document.querySelector('#expand-modal-media-wrap video');
-            if (activeVideo) {
-                try { activeVideo.pause(); } catch(e) {}
-            }
+            // Pause any playing videos inside modal
+            const videos = modal.querySelectorAll('video');
+            videos.forEach(v => { try { v.pause(); } catch(e) {} });
 
             if (activeSourceCard) {
                 const rect = activeSourceCard.getBoundingClientRect();
@@ -1321,15 +1428,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const screenCenterY = window.innerHeight / 2;
                 const endDx = sourceCenterX - screenCenterX;
                 const endDy = sourceCenterY - screenCenterY;
-                const targetModalWidth = Math.min(840, window.innerWidth * 0.92);
-                const endScale = Math.max(0.28, rect.width / targetModalWidth);
+                const targetModalWidth = Math.min(1080, window.innerWidth * 0.94);
+                const endScale = Math.max(0.25, rect.width / targetModalWidth);
 
                 gsap.to(modalCard, {
                     x: endDx,
                     y: endDy,
                     scale: endScale,
                     opacity: 0,
-                    duration: 0.35,
+                    duration: 0.32,
                     ease: 'power2.in',
                     onComplete: () => {
                         modal.classList.remove('active');
@@ -1341,15 +1448,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modalBackdrop) {
                     gsap.to(modalBackdrop, {
                         opacity: 0,
-                        duration: 0.3,
+                        duration: 0.28,
                         ease: 'power2.in'
                     });
                 }
             } else {
                 gsap.to(modalCard, {
-                    scale: 0.9,
+                    scale: 0.94,
                     opacity: 0,
-                    duration: 0.25,
+                    duration: 0.24,
                     ease: 'power2.in',
                     onComplete: () => {
                         modal.classList.remove('active');
@@ -1357,71 +1464,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
                 if (modalBackdrop) {
-                    gsap.to(modalBackdrop, { opacity: 0, duration: 0.25 });
+                    gsap.to(modalBackdrop, { opacity: 0, duration: 0.24 });
                 }
             }
         }
 
-        // Prevent wheel event propagation to window while scrolling modal
-        modalCard.addEventListener('wheel', (e) => {
-            e.stopPropagation();
-        }, { passive: false });
-
-        // Delegated click listener: handles any .landscape-post-card click anywhere on the page
+        // Global delegated click listener: captures any card click across home and gallery
         document.addEventListener('click', (e) => {
-            const card = e.target.closest('.landscape-post-card');
+            const card = e.target.closest('.landscape-post-card, .project-card, .portfolio-card-large');
             if (card && !e.target.closest('#case-study-expand-modal')) {
                 e.preventDefault();
+                e.stopPropagation();
                 openCardModal(card);
             }
         });
 
-        // Close listeners
+        // Close triggers
         if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeCardModal);
-        if (modalDismissBtn) modalDismissBtn.addEventListener('click', closeCardModal);
         if (modalBackdrop) modalBackdrop.addEventListener('click', closeCardModal);
 
-        // 2026 Seamless View Transition: zooms modal to full screen before entering case study
-        if (modalReadStudyBtn) {
-            modalReadStudyBtn.addEventListener('click', (e) => {
-                const targetUrl = modalReadStudyBtn.getAttribute('href');
-                if (!targetUrl || targetUrl === '#' || targetUrl.startsWith('javascript:')) return;
-                e.preventDefault();
-
-                modal.classList.add('is-transitioning');
-
-                gsap.killTweensOf(modalCard);
-                gsap.to(modalCard, {
-                    scale: 1.25,
-                    opacity: 0.98,
-                    duration: 0.38,
-                    ease: 'power3.inOut'
-                });
-
-                if (modalBackdrop) {
-                    gsap.killTweensOf(modalBackdrop);
-                    gsap.to(modalBackdrop, {
-                        opacity: 1,
-                        backgroundColor: '#000000',
-                        duration: 0.38,
-                        ease: 'power2.in',
-                        onComplete: () => {
-                            window.location.href = targetUrl;
-                        }
-                    });
-                } else {
-                    setTimeout(() => {
-                        window.location.href = targetUrl;
-                    }, 350);
-                }
-            });
-        }
+        document.querySelectorAll('.modal-close-trigger-btn, #modal-bottom-close-btn').forEach(btn => {
+            btn.addEventListener('click', closeCardModal);
+        });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
                 closeCardModal();
             }
         });
+    }
 
         window.openCardModal = openCardModal;
         window.closeCardModal = closeCardModal;
