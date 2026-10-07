@@ -685,7 +685,7 @@ function initPortfolioRefactor() {
         function revealHeroInstantly() {
             heroTextLayer.style.opacity = '1';
             heroTextLayer.style.pointerEvents = 'auto';
-            heroTextLayer.style.transform = 'translate(-50%, -50%)';
+            heroTextLayer.style.transform = 'none';
 
             // Animate typewriter characters briskly on load
             typewriterChars.forEach((ch, idx) => {
@@ -897,148 +897,50 @@ function initPortfolioRefactor() {
 
     initPinnedLabels();
 
-    // ── 2. SELECTED WORKS: AUTOMATIC SELF-DEALING CORNER DECK ──
-    function initSelectedWorksDeck() {
+    // ── 2. SELECTED WORKS: BALANCED 2-COLUMN SHOWCASE ──
+    function initSelectedWorks() {
         const workSection = document.getElementById('work');
-        const cards = document.querySelectorAll('#deck-cards-wrap .landscape-post-card');
-        const deckHeadline = document.getElementById('deck-center-headline');
-
+        const cards = document.querySelectorAll('.featured-project-card, .landscape-post-card');
         if (!workSection || cards.length === 0) return;
 
-        // Dynamic distance calculation based on viewport width & height
-        function getDeckGeometry() {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const isMobile = w < 768;
-
-            return {
-                xDist: isMobile ? 0 : Math.min(520, Math.max(300, w * 0.33)),
-                yDist: isMobile ? 0 : Math.min(260, Math.max(170, h * 0.27)),
-                isMobile
-            };
-        }
-
-        let isDealt = false;
-
-        function applyDeckLayout() {
-            const isMobile = window.innerWidth < 768;
-            if (isMobile) {
-                gsap.set(cards, { clearProps: "all" });
-                if (deckHeadline) gsap.set(deckHeadline, { clearProps: "all" });
-                return;
-            }
-
-            const { xDist, yDist } = getDeckGeometry();
-
-            // Open fanned-out corner coordinates
-            const targetCornerStates = [
-                { x: -xDist, y: -yDist, rot: -4.5, zIndex: 11 },        // 0: Top-Left
-                { x: xDist, y: -yDist * 0.94, rot: 4.0, zIndex: 12 },   // 1: Top-Right
-                { x: -xDist * 0.96, y: yDist, rot: 2.5, zIndex: 13 },   // 2: Bottom-Left
-                { x: xDist * 0.98, y: yDist * 0.96, rot: -3.5, zIndex: 14 } // 3: Bottom-Right
-            ];
-
-            if (prefersReducedMotion || typeof gsap === 'undefined') {
-                cards.forEach((card, idx) => {
-                    const target = targetCornerStates[idx] || targetCornerStates[0];
-                    gsap.set(card, {
-                        xPercent: -50,
-                        yPercent: -50,
-                        x: target.x,
-                        y: target.y,
-                        rotation: target.rot,
-                        scale: 1,
-                        opacity: 1,
-                        zIndex: target.zIndex
-                    });
-                });
-                return;
-            }
-
-            // Animate cards pulling up & dealing out automatically into their corner positions
-            gsap.killTweensOf(cards);
-            if (deckHeadline) {
-                gsap.fromTo(deckHeadline,
-                    { opacity: 0, y: 24, scale: 0.96 },
-                    { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power3.out' }
-                );
-            }
-
-            cards.forEach((card, idx) => {
-                const target = targetCornerStates[idx] || targetCornerStates[0];
-                gsap.fromTo(card,
-                    {
-                        xPercent: -50,
-                        yPercent: -50,
-                        x: target.x * 0.35,
-                        y: target.y + 40,
-                        rotation: target.rot * 0.2,
-                        scale: 0.88,
-                        opacity: 0
-                    },
-                    {
-                        x: target.x,
-                        y: target.y,
-                        rotation: target.rot,
-                        scale: 1,
-                        opacity: 1,
-                        zIndex: target.zIndex,
-                        duration: 0.7,
-                        delay: idx * 0.09,
-                        ease: 'back.out(1.5)'
+        // Viewport entrance animation for cards
+        if (typeof gsap !== 'undefined' && !prefersReducedMotion && typeof ScrollTrigger !== 'undefined') {
+            gsap.fromTo(cards,
+                { opacity: 0, y: 28 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.12,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: workSection,
+                        start: 'top 80%',
+                        once: true
                     }
-                );
-            });
-
-            isDealt = true;
-        }
-
-        // Trigger automatic pull up when user scrolls to the section (no scroll lock!)
-        if (typeof ScrollTrigger !== 'undefined' && !prefersReducedMotion) {
-            ScrollTrigger.create({
-                trigger: workSection,
-                start: 'top 75%',
-                once: true,
-                onEnter: () => applyDeckLayout()
-            });
-
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    if (isDealt) applyDeckLayout();
-                }, 150);
-            });
+                }
+            );
         } else {
-            applyDeckLayout();
+            cards.forEach(c => { c.style.opacity = '1'; c.style.transform = 'none'; });
         }
 
-        // Interactive hover: Card elevates, scales slightly, and brings zIndex to top
-        cards.forEach((card, idx) => {
-            card.addEventListener('mouseenter', () => {
-                if (window.innerWidth < 768) return;
-                const rots = [-4.5, 4.0, 2.5, -3.5];
-                const baseRot = rots[idx] || 0;
-                gsap.to(card, {
-                    scale: 1.04,
-                    rotation: baseRot + (idx % 2 === 0 ? -1.5 : 1.5),
-                    zIndex: 35,
-                    duration: 0.22,
-                    ease: 'power2.out'
-                });
+        // Delegated click event to open In-Modal Case Study Reader
+        cards.forEach((card) => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('a') && !e.target.closest('.card-inner-surface')) return;
+                e.preventDefault();
+                if (window.openCardModal) {
+                    window.openCardModal(card);
+                }
             });
 
-            card.addEventListener('mouseleave', () => {
-                if (window.innerWidth < 768) return;
-                const rots = [-4.5, 4.0, 2.5, -3.5];
-                const baseRot = rots[idx] || 0;
-                gsap.to(card, {
-                    scale: 1,
-                    rotation: baseRot,
-                    zIndex: 10 + idx,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (window.openCardModal) {
+                        window.openCardModal(card);
+                    }
+                }
             });
         });
 
@@ -1078,18 +980,23 @@ function initPortfolioRefactor() {
                         tagEl.textContent = `${primaryTag} ↗`;
                     }
 
+                    const descEl = card.querySelector('.card-body-snippet');
+                    if (descEl && (proj.description || proj.headline)) {
+                        descEl.textContent = proj.description || proj.headline;
+                    }
+
                     const mediaBox = card.querySelector('.card-media-box');
                     if (mediaBox && proj.hero_image) {
                         const isMp4 = proj.hero_image.toLowerCase().endsWith('.mp4') || proj.hero_image.toLowerCase().includes('.mp4');
                         if (isMp4) {
                             mediaBox.innerHTML = `
                                 <video src="${proj.hero_image}" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>
-                                <div class="card-expand-badge"><i class="fa-solid fa-expand"></i> View</div>
+                                <div class="card-expand-badge"><i class="fa-solid fa-expand"></i> View Case Study</div>
                             `;
                         } else {
                             mediaBox.innerHTML = `
                                 <img src="${proj.hero_image}" alt="${proj.title}" loading="lazy">
-                                <div class="card-expand-badge"><i class="fa-solid fa-expand"></i> View</div>
+                                <div class="card-expand-badge"><i class="fa-solid fa-expand"></i> View Case Study</div>
                             `;
                         }
                     }
@@ -1102,7 +1009,7 @@ function initPortfolioRefactor() {
         syncSupabaseProjects();
     }
 
-    initSelectedWorksDeck();
+    initSelectedWorks();
 
     // ── FULL IN-MODAL CASE STUDY READER ENGINE ──
     function initCaseStudyExpandModal() {
@@ -1373,7 +1280,7 @@ function initPortfolioRefactor() {
 
         // Global delegated click listener: captures any card click across home and gallery
         document.addEventListener('click', (e) => {
-            const card = e.target.closest('.landscape-post-card, .project-card, .portfolio-card-large');
+            const card = e.target.closest('.featured-project-card, .landscape-post-card, .project-card, .portfolio-card-large');
             if (card && !e.target.closest('#case-study-expand-modal')) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1394,7 +1301,6 @@ function initPortfolioRefactor() {
                 closeCardModal();
             }
         });
-    }
 
         window.openCardModal = openCardModal;
         window.closeCardModal = closeCardModal;
@@ -2610,11 +2516,78 @@ function initPortfolioRefactor() {
         });
     }
 
+    // ── UNIVERSAL 3D CARD TILT & MAGNETIC HOVER ENGINE ──
+    function initCardTiltInteractions() {
+        if (prefersReducedMotion || window.innerWidth < 900) return;
+
+        const cards = document.querySelectorAll('.featured-project-card, .project-grid-card, .memo-article-card, .board-review-memo');
+        
+        cards.forEach(card => {
+            let isHovered = false;
+            
+            card.addEventListener('mouseenter', () => {
+                isHovered = true;
+            });
+
+            card.addEventListener('mousemove', (e) => {
+                if (!isHovered) return;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((centerY - y) / centerY) * 4.5;
+                const rotateY = ((x - centerX) / centerX) * 4.5;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-5px) scale3d(1.015, 1.015, 1.015)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                isHovered = false;
+                card.style.transform = '';
+            });
+        });
+    }
+
+    // ── UNIVERSAL VIEWPORT SCROLL REVEAL ENGINE ──
+    function initScrollRevealEngine() {
+        if (prefersReducedMotion) return;
+
+        const revealElements = document.querySelectorAll(
+            '.featured-project-card, .project-grid-card, .journey-sticky-note, .pinned-client-label, .board-review-memo, .memo-article-card, .story-polaroid-frame, .memo-sheet-container, .storyboard-section-header, .selected-works-header, .projects-hero-header'
+        );
+
+        if (!window.IntersectionObserver) {
+            revealElements.forEach(el => el.classList.add('is-revealed'));
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -30px 0px'
+        });
+
+        revealElements.forEach(el => {
+            el.classList.add('reveal-on-scroll');
+            observer.observe(el);
+        });
+    }
+
     initServiceMenuAndFinalNotePhysics();
     initJournalDossiers();
     initContactDeskAndSignaturePad();
     initAboutStoryPinning();
     initTactilePinSwingPhysics();
+    initCardTiltInteractions();
+    initScrollRevealEngine();
 }
 
 if (document.readyState === 'loading') {

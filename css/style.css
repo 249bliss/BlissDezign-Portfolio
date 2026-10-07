@@ -144,38 +144,36 @@ h3 { font-size: 1.5rem; }
     background: var(--primary-gradient);
     color: white;
     border: none;
-    box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(71, 67, 71, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.3);
-    animation: primary-glow-pulse 2s infinite ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:active {
-    transform: translateY(-1px);
-    box-shadow: 0 1px 0 #474347, 0 2px 4px rgba(71, 67, 71, 0.15);
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary {
     background: transparent;
     color: var(--text-main);
     border: 1px solid var(--border-color);
-    box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .btn-secondary:hover {
     border-color: var(--accent-purple);
     color: var(--accent-purple);
-    transform: translateY(-5px);
-    box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.15);
-    animation: secondary-glow-pulse 2s infinite ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 59, 255, 0.12);
 }
 
 .btn-secondary:active {
-    transform: translateY(-1px);
-    box-shadow: 0 1px 0 #474347, 0 2px 4px rgba(0, 0, 0, 0.05);
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .w-full { width: 100%; }
@@ -387,21 +385,20 @@ header.scrolled .nav-container {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    transform: translateY(-2px);
-    box-shadow: 0 3px 0 #474347, 0 6px 12px rgba(71, 67, 71, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, color 0.3s ease, box-shadow 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 [data-theme="dark"] .nav-btn-lux {
-    box-shadow: 0 3px 0 #474347, 0 6px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn-lux:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     background: var(--accent-purple);
     color: #ffffff;
-    box-shadow: 0 4px 0 #7e22ce, 0 8px 16px rgba(108, 59, 255, 0.25);
-    animation: nav-glow-pulse 2s infinite ease-in-out;
+    box-shadow: 0 4px 14px rgba(108, 59, 255, 0.25);
 }
 
 /* Hero Section - Refined to Premium Black-and-White Editorial */
@@ -519,26 +516,25 @@ header.scrolled .nav-container {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(71, 67, 71, 0.15);
+    transform: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, color 0.3s ease;
 }
 
 [data-theme="dark"] .btn-editorial-primary {
-    box-shadow: 0 4px 0 #474347, 0 8px 24px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .btn-editorial-primary:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
     background: var(--accent-purple);
     color: #ffffff;
-    box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.3);
-    animation: editorial-glow-pulse 2s infinite ease-in-out;
+    box-shadow: 0 6px 20px rgba(108, 59, 255, 0.25);
 }
 
 .btn-editorial-primary:active {
-    transform: translateY(-1px);
-    box-shadow: 0 1px 0 #474347, 0 2px 4px rgba(71, 67, 71, 0.1);
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-editorial-secondary {
@@ -566,17 +562,16 @@ header.scrolled .nav-container {
 }
 
 .btn-editorial-secondary:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     border-color: var(--accent-purple);
     color: var(--accent-purple);
     background: rgba(108, 59, 255, 0.03);
-    box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(108, 59, 255, 0.15);
-    animation: secondary-glow-pulse 2s infinite ease-in-out;
+    box-shadow: 0 4px 14px rgba(108, 59, 255, 0.12);
 }
 
 .btn-editorial-secondary:active {
-    transform: translateY(-1px);
-    box-shadow: 0 1px 0 #474347, 0 2px 4px rgba(71, 67, 71, 0.05);
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .btn-editorial-secondary .arrow {
@@ -3950,29 +3945,29 @@ header.scrolled .nav-container {
     transform: scale(2.4);
 }
 
-/* 3D shadow breathing glowing pulses */
+/* Soft subtle breathing glow pulses */
 @keyframes editorial-glow-pulse {
-    0% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.25); }
-    50% { box-shadow: 0 6px 0 #474347, 0 18px 36px rgba(71, 67, 71, 0.45); }
-    100% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.25); }
+    0% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
+    50% { box-shadow: 0 6px 22px rgba(108, 59, 255, 0.35); }
+    100% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
 }
 
 @keyframes primary-glow-pulse {
-    0% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.3); }
-    50% { box-shadow: 0 6px 0 #474347, 0 18px 36px rgba(71, 67, 71, 0.55); }
-    100% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.3); }
+    0% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
+    50% { box-shadow: 0 6px 22px rgba(108, 59, 255, 0.35); }
+    100% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
 }
 
 @keyframes secondary-glow-pulse {
-    0% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.15); }
-    50% { box-shadow: 0 6px 0 #474347, 0 18px 36px rgba(71, 67, 71, 0.3); }
-    100% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.15); }
+    0% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.1); }
+    50% { box-shadow: 0 4px 16px rgba(108, 59, 255, 0.2); }
+    100% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.1); }
 }
 
 @keyframes nav-glow-pulse {
-    0% { box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(71, 67, 71, 0.25); }
-    50% { box-shadow: 0 4px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.4); }
-    100% { box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(71, 67, 71, 0.25); }
+    0% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.2); }
+    50% { box-shadow: 0 4px 16px rgba(108, 59, 255, 0.35); }
+    100% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.2); }
 }
 
 /* Phone Icon and Interactive Vibration Animation */
@@ -4150,29 +4145,29 @@ header.scrolled .nav-container {
     transform: scale(2.4);
 }
 
-/* 3D shadow breathing glowing pulses */
+/* Soft subtle breathing glow pulses */
 @keyframes editorial-glow-pulse {
-    0% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.25); }
-    50% { box-shadow: 0 6px 0 #474347, 0 18px 36px rgba(71, 67, 71, 0.45); }
-    100% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.25); }
+    0% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
+    50% { box-shadow: 0 6px 22px rgba(108, 59, 255, 0.35); }
+    100% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
 }
 
 @keyframes primary-glow-pulse {
-    0% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.3); }
-    50% { box-shadow: 0 6px 0 #474347, 0 18px 36px rgba(71, 67, 71, 0.55); }
-    100% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.3); }
+    0% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
+    50% { box-shadow: 0 6px 22px rgba(108, 59, 255, 0.35); }
+    100% { box-shadow: 0 4px 14px rgba(108, 59, 255, 0.2); }
 }
 
 @keyframes secondary-glow-pulse {
-    0% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.15); }
-    50% { box-shadow: 0 6px 0 #474347, 0 18px 36px rgba(71, 67, 71, 0.3); }
-    100% { box-shadow: 0 6px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.15); }
+    0% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.1); }
+    50% { box-shadow: 0 4px 16px rgba(108, 59, 255, 0.2); }
+    100% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.1); }
 }
 
 @keyframes nav-glow-pulse {
-    0% { box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(71, 67, 71, 0.25); }
-    50% { box-shadow: 0 4px 0 #474347, 0 12px 24px rgba(71, 67, 71, 0.4); }
-    100% { box-shadow: 0 4px 0 #474347, 0 8px 16px rgba(71, 67, 71, 0.25); }
+    0% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.2); }
+    50% { box-shadow: 0 4px 16px rgba(108, 59, 255, 0.35); }
+    100% { box-shadow: 0 2px 8px rgba(108, 59, 255, 0.2); }
 }
 
 /* (Duplicate .phone-icon styling removed) */
