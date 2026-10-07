@@ -15,10 +15,10 @@
     <meta name="description" content="Website under maintenance. We are currently calibrating and upgrading our digital portfolio. Visit our main studio at kre8mind.com.">
     <link rel="icon" type="image/png" href="assets/favicon.png">
 
-    <!-- Preconnect & Fonts -->
+    <!-- Preconnect & Fonts (Sora & Montserrat) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- CSS Base & Refactor -->
@@ -35,9 +35,13 @@
 
     <style>
         :root {
-            --pendulum-accent-coral: #ef4444;
-            --pendulum-accent-blue: #3b82f6;
-            --pendulum-accent-amber: #f59e0b;
+            --font-heading: 'Sora', 'Montserrat', sans-serif;
+            --font-body: 'Montserrat', sans-serif;
+            --font-hand: 'Caveat', cursive, sans-serif;
+        }
+
+        body, html {
+            font-family: var(--font-body);
         }
 
         /* ── Fullscreen Drafting Board Stage ── */
@@ -47,11 +51,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 120px 24px 60px 24px;
+            padding: 100px 20px 48px 20px;
             position: relative;
             z-index: 2;
             text-align: center;
             overflow: hidden;
+            box-sizing: border-box;
         }
 
         /* Ambient Glow & Radial Vignette */
@@ -75,9 +80,10 @@
         /* Precision Blueprint Corner Registration Marks */
         .blueprint-crop-mark {
             position: fixed;
-            font-family: var(--font-mono, 'JetBrains Mono', monospace);
-            font-size: 11px;
-            letter-spacing: 0.14em;
+            font-family: var(--font-body);
+            font-size: 10.5px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
             color: rgba(0, 0, 0, 0.28);
             pointer-events: none;
             z-index: 1;
@@ -88,10 +94,10 @@
             color: rgba(255, 255, 255, 0.25);
         }
 
-        .crop-tl { top: 24px; left: 28px; }
-        .crop-tr { top: 24px; right: 28px; }
-        .crop-bl { bottom: 24px; left: 28px; }
-        .crop-br { bottom: 24px; right: 28px; }
+        .crop-tl { top: 22px; left: 24px; }
+        .crop-tr { top: 22px; right: 24px; }
+        .crop-bl { bottom: 22px; left: 24px; }
+        .crop-br { bottom: 22px; right: 24px; }
 
         /* ── Overhead Industrial Hanging Rig ── */
         .pendulum-rig-stage {
@@ -100,7 +106,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-bottom: 38px;
+            margin-bottom: 28px;
             perspective: 1200px;
             z-index: 3;
         }
@@ -108,9 +114,9 @@
         /* Studio Suspension Top Mounting Bar */
         .suspension-beam {
             position: relative;
-            width: 380px;
-            max-width: 90vw;
-            height: 6px;
+            width: 360px;
+            max-width: 85vw;
+            height: 5px;
             background: linear-gradient(90deg, 
                 rgba(0,0,0,0.06) 0%, 
                 rgba(0,0,0,0.22) 20%, 
@@ -139,7 +145,7 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            gap: 28px;
+            gap: 24px;
             position: relative;
             padding-top: 2px;
         }
@@ -165,8 +171,8 @@
         /* Top Anchor Ring & Wall Pin */
         .suspension-anchor-node {
             position: relative;
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             z-index: 6;
             margin-top: -5px;
@@ -209,9 +215,9 @@
         /* Scotch / Craft Washi Tape Clip */
         .hanging-card-tape {
             position: absolute;
-            top: -9px;
-            width: 44px;
-            height: 16px;
+            top: -8px;
+            width: 40px;
+            height: 15px;
             background: rgba(251, 191, 36, 0.68);
             backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
@@ -225,15 +231,15 @@
         /* Tactile Physical Paper Number Card */
         .hanging-number-card {
             position: relative;
-            width: 112px;
-            height: 148px;
+            width: 104px;
+            height: 138px;
             background-color: #ffffff;
             background-image: 
-                radial-gradient(circle at 50% 10px, rgba(0,0,0,0.08) 3px, transparent 3.5px),
-                repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.035) 24px);
+                radial-gradient(circle at 50% 10px, rgba(0,0,0,0.08) 2.5px, transparent 3px),
+                repeating-linear-gradient(to bottom, transparent 0px, transparent 21px, rgba(0, 0, 0, 0.035) 22px);
             border: 1px solid var(--paper-border, rgba(0, 0, 0, 0.1));
             border-radius: 8px;
-            box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.14), 0 4px 10px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 14px 32px -6px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -246,19 +252,19 @@
         [data-theme="dark"] .hanging-number-card {
             background-color: var(--paper-sheet-dark, #1c1b18);
             background-image: 
-                radial-gradient(circle at 50% 10px, rgba(255,255,255,0.12) 3px, transparent 3.5px),
-                repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(255, 255, 255, 0.035) 24px);
+                radial-gradient(circle at 50% 10px, rgba(255,255,255,0.12) 2.5px, transparent 3px),
+                repeating-linear-gradient(to bottom, transparent 0px, transparent 21px, rgba(255, 255, 255, 0.035) 22px);
             border-color: var(--paper-border-dark, rgba(255, 255, 255, 0.1));
-            box-shadow: 0 20px 48px -6px rgba(0, 0, 0, 0.55), 0 6px 14px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 18px 42px -6px rgba(0, 0, 0, 0.55), 0 5px 12px rgba(0, 0, 0, 0.35);
         }
 
         .hanging-card-wrapper:hover .hanging-number-card {
-            box-shadow: 0 24px 52px -6px rgba(0, 0, 0, 0.22), 0 6px 16px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 20px 46px -6px rgba(0, 0, 0, 0.2), 0 5px 14px rgba(0, 0, 0, 0.08);
             border-color: rgba(0, 0, 0, 0.18);
         }
 
         [data-theme="dark"] .hanging-card-wrapper:hover .hanging-number-card {
-            box-shadow: 0 26px 56px -6px rgba(0, 0, 0, 0.7), 0 8px 20px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 22px 50px -6px rgba(0, 0, 0, 0.7), 0 7px 18px rgba(0, 0, 0, 0.45);
             border-color: rgba(255, 255, 255, 0.2);
         }
 
@@ -266,8 +272,8 @@
         .card-punch-hole {
             position: absolute;
             top: 6px;
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: #d4d4d8;
             border: 1.5px solid #a1a1aa;
@@ -284,25 +290,25 @@
         /* Specimen Serial Tag on Card */
         .card-spec-tag {
             position: absolute;
-            top: 18px;
-            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            top: 16px;
+            font-family: var(--font-body);
             font-size: 8.5px;
             font-weight: 600;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             color: var(--text-muted, #71717a);
             text-transform: uppercase;
-            opacity: 0.75;
+            opacity: 0.8;
         }
 
         /* The Bold Digit */
         .card-digit-value {
-            font-family: var(--font-sora, 'Sora', sans-serif);
-            font-size: 4.6rem;
-            font-weight: 800;
+            font-family: var(--font-heading);
+            font-size: 4.2rem;
+            font-weight: 700;
             line-height: 1;
             color: var(--text-primary, #18181b);
             letter-spacing: -0.04em;
-            margin-top: 10px;
+            margin-top: 8px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
             transition: color 0.2s ease;
         }
@@ -315,9 +321,10 @@
         /* Mini Sub-label at bottom of card */
         .card-sub-status {
             position: absolute;
-            bottom: 12px;
-            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            bottom: 10px;
+            font-family: var(--font-body);
             font-size: 8px;
+            font-weight: 600;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--text-muted, #a1a1aa);
@@ -326,10 +333,10 @@
         /* Dynamic Cast Shadow Beneath Pendulum */
         .hanging-card-shadow {
             position: absolute;
-            bottom: -22px;
+            bottom: -20px;
             width: 75%;
-            height: 12px;
-            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22) 0%, transparent 70%);
+            height: 10px;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.2) 0%, transparent 70%);
             filter: blur(4px);
             border-radius: 50%;
             pointer-events: none;
@@ -339,15 +346,15 @@
         }
 
         [data-theme="dark"] .hanging-card-shadow {
-            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.65) 0%, transparent 70%);
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
             opacity: 0.9;
         }
 
         /* Interactive Grab Hint Note */
         .pendulum-interactive-cue {
             margin-top: 6px;
-            font-family: var(--font-hand, 'Caveat', cursive, sans-serif);
-            font-size: 1.15rem;
+            font-family: var(--font-hand);
+            font-size: 1.1rem;
             color: var(--text-muted, #71717a);
             display: inline-flex;
             align-items: center;
@@ -363,51 +370,52 @@
 
         /* ── Maintenance Hero Dossier Card ── */
         .error-dossier-card {
-            max-width: 580px;
+            max-width: 540px;
             width: 100%;
             background: #ffffff;
             border: 1px solid var(--paper-border, rgba(0, 0, 0, 0.08));
             border-radius: 12px;
-            padding: 38px 44px;
-            box-shadow: 0 16px 44px -8px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.04);
+            padding: 34px 38px;
+            box-shadow: 0 14px 38px -8px rgba(0, 0, 0, 0.09), 0 3px 10px rgba(0, 0, 0, 0.03);
             position: relative;
             z-index: 4;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             text-align: center;
+            box-sizing: border-box;
         }
 
         [data-theme="dark"] .error-dossier-card {
             background: var(--paper-sheet-dark, #191816);
             border-color: var(--paper-border-dark, rgba(255, 255, 255, 0.09));
-            box-shadow: 0 20px 54px -8px rgba(0, 0, 0, 0.55), 0 6px 16px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 18px 48px -8px rgba(0, 0, 0, 0.55), 0 5px 14px rgba(0, 0, 0, 0.35);
         }
 
         /* Top Pushpin on Memo Card */
         .dossier-top-pushpin {
             position: absolute;
-            top: -10px;
+            top: -9px;
             left: 50%;
             transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #ff8a8a, #dc2626);
             border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.28);
             z-index: 10;
         }
 
-        /* Main Headline */
+        /* Main Headline (Clean Sans-Serif Sora / Montserrat) */
         .error-title {
-            font-family: var(--font-editorial, 'Newsreader', Georgia, serif);
-            font-size: 2.35rem;
-            font-weight: 500;
-            line-height: 1.2;
-            margin-top: 6px;
-            margin-bottom: 12px;
+            font-family: var(--font-heading);
+            font-size: 1.85rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-top: 4px;
+            margin-bottom: 10px;
             color: var(--text-primary, #18181b);
-            letter-spacing: -0.01em;
+            letter-spacing: -0.025em;
         }
 
         [data-theme="dark"] .error-title {
@@ -415,13 +423,13 @@
         }
 
         .error-desc {
-            font-family: var(--font-body, 'Montserrat', sans-serif);
-            font-size: 0.95rem;
+            font-family: var(--font-body);
+            font-size: 0.92rem;
             font-weight: 400;
-            line-height: 1.65;
+            line-height: 1.6;
             color: var(--text-muted, #71717a);
-            margin-bottom: 30px;
-            max-width: 480px;
+            margin-bottom: 26px;
+            max-width: 440px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -431,7 +439,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
@@ -439,37 +447,39 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 13px 26px;
+            gap: 8px;
+            padding: 12px 22px;
             border-radius: 8px;
-            font-family: var(--font-mono, 'JetBrains Mono', monospace);
-            font-size: 12.5px;
+            font-family: var(--font-body);
+            font-size: 13px;
             font-weight: 600;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.01em;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
         }
 
-        /* Primary Studio Action Button */
+        /* Primary Studio Action Button (Clean Sans-Serif) */
         .error-action-primary.studio-btn {
             background: #18181b;
             color: #ffffff;
             border: 1px solid #18181b;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden;
         }
 
         .error-action-primary.studio-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
             background: #000000;
             color: #ffffff;
         }
 
         .error-action-primary.studio-btn .btn-arrow-icon {
-            transition: transform 0.22s ease;
+            transition: transform 0.2s ease;
+            font-size: 11px;
         }
 
         .error-action-primary.studio-btn:hover .btn-arrow-icon {
@@ -480,25 +490,25 @@
             background: #f4f4f5;
             color: #09090b;
             border-color: #f4f4f5;
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.12);
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
         }
 
         [data-theme="dark"] .error-action-primary.studio-btn:hover {
             background: #ffffff;
             color: #000000;
-            box-shadow: 0 8px 28px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 22px rgba(255, 255, 255, 0.18);
         }
 
         /* Secondary Action Button */
         .error-action-secondary {
             background: transparent;
             color: var(--text-primary, #18181b);
-            border: 1px solid var(--paper-border, rgba(0, 0, 0, 0.15));
+            border: 1px solid var(--paper-border, rgba(0, 0, 0, 0.14));
         }
 
         [data-theme="dark"] .error-action-secondary {
             color: #e4e4e7;
-            border-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.14);
         }
 
         .error-action-secondary:hover {
@@ -514,17 +524,17 @@
 
         /* Direct Contact Micro Strip */
         .maintenance-footer-note {
-            margin-top: 26px;
-            padding-top: 20px;
+            margin-top: 24px;
+            padding-top: 18px;
             border-top: 1px dashed var(--paper-border, rgba(0, 0, 0, 0.08));
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            font-family: var(--font-body);
             font-size: 11px;
             color: var(--text-muted, #71717a);
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         [data-theme="dark"] .maintenance-footer-note {
@@ -534,7 +544,7 @@
         .maintenance-footer-note a {
             color: var(--text-primary, #18181b);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             transition: color 0.2s ease;
         }
 
@@ -551,15 +561,15 @@
             background: transparent;
             border: 1px solid var(--paper-border, rgba(0, 0, 0, 0.1));
             color: var(--text-primary, #18181b);
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         [data-theme="dark"] .nav-theme-standalone-btn {
@@ -576,58 +586,134 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* Responsive Breakpoints */
+        /* ── Responsive Mobile Optimization ── */
         @media (max-width: 640px) {
             .maintenance-motion-stage {
-                padding: 100px 16px 40px 16px;
+                padding: 85px 14px 36px 14px;
+            }
+
+            .pendulum-rig-stage {
+                margin-bottom: 22px;
+            }
+
+            .suspension-beam {
+                width: 260px;
+                height: 4px;
             }
 
             .hanging-cards-rig {
-                gap: 14px;
+                gap: 12px;
             }
 
+            .hanging-card-wrapper[data-wire-length="52"] .hanging-wire-line { height: 38px !important; }
+            .hanging-card-wrapper[data-wire-length="66"] .hanging-wire-line { height: 48px !important; }
+            .hanging-card-wrapper[data-wire-length="50"] .hanging-wire-line { height: 36px !important; }
+
             .hanging-number-card {
-                width: 82px;
-                height: 114px;
+                width: 72px;
+                height: 98px;
                 border-radius: 6px;
             }
 
             .card-digit-value {
-                font-size: 3.4rem;
+                font-size: 2.7rem;
+                margin-top: 4px;
+            }
+
+            .card-spec-tag {
+                font-size: 7px;
+                top: 12px;
+            }
+
+            .card-sub-status {
+                font-size: 6.5px;
+                bottom: 8px;
             }
 
             .hanging-card-tape {
-                width: 34px;
-                height: 13px;
+                width: 30px;
+                height: 12px;
+                top: -6px;
             }
 
-            .suspension-beam {
-                width: 280px;
+            .suspension-anchor-node {
+                width: 12px;
+                height: 12px;
+            }
+
+            .pendulum-interactive-cue {
+                font-size: 0.95rem;
+                margin-top: 4px;
             }
 
             .error-dossier-card {
-                padding: 28px 20px;
+                padding: 24px 18px;
+                border-radius: 10px;
+                max-width: 100%;
             }
 
             .error-title {
-                font-size: 1.8rem;
+                font-size: 1.35rem;
+                line-height: 1.25;
+                margin-bottom: 8px;
             }
 
             .error-desc {
-                font-size: 0.88rem;
+                font-size: 0.82rem;
+                line-height: 1.5;
+                margin-bottom: 20px;
             }
 
             .error-actions-row {
                 flex-direction: column;
                 width: 100%;
+                gap: 10px;
             }
 
             .error-action-btn {
                 width: 100%;
+                font-size: 12px;
+                padding: 11px 16px;
+            }
+
+            .maintenance-footer-note {
+                font-size: 10px;
+                justify-content: center;
+                text-align: center;
+                margin-top: 18px;
+                padding-top: 14px;
             }
 
             .crop-tl, .crop-tr, .crop-bl, .crop-br {
                 display: none;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .hanging-cards-rig {
+                gap: 8px;
+            }
+
+            .hanging-number-card {
+                width: 62px;
+                height: 86px;
+            }
+
+            .card-digit-value {
+                font-size: 2.25rem;
+            }
+
+            .error-title {
+                font-size: 1.2rem;
+            }
+
+            .error-desc {
+                font-size: 0.78rem;
+            }
+
+            .error-action-btn {
+                font-size: 11px;
+                padding: 10px 14px;
             }
         }
     </style>
@@ -656,10 +742,10 @@
                     <span class="capsule-brand-name">Bliss</span>
                 </div>
                 
-                <div class="capsule-actions" style="gap: 10px;">
+                <div class="capsule-actions" style="gap: 8px;">
                     <a href="https://kre8mind.com" target="_blank" rel="noopener noreferrer" class="capsule-cta-btn">
                         <span>Kre8mind Studio</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; margin-left: 4px;"></i>
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 9px; margin-left: 4px;"></i>
                     </a>
                     <button class="nav-theme-standalone-btn" id="nav-theme-toggle" aria-label="Toggle Theme Mode">
                         <i class="fa-solid fa-moon"></i>
@@ -732,7 +818,7 @@
         <div class="error-dossier-card">
             <div class="dossier-top-pushpin"></div>
 
-            <!-- Main Title -->
+            <!-- Main Title (Clean Sora / Montserrat Sans-Serif) -->
             <h1 class="error-title">Website Under Maintenance</h1>
 
             <!-- Description -->
@@ -818,21 +904,21 @@
             if (typeof gsap !== 'undefined') {
                 cardWrappers.forEach((item, i) => {
                     gsap.fromTo(item.el,
-                        { y: -100, opacity: 0, rotation: item.baseRot + (i % 2 === 0 ? 25 : -25) },
+                        { y: -80, opacity: 0, rotation: item.baseRot + (i % 2 === 0 ? 20 : -20) },
                         {
                             y: 0,
                             opacity: 1,
                             rotation: item.baseRot,
-                            duration: 1.6 + i * 0.2,
+                            duration: 1.5 + i * 0.15,
                             ease: 'elastic.out(1.1, 0.28)',
-                            delay: 0.1 + i * 0.12
+                            delay: 0.1 + i * 0.1
                         }
                     );
                 });
 
                 gsap.fromTo('.error-dossier-card',
-                    { y: 30, opacity: 0, scale: 0.97 },
-                    { y: 0, opacity: 1, scale: 1, duration: 1.2, delay: 0.4, ease: 'power3.out' }
+                    { y: 24, opacity: 0, scale: 0.98 },
+                    { y: 0, opacity: 1, scale: 1, duration: 1.1, delay: 0.35, ease: 'power3.out' }
                 );
             }
 
@@ -859,10 +945,10 @@
                         const cardCenterY = rect.top + rect.height / 2;
                         const distToMouse = Math.hypot(mousePos.x - cardCenterX, mousePos.y - cardCenterY);
 
-                        if (distToMouse < 220) {
-                            const proximityFactor = (1 - distToMouse / 220);
+                        if (distToMouse < 200) {
+                            const proximityFactor = (1 - distToMouse / 200);
                             const pushDirection = (mousePos.x < cardCenterX) ? 1 : -1;
-                            const windForce = pushDirection * proximityFactor * 8.5;
+                            const windForce = pushDirection * proximityFactor * 7.5;
                             item.targetRot = restingGoal + windForce;
                         } else {
                             item.targetRot = restingGoal;
@@ -924,7 +1010,7 @@
                 el.addEventListener('pointermove', (e) => {
                     if (isAnyDragging && activeDragIndex === index) {
                         const deltaX = e.clientX - dragStartX;
-                        const angleDeflection = Math.max(-48, Math.min(48, deltaX * 0.32));
+                        const angleDeflection = Math.max(-45, Math.min(45, deltaX * 0.3));
                         item.currentRot = dragStartAngle + angleDeflection;
                         el.style.transform = `rotate(${item.currentRot.toFixed(2)}deg)`;
 
@@ -943,13 +1029,13 @@
                         el.classList.remove('is-dragging');
                         try { el.releasePointerCapture(e.pointerId); } catch(err){}
 
-                        item.velocity = (mouseVelocityX * 0.6);
+                        item.velocity = (mouseVelocityX * 0.55);
 
                         if (index > 0) {
-                            cardWrappers[index - 1].velocity += item.velocity * 0.4;
+                            cardWrappers[index - 1].velocity += item.velocity * 0.35;
                         }
                         if (index < cardWrappers.length - 1) {
-                            cardWrappers[index + 1].velocity += item.velocity * 0.4;
+                            cardWrappers[index + 1].velocity += item.velocity * 0.35;
                         }
                     }
                 };
@@ -960,7 +1046,7 @@
                 // Hover Nudge Impulse
                 el.addEventListener('mouseenter', () => {
                     if (!isAnyDragging) {
-                        item.velocity += (index % 2 === 0 ? 14 : -14);
+                        item.velocity += (index % 2 === 0 ? 12 : -12);
                     }
                 });
             });
