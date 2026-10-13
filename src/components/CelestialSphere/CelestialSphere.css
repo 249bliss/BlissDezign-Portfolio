@@ -1,0 +1,321 @@
+/* ==========================================================================
+   OPEN SKY & CELESTIAL GLOBE ATMOSPHERE
+   Features:
+   - Warm daylight natural sky backdrop with sun & horizon glow
+   - Three.js WebGL canvas container for fluid 360° celestial globe
+   - Focused card hint pill & immersive dive-in modal
+   ========================================================================== */
+
+.celestial-sky-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 1. LIVING BACKGROUND VIDEO ── */
+.sky-daylight-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #4a82b8 0%, #7db3e3 50%, #b2d5f4 100%);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sky-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 1;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* ── 2. THREE.JS WEBGL CANVAS ── */
+.celestial-globe-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: block;
+  touch-action: none;
+}
+
+.celestial-globe-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  touch-action: none;
+}
+
+/* ── 3. FOCUSED CARD BANNER (1st Click) ── */
+.celestial-focused-banner {
+  position: fixed;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 24px 12px 28px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  animation: bannerSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 90vw;
+}
+
+@keyframes bannerSlideUp {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.celestial-focused-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.celestial-focused-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #71717a;
+  text-transform: uppercase;
+}
+
+.celestial-focused-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #09090b;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.celestial-focused-sub {
+  margin: 0;
+  font-size: 11px;
+  color: #71717a;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.celestial-focused-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #09090b;
+  color: #ffffff;
+  border-radius: 9999px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.celestial-focused-btn:hover {
+  background: #27272a;
+  transform: translateY(-1px);
+}
+
+/* ── 4. IMMERSIVE DIVE-IN MODAL (2nd Click) ── */
+.celestial-divein-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  animation: diveInFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes diveInFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.celestial-divein-card {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 40px 90px -15px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  animation: diveInPop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes diveInPop {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.celestial-divein-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.celestial-divein-close:hover {
+  transform: scale(1.08);
+  background: #09090b;
+}
+
+.celestial-divein-media {
+  width: 100%;
+  flex: 1;
+  min-height: 240px;
+  max-height: 480px;
+  background: #09090b;
+  overflow: hidden;
+}
+
+.celestial-divein-media img,
+.celestial-divein-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.celestial-divein-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  gap: 24px;
+}
+
+.celestial-divein-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.celestial-divein-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: #71717a;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.celestial-divein-heading {
+  margin: 4px 0 0 0;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #09090b;
+  letter-spacing: -0.02em;
+}
+
+.celestial-divein-desc {
+  margin: 4px 0 0 0;
+  font-size: 0.95rem;
+  color: #71717a;
+  max-width: 540px;
+}
+
+.celestial-divein-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.celestial-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.celestial-action-btn.secondary {
+  background: #f4f4f5;
+  color: #18181b;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.celestial-action-btn.secondary:hover {
+  background: #e4e4e7;
+}
+
+.celestial-action-btn.primary {
+  background: #09090b;
+  color: #ffffff;
+  border: 1px solid #09090b;
+}
+
+.celestial-action-btn.primary:hover {
+  background: #27272a;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .celestial-focused-banner {
+    bottom: 84px;
+    padding: 10px 18px;
+  }
+  .celestial-focused-sub {
+    display: none;
+  }
+  .celestial-divein-media {
+    height: 300px;
+  }
+  .celestial-divein-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+  .celestial-divein-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

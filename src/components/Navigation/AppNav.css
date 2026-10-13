@@ -1,0 +1,200 @@
+/* Studio K95 Inspired Floating Navigation */
+.k95-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  pointer-events: none;
+  font-family: var(--font-heading);
+}
+
+.k95-nav__logo {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: #09090b;
+}
+
+.k95-nav__monogram {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #09090b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: -0.04em;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: transform var(--transition-fast);
+}
+
+.k95-nav__logo:hover .k95-nav__monogram {
+  transform: scale(1.06);
+}
+
+.k95-nav__logo-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #09090b;
+  text-transform: uppercase;
+}
+
+/* Center Layout Switcher (When on Home Spatial View) */
+.k95-nav__center {
+  pointer-events: auto;
+}
+
+.k95-mode-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.k95-mode-btn {
+  padding: 7px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #71717a;
+  text-transform: uppercase;
+  transition: all var(--transition-fast);
+}
+
+.k95-mode-btn:hover {
+  color: #09090b;
+}
+
+.k95-mode-btn.is-active {
+  background: #09090b;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Right Navigation Links with Studio K95 Character Roll */
+.k95-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+  pointer-events: auto;
+}
+
+.k95-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #52525b;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color var(--transition-fast);
+}
+
+.k95-nav__link:hover {
+  color: #09090b;
+}
+
+.k95-nav__link.is-active {
+  color: #09090b;
+}
+
+.k95-nav__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #09090b;
+  display: inline-block;
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s linear;
+}
+
+.k95-nav__link.is-active .k95-nav__dot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Character Roll Animation */
+.k95-char-roll {
+  display: inline-flex;
+  overflow: hidden;
+  height: 1.1em;
+  line-height: 1.1;
+  position: relative;
+}
+
+.k95-char-top, .k95-char-bot {
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.k95-char-bot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(100%);
+}
+
+.k95-nav__link:hover .k95-char-top {
+  transform: translateY(-100%);
+}
+
+.k95-nav__link:hover .k95-char-bot {
+  transform: translateY(0);
+}
+
+/* Contact CTA button */
+.k95-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #09090b;
+  color: #ffffff !important;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.k95-nav__cta:hover {
+  transform: translateY(-2px);
+  background: #27272a;
+}
+
+@media (max-width: 900px) {
+  .k95-nav {
+    padding: 18px 20px;
+  }
+  .k95-nav__links {
+    gap: 18px;
+  }
+  .k95-mode-pill {
+    display: none;
+  }
+}

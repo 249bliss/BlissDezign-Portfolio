@@ -1,0 +1,70 @@
+/* Top View Switcher (Sphere <-> Grid) */
+.top-view-switcher-wrap {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  pointer-events: auto;
+}
+
+.top-view-switcher {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.top-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: #71717a;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.top-view-btn:hover {
+  color: #09090b;
+}
+
+.top-view-btn.is-active {
+  background: #09090b;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.top-view-icon {
+  opacity: 0.85;
+}
+
+.top-view-btn.is-active .top-view-icon {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .top-view-switcher-wrap {
+    top: 18px;
+    right: 16px;
+    left: auto;
+    transform: none;
+  }
+  .top-view-btn {
+    padding: 5px 11px;
+    font-size: 11px;
+  }
+}

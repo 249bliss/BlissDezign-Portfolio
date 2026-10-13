@@ -1,0 +1,74 @@
+/* Top Left Minimalist Social Links Capsule (Icons Only) */
+.top-social-wrap {
+  position: fixed;
+  top: 24px;
+  left: 32px;
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+.top-social-capsule {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 4px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 9999px;
+  box-shadow: 
+    0 8px 24px -4px rgba(0, 0, 0, 0.06),
+    0 1px 0 0 rgba(255, 255, 255, 0.9) inset;
+  gap: 2px;
+}
+
+.top-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #3f3f46;
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.top-social-link:hover {
+  color: #09090b;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transform: translateY(-0.5px);
+}
+
+.top-social-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 0 1px;
+}
+
+.top-social-icon {
+  opacity: 0.82;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.top-social-link:hover .top-social-icon {
+  opacity: 1;
+}
+
+.top-social-link:hover .top-contra-icon {
+  transform: rotate(25deg) scale(1.15);
+}
+
+@media (max-width: 768px) {
+  .top-social-wrap {
+    top: 16px;
+    left: 16px;
+  }
+  .top-social-link {
+    width: 28px;
+    height: 28px;
+  }
+}

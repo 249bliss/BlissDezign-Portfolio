@@ -1,0 +1,387 @@
+/* ==========================================================================
+   SPATIAL 3D SPHERE & ARCHITECTURAL BLUEPRINT CANVAS
+   Features:
+   - True 3D perspective stage with Fibonacci spherical distribution
+   - Architectural blueprint grid, coordinate axes, and technical crop marks
+   - Vertical & horizontal architectural guide lines / stripes
+   - Double-sided cards (front: high-res artwork, back: frosted EB chassis)
+   - Immersive 2nd-click dive-in modal with direct case study launcher
+   ========================================================================== */
+
+.spatial-sphere-stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+  user-select: none;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 1. ARCHITECTURAL BLUEPRINT GRID & STRIPES BACKGROUND ── */
+.bg-blueprint-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center center;
+  z-index: 1;
+}
+
+/* Architectural Vertical Guide Lines & Stripes */
+.bg-architectural-stripes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent calc(100% / 12 - 1px),
+    rgba(0, 0, 0, 0.025) calc(100% / 12 - 1px),
+    rgba(0, 0, 0, 0.025) calc(100% / 12)
+  );
+}
+
+/* Coordinate Axes */
+.bg-grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bg-axis {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.bg-axis.axis-x {
+  top: 50%;
+  left: 3%;
+  right: 3%;
+  height: 1px;
+}
+
+.bg-axis.axis-y {
+  left: 50%;
+  top: 3%;
+  bottom: 3%;
+  width: 1px;
+}
+
+/* 4 Corner Precision Technical Crop Marks (+) */
+.bg-crop {
+  position: fixed;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 20px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.28);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+}
+
+.bg-crop-tl { top: 24px; left: 24px; }
+.bg-crop-tr { top: 24px; right: 24px; }
+.bg-crop-bl { bottom: 24px; left: 24px; }
+.bg-crop-br { bottom: 24px; right: 24px; }
+
+/* ── 2. 3D SPHERICAL PIVOT GROUP ── */
+.spatial-sphere-pivot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+  z-index: 5;
+}
+
+/* ── 3. SPHERICAL PROJECT CARDS ── */
+.sphere-card-plane {
+  position: absolute;
+  top: -160px;
+  left: -240px;
+  width: 480px;
+  height: 320px;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  cursor: pointer;
+  will-change: transform;
+}
+
+.sphere-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.sphere-card-plane:hover .sphere-card-inner,
+.sphere-card-plane.is-hovered .sphere-card-inner {
+  box-shadow: 0 28px 60px -10px rgba(0, 0, 0, 0.22), 0 0 0 1.5px rgba(0, 0, 0, 0.3);
+}
+
+.sphere-card-plane.is-active .sphere-card-inner {
+  box-shadow: 0 32px 70px -12px rgba(0, 0, 0, 0.3), 0 0 0 2px #09090b;
+}
+
+/* Card Faces (Front & Back to prevent mirrored text) */
+.sphere-card-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Front Face: Pure Artwork */
+.sphere-card-front {
+  background: #ffffff;
+  transform: rotateY(0deg);
+}
+
+.sphere-card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* Hint Pill (shown only on active card at center) */
+.sphere-card-hint-pill {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(9, 9, 11, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: pulseHint 2s infinite ease-in-out;
+}
+
+@keyframes pulseHint {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.95; }
+  50% { transform: translateX(-50%) scale(1.04); opacity: 1; }
+}
+
+/* Back Face: Frosted Minimalist Monogram Chassis */
+.sphere-card-back {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sphere-card-emblem {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* ── 4. IMMERSIVE DIVE-IN MODAL (2nd Click) ── */
+.sphere-divein-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(9, 9, 11, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  animation: diveInFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes diveInFade {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to { opacity: 1; backdrop-filter: blur(16px); }
+}
+
+.sphere-divein-modal {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 40px 90px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  animation: diveInZoom 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes diveInZoom {
+  from { transform: scale(0.85) translateY(24px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.sphere-divein-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.sphere-divein-close:hover {
+  transform: scale(1.08);
+  background: #09090b;
+}
+
+.sphere-divein-media-wrap {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  background: #09090b;
+  overflow: hidden;
+}
+
+.sphere-divein-media-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sphere-divein-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  gap: 20px;
+}
+
+.sphere-divein-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #09090b;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.sphere-divein-tagline {
+  font-size: 0.95rem;
+  color: #71717a;
+  margin: 4px 0 0 0;
+}
+
+.sphere-divein-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.sphere-divein-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sphere-divein-btn.secondary {
+  background: #f4f4f5;
+  color: #18181b;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.sphere-divein-btn.secondary:hover {
+  background: #e4e4e7;
+}
+
+.sphere-divein-btn.primary {
+  background: #09090b;
+  color: #ffffff;
+  border: 1px solid #09090b;
+}
+
+.sphere-divein-btn.primary:hover {
+  background: #27272a;
+  transform: translateY(-1px);
+}
+
+/* Mobile & Tablet adjustments */
+@media (max-width: 768px) {
+  .sphere-card-plane {
+    top: -120px;
+    left: -160px;
+    width: 320px;
+    height: 220px;
+  }
+
+  .sphere-divein-media-wrap {
+    height: 320px;
+  }
+
+  .sphere-divein-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .sphere-divein-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

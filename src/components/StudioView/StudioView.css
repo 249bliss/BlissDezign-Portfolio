@@ -1,0 +1,312 @@
+/* Studio Page (Editorial Portfolio Manifesto) */
+.studio-view-page {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 100px 48px 120px;
+  box-sizing: border-box;
+  color: var(--text-primary);
+  position: relative;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.studio-view-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+/* Giant Architectural Hero Typography - Refined Medium/Regular */
+.studio-hero-section {
+  padding: 2rem 0 4.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.studio-huge-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 12vw, 8.5rem);
+  font-weight: 500; /* Strictly Medium, never 800 */
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #09090b;
+  margin-bottom: 2.5rem;
+  word-break: break-word;
+}
+
+.studio-hero-lead-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.studio-lead-label {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 500; /* Medium */
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+.studio-lead-statement {
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  font-weight: 400; /* Regular */
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  color: #09090b;
+}
+
+.studio-lead-statement strong {
+  font-weight: 500; /* Medium */
+  color: #09090b;
+}
+
+/* Photographic Dossier & Narrative Split */
+.studio-narrative-split {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 4.5rem;
+  padding: 5rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  align-items: start;
+}
+
+.studio-photo-card {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #f4f4f5;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 100px;
+}
+
+.studio-photo-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.studio-photo-meta {
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.studio-photo-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 500; /* Strictly Medium */
+  color: #09090b;
+}
+
+.studio-photo-role {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 400; /* Regular */
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+.studio-story-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.studio-story-p {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 400; /* Regular */
+  line-height: 1.75;
+  color: #3f3f46;
+}
+
+.studio-story-p strong {
+  font-weight: 500;
+  color: #09090b;
+}
+
+.studio-quote-banner {
+  padding: 1.75rem 2.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fafafa;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 500; /* Strictly Medium */
+  line-height: 1.45;
+  color: #09090b;
+}
+
+/* Services & Capabilities Accordion Table */
+.studio-services-section {
+  padding: 5rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.studio-section-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 500; /* Strictly Medium */
+  letter-spacing: -0.025em;
+  margin-bottom: 2.5rem;
+  text-transform: uppercase;
+  color: #09090b;
+}
+
+.studio-services-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.studio-service-row {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 1.75rem 0;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.studio-service-row:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.studio-service-header {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 2rem;
+}
+
+.service-num {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 500; /* Medium */
+  color: #71717a;
+  letter-spacing: 0.08em;
+}
+
+.service-name {
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 1.8vw, 1.6rem);
+  font-weight: 500; /* Strictly Medium */
+  letter-spacing: -0.015em;
+  color: #09090b;
+}
+
+.service-toggle-icon {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 400; /* Regular */
+  color: #09090b;
+  transition: transform var(--transition-fast);
+}
+
+.studio-service-row.open .service-toggle-icon {
+  transform: rotate(45deg);
+}
+
+.studio-service-body {
+  margin-top: 1.25rem;
+  padding-left: 80px;
+  max-width: 780px;
+  display: none;
+}
+
+.studio-service-row.open .studio-service-body {
+  display: block;
+}
+
+.service-desc-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400; /* Regular */
+  line-height: 1.65;
+  color: #52525b;
+  margin-bottom: 1.25rem;
+}
+
+.service-tags-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.service-tag {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 400; /* Regular */
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  background: #f4f4f5;
+  color: #52525b;
+}
+
+/* Client Recognitions Table */
+.studio-records-section {
+  padding: 5rem 0;
+}
+
+.studio-records-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+}
+
+.studio-records-table th {
+  text-align: left;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 500; /* Medium */
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #71717a;
+  padding: 1rem 0;
+  border-bottom: 1px solid #09090b;
+}
+
+.studio-records-table td {
+  padding: 1.25rem 0;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 400; /* Regular */
+  color: #09090b;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.record-year {
+  color: #71717a;
+  font-weight: 400;
+}
+
+.record-project {
+  font-weight: 500; /* Medium */
+}
+
+.record-role {
+  color: #52525b;
+  font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .studio-view-page {
+    padding: 90px 20px 80px;
+  }
+  .studio-hero-lead-grid, .studio-narrative-split {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .studio-photo-card {
+    position: static;
+  }
+  .studio-service-header {
+    grid-template-columns: 40px 1fr auto;
+    gap: 1rem;
+  }
+  .studio-service-body {
+    padding-left: 0;
+  }
+}

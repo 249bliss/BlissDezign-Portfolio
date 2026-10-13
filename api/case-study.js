@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 
 // Supabase configuration
-const SUPABASE_URL = 'https://tqryfaoihqblcgfnoqgc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcnlmYW9paHFibGNnZm5vcWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwODgzODAsImV4cCI6MjA5MTY2NDM4MH0.jJwCKbcKNuXoSDkLXPhhLcaa91M-5Eynjpdiom8HKMM';
+const SUPABASE_URL = 'https://kehyrpousvkmtnbmrvhz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtlaHlycG91c3ZrbXRuYm1ydmh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4OTkyNjQsImV4cCI6MjEwNzQ3NTI2NH0.j9P-Pm8IJqnRv_X4iToWJD8Jt7Ks1Par1ZlZSz5t7hU';
 
 function escapeHtml(unsafe) {
     if (!unsafe) return '';
