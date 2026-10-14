@@ -435,17 +435,17 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           // Endless vertical scrolling on drag (unbounded)
           targetScrollY.current -= dy * 0.022;
         } else if (globeGroupRef.current) {
-          // Dragging rotates the 3D sphere with smooth, natural resistance
-          globeGroupRef.current.rotation.y += dx * 0.0028;
-          globeGroupRef.current.rotation.x += dy * 0.0018;
+          // Dragging rotates the 3D sphere smoothly with direct finger/cursor tracking
+          globeGroupRef.current.rotation.y += dx * 0.0046;
+          globeGroupRef.current.rotation.x += dy * 0.0028;
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
-          // Calibrated throw velocity with strict speed limit
-          const targetVx = dy * 0.0012;
-          const targetVy = dx * 0.0018;
-          rotVelocity.current.x = rotVelocity.current.x * 0.4 + targetVx * 0.6;
-          rotVelocity.current.y = rotVelocity.current.y * 0.4 + targetVy * 0.6;
-          rotVelocity.current.y = Math.max(-0.011, Math.min(0.011, rotVelocity.current.y));
-          rotVelocity.current.x = Math.max(-0.007, Math.min(0.007, rotVelocity.current.x));
+          // Fluid throw velocity accumulation with enjoyable spin momentum
+          const targetVx = dy * 0.0020;
+          const targetVy = dx * 0.0036;
+          rotVelocity.current.x = rotVelocity.current.x * 0.35 + targetVx * 0.65;
+          rotVelocity.current.y = rotVelocity.current.y * 0.35 + targetVy * 0.65;
+          rotVelocity.current.y = Math.max(-0.026, Math.min(0.026, rotVelocity.current.y));
+          rotVelocity.current.x = Math.max(-0.015, Math.min(0.015, rotVelocity.current.x));
         }
         previousMouse.current = { x: clientX, y: clientY };
       } else if (!isDragging.current && onHoverProject) {
@@ -565,16 +565,17 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         if (viewModeRef.current === 'grid') {
           targetScrollY.current -= dy * 0.022;
         } else if (globeGroupRef.current) {
-          globeGroupRef.current.rotation.y += dx * 0.0032;
-          globeGroupRef.current.rotation.x += dy * 0.0020;
+          // Touch drag tracks finger naturally with tactile responsiveness
+          globeGroupRef.current.rotation.y += dx * 0.0052;
+          globeGroupRef.current.rotation.x += dy * 0.0030;
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
 
-          const targetVx = dy * 0.0014;
-          const targetVy = dx * 0.0020;
-          rotVelocity.current.x = rotVelocity.current.x * 0.4 + targetVx * 0.6;
-          rotVelocity.current.y = rotVelocity.current.y * 0.4 + targetVy * 0.6;
-          rotVelocity.current.y = Math.max(-0.011, Math.min(0.011, rotVelocity.current.y));
-          rotVelocity.current.x = Math.max(-0.007, Math.min(0.007, rotVelocity.current.x));
+          const targetVx = dy * 0.0022;
+          const targetVy = dx * 0.0040;
+          rotVelocity.current.x = rotVelocity.current.x * 0.35 + targetVx * 0.65;
+          rotVelocity.current.y = rotVelocity.current.y * 0.35 + targetVy * 0.65;
+          rotVelocity.current.y = Math.max(-0.026, Math.min(0.026, rotVelocity.current.y));
+          rotVelocity.current.x = Math.max(-0.015, Math.min(0.015, rotVelocity.current.x));
         }
 
         previousMouse.current = { x: t.clientX, y: t.clientY };
@@ -732,12 +733,12 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
           globeGroupRef.current.rotation.z *= 0.92;
 
-          // 2. Controlled natural inertia (calm, luxurious deceleration)
-          rotVelocity.current.y *= 0.945;
-          rotVelocity.current.x *= 0.935;
+          // 2. Silky physical inertia decay (delightful ~1.8s spin before softly settling)
+          rotVelocity.current.y *= 0.966;
+          rotVelocity.current.x *= 0.956;
 
-          // 3. Subtle celestial idle drift
-          const idleDrift = 0.00045 * (1.0 - m);
+          // 3. Gentle perpetual celestial idle drift
+          const idleDrift = 0.0007 * (1.0 - m);
           if (Math.abs(rotVelocity.current.y) < idleDrift) {
             rotVelocity.current.y = THREE.MathUtils.lerp(rotVelocity.current.y, idleDrift, 0.04);
           }
@@ -937,21 +938,24 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
               <div className="celestial-divein-actions">
                 <button
                   type="button"
-                  className="celestial-action-btn secondary"
-                  onClick={handleExitZoom}
-                >
-                  {viewMode === 'grid' ? 'Back to Grid' : 'Back to Globe'}
-                </button>
-                <button
-                  type="button"
                   className="celestial-action-btn primary"
                   onClick={() => {
                     handleExitZoom();
                     onSelectProject(focusedProject);
                   }}
                 >
-                  <span>{focusedProject.is_case_study ? 'View Full Case Study' : 'View Project'}</span>
+                  <span>{focusedProject.is_case_study ? 'View Case Study' : 'View Project'}</span>
                   <ArrowUpRight size={16} />
+                </button>
+                <button
+                  type="button"
+                  className="celestial-action-btn secondary"
+                  onClick={handleExitZoom}
+                >
+                  <span className="celestial-btn-text-desktop">
+                    {viewMode === 'grid' ? 'Back to Grid' : 'Back to Globe'}
+                  </span>
+                  <span className="celestial-btn-text-mobile">Back</span>
                 </button>
               </div>
             </div>

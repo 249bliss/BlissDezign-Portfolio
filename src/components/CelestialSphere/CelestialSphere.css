@@ -185,7 +185,7 @@
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 40px 90px -15px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);
   animation: diveInPop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
@@ -345,16 +345,55 @@
   .celestial-btn-text-mobile {
     display: inline;
   }
+  .celestial-divein-overlay {
+    padding: 16px 14px;
+  }
+  .celestial-divein-card {
+    border-radius: 16px;
+    max-height: 90vh;
+  }
   .celestial-divein-media {
-    height: 300px;
+    height: 220px;
+    min-height: 180px;
+    max-height: 240px;
   }
   .celestial-divein-footer {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 20px;
+    align-items: stretch;
+    padding: 16px 18px 20px 18px;
+    gap: 14px;
+  }
+  .celestial-divein-info {
+    gap: 3px;
+  }
+  .celestial-divein-tag {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+  .celestial-divein-heading {
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+  .celestial-divein-desc {
+    font-size: 0.85rem;
+    line-height: 1.42;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .celestial-divein-actions {
     width: 100%;
-    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .celestial-action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 0.88rem;
+    border-radius: 9999px;
   }
 }
