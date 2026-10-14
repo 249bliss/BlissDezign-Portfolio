@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('sphere');
   const [isProcessOpen, setIsProcessOpen] = useState(false);
   const [isStudioOpen, setIsStudioOpen] = useState(false);
-  const [isIntroActive, setIsIntroActive] = useState(false);
+  const [isIntroActive, setIsIntroActive] = useState(true);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
 
@@ -185,7 +185,7 @@ export const App: React.FC = () => {
       >
         <CelestialSphere
           viewMode={viewMode}
-          isOverlayActive={isProcessOpen || isStudioOpen || !!selectedProject}
+          isOverlayActive={isProcessOpen || isStudioOpen || !!selectedProject || isIntroActive}
           onSelectProject={handleSelectSupabaseProject}
           onHoverProject={(sbProj) => {
             if (sbProj) {

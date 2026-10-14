@@ -1,4 +1,12 @@
-/* ── INTRO SEQUENCE: "CLARITY BY DESIGN" DUAL CORNER DRAG & DIVE-IN ── */
+/* ==========================================================================
+   CINEMATIC INTRO SEQUENCE: "CLARITY BY DESIGN" HERO CARD EXPANSION
+   Features:
+   - High-editorial "Clarity By Design" flanking typography
+   - Centered crisp hero card ("Meet Emmanuel Bliss")
+   - Autonomous cursor glide-in with tactile spring click ripple
+   - GPU-accelerated hyperspace zoom transition into the 3D celestial sphere
+   ========================================================================== */
+
 .intro-sequence-overlay {
   position: fixed;
   inset: 0;
@@ -15,14 +23,14 @@
   font-family: var(--font-heading, "Sora", "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif);
 }
 
-/* Split Typography flanking the viewport - Scaled down for refined editorial balance */
+/* ── Split Typographic Framing ("Clarity" ... "By Design") ── */
 .intro-split-text {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: clamp(1.2rem, 2.2vw, 1.85rem);
+  font-size: clamp(1.35rem, 2.3vw, 2.05rem);
   font-weight: 500;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.028em;
   color: #09090b;
   white-space: nowrap;
   pointer-events: none;
@@ -31,144 +39,44 @@
 }
 
 .intro-split-text--left {
-  right: calc(50% + 185px);
+  right: calc(50% + 295px);
 }
 
 .intro-split-text--right {
-  left: calc(50% + 185px);
+  left: calc(50% + 295px);
 }
 
-@media (max-width: 1024px) {
-  .intro-split-text--left {
-    right: calc(50% + 155px);
-    font-size: clamp(1.1rem, 1.9vw, 1.5rem);
-  }
-  .intro-split-text--right {
-    left: calc(50% + 155px);
-    font-size: clamp(1.1rem, 1.9vw, 1.5rem);
-  }
-}
-
-@media (max-width: 640px) {
-  .intro-split-text--left {
-    top: 24%;
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, -50%);
-    font-size: 1.25rem;
-  }
-  .intro-split-text--right {
-    top: 76%;
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, -50%);
-    font-size: 1.25rem;
-  }
-}
-
-/* Central Viewport Container: Compact, sleek, strictly 0px border-radius, NO shadow */
-.canvas-viewport-container {
+/* ── Centered Hero Card Container ("Meet Emmanuel Bliss") ── */
+.intro-hero-card-container {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  width: 320px;
-  height: 220px;
-  border-radius: 0px !important;
+  transform: translate(-50%, -50%);
+  width: min(540px, 86vw);
+  aspect-ratio: 2382 / 1539;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: none !important;
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
   z-index: 5;
-  background: transparent;
+  background-color: #f4f4f5;
   will-change: transform, opacity;
-  backface-visibility: hidden;
+  transform-origin: center center;
+  transition: box-shadow 0.3s ease;
 }
 
-@media (max-width: 640px) {
-  .canvas-viewport-container {
-    width: 250px;
-    height: 175px;
-  }
+.intro-hero-card-container:hover {
+  box-shadow: 0 32px 76px -16px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
-/* Preloaded Stack of Showcase Images (Hardware Accelerated, Zero Frame Drops) */
-.intro-shuffle-card {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 4;
-  background: transparent;
-  pointer-events: none;
-  will-change: transform, opacity;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-}
-
-.intro-preloaded-slide {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-}
-
-.intro-preloaded-slide.is-visible {
-  opacity: 1;
-}
-
-.intro-preloaded-slide img {
+.intro-hero-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* Natural Sky Background Video Layer — Always active & rendered behind slides */
-.intro-bg-video-layer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  opacity: 1;
-  background: transparent;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-.intro-bg-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Corner Drag Cursors (Dual-Tone Black & White SVGs) */
-.corner-drag-cursor {
-  position: absolute;
-  width: 26px;
-  height: 26px;
-  z-index: 40;
-  pointer-events: none;
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
-  will-change: transform, opacity;
-}
-
-.corner-drag-cursor--ne {
-  top: -9px;
-  right: -9px;
-}
-
-.corner-drag-cursor--sw {
-  bottom: -9px;
-  left: -9px;
-}
-
-/* Central Mouse Pointer that glides in and Spring-Clicks */
+/* ── Autonomous Cursor Glide & Tactile Click ── */
 .intro-center-mouse-cursor {
   position: absolute;
   top: 50%;
@@ -180,7 +88,6 @@
   align-items: center;
   justify-content: center;
   will-change: transform, opacity;
-  backface-visibility: hidden;
 }
 
 .intro-mouse-pointer-svg {
@@ -193,33 +100,32 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 60px;
-  height: 60px;
-  margin-top: -30px;
-  margin-left: -30px;
+  width: 70px;
+  height: 70px;
+  margin-top: -35px;
+  margin-left: -35px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%);
   pointer-events: none;
   opacity: 0;
-  transform: translate3d(0, 0, 0) scale(0.2);
+  transform: scale(0.2);
   will-change: transform, opacity;
-  backface-visibility: hidden;
 }
 
-/* Discreet Skip Button */
+/* ── Discreet Skip Button ── */
 .intro-skip-btn {
   position: fixed;
   bottom: 24px;
   right: 28px;
   z-index: 60;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 9999px;
   font-family: var(--font-heading, inherit);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 500;
   color: #71717a;
   cursor: pointer;
@@ -231,4 +137,41 @@
   color: #09090b;
   background: #ffffff;
   transform: translateY(-1px);
+}
+
+/* ── Responsive Adaptations ── */
+@media (max-width: 1024px) {
+  .intro-hero-card-container {
+    width: min(460px, 82vw);
+    border-radius: 16px;
+  }
+  .intro-split-text--left {
+    right: calc(50% + 250px);
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+  }
+  .intro-split-text--right {
+    left: calc(50% + 250px);
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .intro-hero-card-container {
+    width: min(380px, 86vw);
+    border-radius: 14px;
+  }
+  .intro-split-text--left {
+    top: calc(50% - 150px);
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    font-size: 1.35rem;
+  }
+  .intro-split-text--right {
+    top: calc(50% + 150px);
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    font-size: 1.35rem;
+  }
 }

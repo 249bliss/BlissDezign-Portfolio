@@ -20,6 +20,7 @@ interface AboutMeSectionProps {
 export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
 
@@ -202,6 +203,13 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
       );
     });
 
+    // Ensure video autoplays immediately without stalling
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {});
+    }
+
     return () => {
       tl.kill();
     };
@@ -373,12 +381,14 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
 
             <div className="about-venture-img-frame">
               <video
+                ref={videoRef}
                 src="/assets/kre8mind-video.mp4"
-                poster="/assets/New website cover.jpg"
+                poster="/assets/kre8mind-poster.jpg"
                 autoPlay
                 loop
                 muted
                 playsInline
+                preload="auto"
                 className="about-venture-cover-video"
               />
             </div>

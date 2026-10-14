@@ -96,12 +96,14 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     };
   }, []);
 
-  const bgVideoRef = useRef<HTMLVideoElement>(null);
+  const bgVideoRef = useRef<HTMLVideoElement | null>(null);
 
   // Hyperspace zoom arrival & deceleration when switching from overlays to Projects
   const prevOverlayActive = useRef(isOverlayActive);
   useEffect(() => {
     if (bgVideoRef.current) {
+      bgVideoRef.current.defaultMuted = true;
+      bgVideoRef.current.muted = true;
       if (isOverlayActive) {
         bgVideoRef.current.pause();
       } else {
@@ -111,11 +113,17 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     const handleResume = () => {
       if (bgVideoRef.current && !isOverlayActive) {
-        bgVideoRef.current.play().catch(() => {});
+        bgVideoRef.current.defaultMuted = true;
+        bgVideoRef.current.muted = true;
+        if (bgVideoRef.current.paused) {
+          bgVideoRef.current.play().catch(() => {});
+        }
       }
     };
     window.addEventListener('focus', handleResume);
     document.addEventListener('visibilitychange', handleResume);
+    window.addEventListener('pointerdown', handleResume, { passive: true, once: true });
+    window.addEventListener('touchstart', handleResume, { passive: true, once: true });
 
     if (prevOverlayActive.current && !isOverlayActive) {
       if (cameraRef.current && globeGroupRef.current) {
@@ -160,6 +168,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     return () => {
       window.removeEventListener('focus', handleResume);
       document.removeEventListener('visibilitychange', handleResume);
+      window.removeEventListener('pointerdown', handleResume);
+      window.removeEventListener('touchstart', handleResume);
     };
   }, [isOverlayActive, onHoverProject]);
 
@@ -465,12 +475,12 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           globeGroupRef.current.rotation.x += dy * 0.0028;
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
           // Fluid throw velocity accumulation with enjoyable spin momentum
-          const targetVx = dy * 0.0020;
-          const targetVy = dx * 0.0036;
-          rotVelocity.current.x = rotVelocity.current.x * 0.35 + targetVx * 0.65;
-          rotVelocity.current.y = rotVelocity.current.y * 0.35 + targetVy * 0.65;
-          rotVelocity.current.y = Math.max(-0.026, Math.min(0.026, rotVelocity.current.y));
-          rotVelocity.current.x = Math.max(-0.015, Math.min(0.015, rotVelocity.current.x));
+          const targetVx = dy * 0.0028;
+          const targetVy = dx * 0.0052;
+          rotVelocity.current.x = rotVelocity.current.x * 0.30 + targetVx * 0.70;
+          rotVelocity.current.y = rotVelocity.current.y * 0.30 + targetVy * 0.70;
+          rotVelocity.current.y = Math.max(-0.068, Math.min(0.068, rotVelocity.current.y));
+          rotVelocity.current.x = Math.max(-0.032, Math.min(0.032, rotVelocity.current.x));
         }
         previousMouse.current = { x: clientX, y: clientY };
       } else if (!isDragging.current && onHoverProject) {
@@ -595,12 +605,12 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           globeGroupRef.current.rotation.x += dy * 0.0030;
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
 
-          const targetVx = dy * 0.0022;
-          const targetVy = dx * 0.0040;
-          rotVelocity.current.x = rotVelocity.current.x * 0.35 + targetVx * 0.65;
-          rotVelocity.current.y = rotVelocity.current.y * 0.35 + targetVy * 0.65;
-          rotVelocity.current.y = Math.max(-0.026, Math.min(0.026, rotVelocity.current.y));
-          rotVelocity.current.x = Math.max(-0.015, Math.min(0.015, rotVelocity.current.x));
+          const targetVx = dy * 0.0030;
+          const targetVy = dx * 0.0055;
+          rotVelocity.current.x = rotVelocity.current.x * 0.30 + targetVx * 0.70;
+          rotVelocity.current.y = rotVelocity.current.y * 0.30 + targetVy * 0.70;
+          rotVelocity.current.y = Math.max(-0.068, Math.min(0.068, rotVelocity.current.y));
+          rotVelocity.current.x = Math.max(-0.032, Math.min(0.032, rotVelocity.current.x));
         }
 
         previousMouse.current = { x: t.clientX, y: t.clientY };
@@ -758,9 +768,9 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
           globeGroupRef.current.rotation.z *= 0.92;
 
-          // 2. Silky physical inertia decay (delightful ~1.8s spin before softly settling)
-          rotVelocity.current.y *= 0.966;
-          rotVelocity.current.x *= 0.956;
+          // 2. Silky physical inertia decay (rotates freely for ~3-4s with true momentum before softly settling)
+          rotVelocity.current.y *= 0.982;
+          rotVelocity.current.x *= 0.970;
 
           // 3. Gentle perpetual celestial idle drift
           const idleDrift = 0.0007 * (1.0 - m);
@@ -856,22 +866,48 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       {/* ── 1. LIVING BACKGROUND VIDEO ── */}
       <div className="sky-daylight-backdrop" aria-hidden="true">
         <video
-          ref={bgVideoRef}
+          ref={(el) => {
+            bgVideoRef.current = el;
+            if (el) {
+              el.defaultMuted = true;
+              el.muted = true;
+              if (!isOverlayActive && el.paused) {
+                el.play().catch(() => {});
+              }
+            }
+          }}
           className="sky-bg-video"
           src="/assets/bg-video-new.mp4"
+          poster="/assets/sky-poster.jpg"
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
+          onLoadedData={() => {
+            if (bgVideoRef.current && !isOverlayActive) {
+              bgVideoRef.current.defaultMuted = true;
+              bgVideoRef.current.muted = true;
+              bgVideoRef.current.play().catch(() => {});
+            }
+          }}
           onCanPlay={() => {
-            bgVideoRef.current?.play().catch(() => {});
+            if (bgVideoRef.current && !isOverlayActive) {
+              bgVideoRef.current.defaultMuted = true;
+              bgVideoRef.current.muted = true;
+              bgVideoRef.current.play().catch(() => {});
+            }
           }}
           onWaiting={() => {
-            bgVideoRef.current?.play().catch(() => {});
+            if (bgVideoRef.current && !isOverlayActive) {
+              bgVideoRef.current.play().catch(() => {});
+            }
           }}
           onEnded={() => {
-            bgVideoRef.current?.play().catch(() => {});
+            if (bgVideoRef.current) {
+              bgVideoRef.current.currentTime = 0;
+              bgVideoRef.current.play().catch(() => {});
+            }
           }}
         />
       </div>

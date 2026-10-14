@@ -87,7 +87,7 @@ export const StudioSection: React.FC<StudioSectionProps> = ({ onClose, onOpenCon
           </div>
 
           <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <img src="/assets/New website cover.jpg" alt="Kre8mind Design Studio" style={{ width: '100%' }} />
+            <img src="/assets/kre8mind-poster.jpg" alt="Kre8mind Design Studio" style={{ width: '100%' }} />
           </div>
         </section>
 

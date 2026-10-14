@@ -23,7 +23,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, #4a82b8 0%, #7db3e3 50%, #b2d5f4 100%);
+  background: #3b74a8 url('/assets/sky-poster.jpg') center/cover no-repeat;
   z-index: 1;
   overflow: hidden;
 }
