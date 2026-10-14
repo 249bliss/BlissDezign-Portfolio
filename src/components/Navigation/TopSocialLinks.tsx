@@ -45,9 +45,22 @@ const ContraIcon: React.FC<{ size?: number; className?: string }> = ({ size = 14
   </svg>
 );
 
-export const TopSocialLinks: React.FC = () => {
+export interface TopSocialLinksProps {
+  visible?: boolean;
+}
+
+export const TopSocialLinks: React.FC<TopSocialLinksProps> = ({ visible = true }) => {
   return (
-    <nav className="top-social-wrap" aria-label="Social Profiles & Contra">
+    <nav
+      className={`top-social-wrap ${visible ? 'is-visible' : 'is-hidden'}`}
+      aria-label="Social Profiles & Contra"
+      style={{
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? 'auto' : 'none',
+        transform: visible ? 'translateY(0)' : 'translateY(-10px)',
+        transition: 'opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+      }}
+    >
       <div className="top-social-capsule">
         <a
           href="https://x.com/BlissDezigns"

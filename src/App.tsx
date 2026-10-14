@@ -162,8 +162,8 @@ export const App: React.FC = () => {
       {/* Nature Ambiance Sound Toggle (Birdsong & Breeze) */}
       <NatureAudio />
 
-      {/* Top Left Social Links Capsule (X & LinkedIn) */}
-      <TopSocialLinks />
+      {/* Top Left Social Links Capsule (X & LinkedIn) - Hidden when modal/case study is open */}
+      <TopSocialLinks visible={!selectedProject && !isProcessOpen && !isStudioOpen && !isIntroActive} />
 
       {/* Top View Switcher (Sphere <-> Grid) */}
       <TopViewSwitcher

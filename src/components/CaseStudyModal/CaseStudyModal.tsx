@@ -72,14 +72,6 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
         {/* Sticky Header */}
         <div className="cs-sticky-header">
           <div className="cs-header-left">
-            {project.categoryTag && (
-              <span className="cs-tag-chip">
-                {project.categoryTag}
-              </span>
-            )}
-          </div>
-
-          <div className="cs-header-actions">
             {project.liveUrl && (
               <a
                 href={project.liveUrl}
@@ -91,6 +83,9 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
                 <ArrowUpRight size={14} />
               </a>
             )}
+          </div>
+
+          <div className="cs-header-actions">
             <button
               onClick={onClose}
               className="cs-close-btn"
@@ -105,6 +100,13 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
         <div className="cs-content-body">
           {/* Title & Tagline */}
           <div className="cs-hero-section">
+            {project.categoryTag && (
+              <div className="cs-hero-tag-wrap">
+                <span className="cs-tag-chip">
+                  {project.categoryTag}
+                </span>
+              </div>
+            )}
             <h1 className="cs-hero-main-title">{project.title}</h1>
             {project.tagline && <p className="cs-tagline">{project.tagline}</p>}
           </div>
