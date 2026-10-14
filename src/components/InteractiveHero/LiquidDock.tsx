@@ -3,6 +3,7 @@ import { MobileMenu } from '../Navigation/MobileMenu';
 import './LiquidDock.css';
 
 export interface LiquidDockProps {
+  visible?: boolean;
   activeSection?: 'projects' | 'how-i-work' | 'about-me' | 'contact';
   onNavigateProjects: () => void;
   onNavigateHowIWork: () => void;
@@ -11,6 +12,7 @@ export interface LiquidDockProps {
 }
 
 export const LiquidDock: React.FC<LiquidDockProps> = ({
+  visible = true,
   activeSection = 'projects',
   onNavigateProjects,
   onNavigateHowIWork,
@@ -32,7 +34,11 @@ export const LiquidDock: React.FC<LiquidDockProps> = ({
 
   return (
     <>
-      <div className="liquid-dock-wrapper" role="navigation" aria-label="Bottom Navigation Dock">
+      <div
+        className={`liquid-dock-wrapper ${visible ? 'is-visible' : 'is-hidden'}`}
+        role="navigation"
+        aria-label="Bottom Navigation Dock"
+      >
         <div className="liquid-dock">
           {/* Monogram Brand Pill */}
           <button

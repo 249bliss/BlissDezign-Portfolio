@@ -171,8 +171,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                   {isSoundPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
                 </div>
                 <div className="mobile-menu-sound-text">
-                  <span className="mobile-menu-sound-title">Nature Ambiance</span>
-                  <span className="mobile-menu-sound-sub">Peaceful birdsong &amp; breeze</span>
+                  <span className="mobile-menu-sound-title">Sky Ambiance</span>
+                  <span className="mobile-menu-sound-sub">Atmospheric clouds &amp; distant jet</span>
                 </div>
               </div>
 
@@ -180,7 +180,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                 type="button"
                 className={`mobile-menu-sound-btn ${isSoundPlaying ? 'is-playing' : ''}`}
                 onClick={() => natureAudio.toggle()}
-                aria-label="Toggle nature ambiance sound"
+                aria-label="Toggle sky ambiance sound"
               >
                 {isSoundPlaying && (
                   <div className="mobile-sound-wave" aria-hidden="true">

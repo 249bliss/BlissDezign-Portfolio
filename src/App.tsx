@@ -254,6 +254,7 @@ export const App: React.FC = () => {
 
       {/* ── PERSISTENT BOTTOM NAVIGATION DOCK (MUST APPEAR ON ALL PAGES) ── */}
       <LiquidDock
+        visible={!isIntroActive}
         activeSection={
           isProcessOpen
             ? 'how-i-work'

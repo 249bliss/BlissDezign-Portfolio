@@ -16,14 +16,14 @@ export const NatureAudio: React.FC = () => {
       type="button"
       className={`nature-sound-toggle ${isPlaying ? 'is-active' : ''}`}
       onClick={() => natureAudio.toggle()}
-      title={isPlaying ? 'Mute nature ambiance' : 'Play peaceful nature sounds (birds & breeze)'}
-      aria-label="Toggle nature ambiance"
+      title={isPlaying ? 'Mute sky ambiance' : 'Play atmospheric sky ambiance (clouds & distant jet)'}
+      aria-label="Toggle sky ambiance"
     >
       <div className="nature-sound-icon-wrap">
         {isPlaying ? <Volume2 size={15} /> : <VolumeX size={15} />}
       </div>
       <span className="nature-sound-label">
-        {isPlaying ? 'Nature Ambiance' : 'Sound'}
+        {isPlaying ? 'Sky Ambiance' : 'Sound'}
       </span>
       {isPlaying && (
         <div className="nature-sound-bars" aria-hidden="true">

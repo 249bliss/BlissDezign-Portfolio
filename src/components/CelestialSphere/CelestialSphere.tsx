@@ -24,6 +24,10 @@ interface CardEntity {
   index: number;
 }
 
+// Global in-memory cache across component lifecycles for instant zero-latency texture restores
+const globalTextureCache = new Map<string, THREE.Texture>();
+const globalVideoCache = new Map<string, HTMLVideoElement>();
+
 export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   viewMode = 'sphere',
   onSelectProject,
@@ -71,16 +75,12 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   const lastTapPos = useRef({ x: 0, y: 0 });
   const previousMouse = useRef({ x: 0, y: 0 });
   const rotVelocity = useRef({ x: 0, y: 0 });
-  const targetQuaternion = useRef(new THREE.Quaternion());
   const isAligningToCard = useRef(false);
 
-  // Grid Layout Constants (Larger cards + Endless Wrap Spacing)
-  const totalTiles = 36;
-  const numRows = Math.ceil(totalTiles / 3); // 12 rows
-  const spacingX = 4.45;
-  const spacingY = 2.85;
-  const loopHeight = numRows * spacingY; // 34.2 units
-  const halfLoopHeight = loopHeight / 2; // 17.1 units
+  // Grid Layout Constants (2 columns on mobile, 3 columns on desktop + Endless Wrap Spacing)
+  const totalTiles = 48;
+  const loopHeightRef = useRef(45.6);
+  const halfLoopHeightRef = useRef(22.8);
 
   // Fetch real projects from Supabase on mount
   useEffect(() => {
@@ -121,8 +121,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       if (cameraRef.current && globeGroupRef.current) {
         // Hyperspace zoom arrival: camera rushes in from close-up / sphere blooms in
         const isMobile = window.innerWidth <= 768;
-        const targetScale = isMobile ? 0.52 : 1.0;
-        const targetZ = viewModeRef.current === 'grid' ? (isMobile ? 17.5 : 14.5) : (isMobile ? 18.0 : 16.5);
+        const targetScale = isMobile ? 0.72 : 1.0;
+        const targetZ = viewModeRef.current === 'grid' ? (isMobile ? 16.5 : 14.5) : (isMobile ? 17.0 : 16.5);
 
         cameraRef.current.position.z = 7.0;
         globeGroupRef.current.scale.set(0.25, 0.25, 0.25);
@@ -173,8 +173,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     sceneRef.current = scene;
 
     const isMobile = container.clientWidth <= 768;
-    const initialCamZ = isMobile ? 18.0 : 16.5;
-    const initialGlobeScale = isMobile ? 0.52 : 1.0;
+    const initialCamZ = isMobile ? 17.0 : 16.5;
+    const initialGlobeScale = isMobile ? 0.72 : 1.0;
 
     const camera = new THREE.PerspectiveCamera(
       45,
@@ -245,68 +245,24 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     const cardGeo = createCurvedCardGeometry(2.4, 1.5, sphereRadius);
 
-    // Texture & Video Caching
-    const textureLoader = new THREE.TextureLoader();
-    const textureCache = new Map<string, THREE.Texture>();
-    const videoCache = new Map<string, HTMLVideoElement>();
+    // High-Resolution Authentic Design Fallbacks (Guaranteeing no card ever displays an empty or generic canvas box)
+    const LOCAL_DESIGN_FALLBACKS = [
+      '/assets/Selected Project/nURAKICK.webp',
+      '/assets/Selected Project/rICKI ai.webp',
+      '/assets/Selected Project/sWYCHR.webp',
+      '/assets/Selected Project/Hevy.webp',
+    ];
 
-    const createFallbackCardTexture = (title: string, tag: string): THREE.CanvasTexture => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 640;
-      canvas.height = 400;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        // Deep obsidian glass gradient
-        const grad = ctx.createLinearGradient(0, 0, 640, 400);
-        grad.addColorStop(0, '#1e293b');
-        grad.addColorStop(1, '#0f172a');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 640, 400);
+    const getTextureForMedia = (mediaUrl: string, cardIndex: number = 0): THREE.Texture => {
+      const fallbackSrc = LOCAL_DESIGN_FALLBACKS[cardIndex % LOCAL_DESIGN_FALLBACKS.length];
+      const resolvedUrl = mediaUrl || fallbackSrc;
 
-        // Subtle architectural grid line
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(20, 20, 600, 360);
-
-        // Tag badge
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
-        ctx.beginPath();
-        ctx.roundRect(40, 45, 160, 36, 18);
-        ctx.fill();
-
-        ctx.fillStyle = '#38bdf8';
-        ctx.font = 'bold 14px sans-serif';
-        ctx.fillText((tag || 'PROJECT').toUpperCase(), 55, 68);
-
-        // Title
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 28px sans-serif';
-        const displayTitle = title.length > 28 ? title.slice(0, 26) + '...' : title;
-        ctx.fillText(displayTitle, 40, 180);
-
-        // Subtitle
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-        ctx.font = '16px sans-serif';
-        ctx.fillText('EMMANUEL BLISS // PORTFOLIO', 40, 220);
-      }
-      const tex = new THREE.CanvasTexture(canvas);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
-    };
-
-    const getTextureForMedia = (mediaUrl: string, project?: SupabaseProject): THREE.Texture => {
-      const resolvedUrl = mediaUrl;
-
-      if (!resolvedUrl) {
-        return createFallbackCardTexture(project?.title || 'Project', project?.category_tags?.[0] || 'WORK');
-      }
-
-      if (textureCache.has(resolvedUrl)) {
-        return textureCache.get(resolvedUrl)!;
+      if (globalTextureCache.has(resolvedUrl)) {
+        return globalTextureCache.get(resolvedUrl)!;
       }
 
       if (resolvedUrl.match(/\.(mp4|webm|mov)$/i)) {
-        let video = videoCache.get(resolvedUrl);
+        let video = globalVideoCache.get(resolvedUrl);
         if (!video) {
           video = document.createElement('video');
           video.src = resolvedUrl;
@@ -316,32 +272,39 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           video.playsInline = true;
           video.preload = 'auto';
           video.play().catch(() => {});
-          videoCache.set(resolvedUrl, video);
+          globalVideoCache.set(resolvedUrl, video);
         }
         const videoTex = new THREE.VideoTexture(video);
         videoTex.colorSpace = THREE.SRGBColorSpace;
         videoTex.minFilter = THREE.LinearFilter;
         videoTex.magFilter = THREE.LinearFilter;
         videoTex.generateMipmaps = false;
-        textureCache.set(resolvedUrl, videoTex);
+        globalTextureCache.set(resolvedUrl, videoTex);
         return videoTex;
       } else {
-        const fallbackTex = createFallbackCardTexture(project?.title || 'Project', project?.category_tags?.[0] || 'WORK');
-        const tex = textureLoader.load(
+        const loader = new THREE.TextureLoader();
+        loader.setCrossOrigin('anonymous');
+        const tex = loader.load(
           resolvedUrl,
-          undefined,
+          () => {
+            tex.needsUpdate = true;
+          },
           undefined,
           () => {
-            // If image fails to load (e.g. 402 or 404), seamlessly swap with fallback card
-            tex.image = fallbackTex.image as any;
-            tex.needsUpdate = true;
+            // If remote Cloudinary fails or drops offline, gracefully heal to verified authentic local design artwork
+            const fallbackLoader = new THREE.TextureLoader();
+            fallbackLoader.load(fallbackSrc, (fbTex) => {
+              fbTex.colorSpace = THREE.SRGBColorSpace;
+              tex.image = fbTex.image;
+              tex.needsUpdate = true;
+            });
           }
         );
         tex.colorSpace = THREE.SRGBColorSpace;
         tex.minFilter = THREE.LinearFilter;
         tex.magFilter = THREE.LinearFilter;
         tex.generateMipmaps = false;
-        textureCache.set(resolvedUrl, tex);
+        globalTextureCache.set(resolvedUrl, tex);
         return tex;
       }
     };
@@ -364,17 +327,26 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       dummy.lookAt(xs * 2, ys * 2, zs * 2);
       const sphereQuat = dummy.quaternion.clone();
 
-      // B) 3-Column Grid Target Calculation (Larger Prominent Scale)
-      const col = i % 3; // 0, 1, 2
-      const row = Math.floor(i / 3); // 0 to 11
-      const xg = (col - 1) * spacingX; // -3.85, 0, +3.85
-      const yg = -row * spacingY + (halfLoopHeight - spacingY); // Distributed around origin
+      // B) Responsive Grid Target Calculation (2 Columns on Mobile, 3 Columns on Desktop)
+      const cols = isMobile ? 2 : 3;
+      const spX = isMobile ? 4.0 : 4.45;
+      const spY = isMobile ? 2.65 : 2.85;
+      const initialNumRows = Math.ceil(totalTiles / cols);
+      const initialLoopH = initialNumRows * spY;
+      const initialHalfLoopH = initialLoopH / 2;
+      loopHeightRef.current = initialLoopH;
+      halfLoopHeightRef.current = initialHalfLoopH;
+
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const xg = (col - (cols - 1) / 2) * spX;
+      const yg = -row * spY + (initialHalfLoopH - spY);
       const zg = 0;
       const gridPos = new THREE.Vector3(xg, yg, zg);
       const gridQuat = new THREE.Quaternion(0, 0, 0, 1); // Identity facing forward
 
       // C) Mesh & Container Setup
-      const texture = getTextureForMedia(project.hero_image, project);
+      const texture = getTextureForMedia(project.hero_image, i);
       const cardMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         map: texture,
@@ -406,6 +378,28 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       });
     }
 
+    // Dynamic recalculation of grid coordinates for mobile (2-col) vs desktop (3-col)
+    const updateGridLayout = (isMobileLayout: boolean) => {
+      const cols = isMobileLayout ? 2 : 3;
+      const spX = isMobileLayout ? 4.0 : 4.45;
+      const spY = isMobileLayout ? 2.65 : 2.85;
+      const rows = Math.ceil(totalTiles / cols);
+      const lHeight = rows * spY;
+      const halfLHeight = lHeight / 2;
+      loopHeightRef.current = lHeight;
+      halfLoopHeightRef.current = halfLHeight;
+
+      const cards = cardDataRef.current;
+      for (let i = 0; i < cards.length; i++) {
+        const item = cards[i];
+        const c = i % cols;
+        const r = Math.floor(i / cols);
+        const xg = (c - (cols - 1) / 2) * spX;
+        const yg = -r * spY + (halfLHeight - spY);
+        item.gridPos.set(xg, yg, 0);
+      }
+    };
+
     // 6. Raycasting & Interaction
     const raycaster = new THREE.Raycaster();
     const mouseCoord = new THREE.Vector2();
@@ -414,6 +408,9 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     const handlePointerDown = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
       if (isOverlayActiveRef.current || isZoomedInRef.current) return;
+      if (globeGroupRef.current) {
+        gsap.killTweensOf(globeGroupRef.current.rotation);
+      }
       isDragging.current = true;
       hasMoved = false;
       isAligningToCard.current = false;
@@ -438,15 +435,17 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           // Endless vertical scrolling on drag (unbounded)
           targetScrollY.current -= dy * 0.022;
         } else if (globeGroupRef.current) {
-          // Dragging rotates the 3D sphere
-          globeGroupRef.current.rotation.y += dx * 0.005;
-          globeGroupRef.current.rotation.x += dy * 0.003;
+          // Dragging rotates the 3D sphere with smooth, natural resistance
+          globeGroupRef.current.rotation.y += dx * 0.0028;
+          globeGroupRef.current.rotation.x += dy * 0.0018;
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
-          // Smooth momentum accumulation with moving average
-          const targetVx = dy * 0.0025;
-          const targetVy = dx * 0.0055;
-          rotVelocity.current.x = rotVelocity.current.x * 0.35 + targetVx * 0.65;
-          rotVelocity.current.y = rotVelocity.current.y * 0.35 + targetVy * 0.65;
+          // Calibrated throw velocity with strict speed limit
+          const targetVx = dy * 0.0012;
+          const targetVy = dx * 0.0018;
+          rotVelocity.current.x = rotVelocity.current.x * 0.4 + targetVx * 0.6;
+          rotVelocity.current.y = rotVelocity.current.y * 0.4 + targetVy * 0.6;
+          rotVelocity.current.y = Math.max(-0.011, Math.min(0.011, rotVelocity.current.y));
+          rotVelocity.current.x = Math.max(-0.007, Math.min(0.007, rotVelocity.current.x));
         }
         previousMouse.current = { x: clientX, y: clientY };
       } else if (!isDragging.current && onHoverProject) {
@@ -472,11 +471,14 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     // Mobile Multi-Touch Gestures: 1-Finger Turn, 2-Finger Pinch to Zoom (Deep In & Out), 2-Finger Twist Roll
     const handleTouchStart = (e: TouchEvent) => {
       if (isOverlayActiveRef.current || isZoomedInRef.current) return;
+      if (globeGroupRef.current) {
+        gsap.killTweensOf(globeGroupRef.current.rotation);
+      }
+      isAligningToCard.current = false;
 
       if (e.touches.length === 1) {
         isDragging.current = true;
         hasMoved = false;
-        isAligningToCard.current = false;
         isPinching.current = false;
 
         const t = e.touches[0];
@@ -501,7 +503,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           } else {
             // Zoom back out to overview
             gsap.to(targetCamZ, {
-              current: isMobile ? 18.0 : 16.5,
+              current: isMobile ? 17.0 : 16.5,
               duration: 0.85,
               ease: 'power3.out',
             });
@@ -563,14 +565,16 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         if (viewModeRef.current === 'grid') {
           targetScrollY.current -= dy * 0.022;
         } else if (globeGroupRef.current) {
-          globeGroupRef.current.rotation.y += dx * 0.007;
-          globeGroupRef.current.rotation.x += dy * 0.005;
+          globeGroupRef.current.rotation.y += dx * 0.0032;
+          globeGroupRef.current.rotation.x += dy * 0.0020;
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
 
-          const targetVx = dy * 0.004;
-          const targetVy = dx * 0.007;
-          rotVelocity.current.x = rotVelocity.current.x * 0.35 + targetVx * 0.65;
-          rotVelocity.current.y = rotVelocity.current.y * 0.35 + targetVy * 0.65;
+          const targetVx = dy * 0.0014;
+          const targetVy = dx * 0.0020;
+          rotVelocity.current.x = rotVelocity.current.x * 0.4 + targetVx * 0.6;
+          rotVelocity.current.y = rotVelocity.current.y * 0.4 + targetVy * 0.6;
+          rotVelocity.current.y = Math.max(-0.011, Math.min(0.011, rotVelocity.current.y));
+          rotVelocity.current.x = Math.max(-0.007, Math.min(0.007, rotVelocity.current.x));
         }
 
         previousMouse.current = { x: t.clientX, y: t.clientY };
@@ -600,7 +604,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         const hit = intersects[0].object as THREE.Mesh;
         const proj = hit.userData.project as SupabaseProject;
         const idx = hit.userData.index as number;
-        const cardCont = hit.userData.container as THREE.Group;
 
         // IN BOTH GRID & SPHERE MODES: Clicking zooms in and shows the preview modal first!
         if (viewModeRef.current === 'grid') {
@@ -616,17 +619,34 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         } else {
           setFocusedProject(proj);
           setFocusedCardIdx(idx);
-          isAligningToCard.current = true;
 
-          const worldPos = new THREE.Vector3();
-          cardCont.getWorldPosition(worldPos);
+          if (globeGroupRef.current && cardDataRef.current[idx]) {
+            const pos = cardDataRef.current[idx].spherePos;
+            const azimuth = Math.atan2(pos.x, pos.z);
+            const rawElevation = Math.asin(Math.max(-0.95, Math.min(0.95, pos.y / sphereRadius)));
+            const elevation = Math.max(-0.55, Math.min(0.55, rawElevation));
 
-          if (globeGroupRef.current) {
-            const currentQuat = globeGroupRef.current.quaternion.clone();
-            const invQuat = currentQuat.clone().invert();
-            const localPos = worldPos.clone().applyQuaternion(invQuat).normalize();
-            const forward = new THREE.Vector3(0, 0, 1);
-            targetQuaternion.current.setFromUnitVectors(localPos, forward);
+            // Shortest angular distance around Y so it rotates directly to the target
+            const curY = globeGroupRef.current.rotation.y;
+            let diffY = (-azimuth - (curY % (Math.PI * 2))) % (Math.PI * 2);
+            if (diffY > Math.PI) diffY -= Math.PI * 2;
+            if (diffY < -Math.PI) diffY += Math.PI * 2;
+            const targetY = curY + diffY;
+
+            isAligningToCard.current = true;
+            rotVelocity.current = { x: 0, y: 0 };
+
+            gsap.killTweensOf(globeGroupRef.current.rotation);
+            gsap.to(globeGroupRef.current.rotation, {
+              x: elevation,
+              y: targetY,
+              z: 0,
+              duration: 0.95,
+              ease: 'power3.out',
+              onComplete: () => {
+                isAligningToCard.current = false;
+              },
+            });
           }
         }
       }
@@ -659,8 +679,9 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       if (globeGroupRef.current && !isZoomedInRef.current && !isOverlayActiveRef.current) {
         const isMobileNow = width <= 768;
-        const s = isMobileNow ? 0.52 : 1.0;
+        const s = isMobileNow ? 0.72 : 1.0;
         globeGroupRef.current.scale.set(s, s, s);
+        updateGridLayout(isMobileNow);
       }
     };
 
@@ -709,22 +730,16 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           globeGroupRef.current.rotation.y += rotVelocity.current.y * (1.0 - m);
           globeGroupRef.current.rotation.x += rotVelocity.current.x * (1.0 - m);
           globeGroupRef.current.rotation.x = Math.max(-1.15, Math.min(1.15, globeGroupRef.current.rotation.x));
+          globeGroupRef.current.rotation.z *= 0.92;
 
-          // 2. Exponential friction damping (silky smooth deceleration)
-          rotVelocity.current.y *= 0.948;
-          rotVelocity.current.x *= 0.948;
+          // 2. Controlled natural inertia (calm, luxurious deceleration)
+          rotVelocity.current.y *= 0.945;
+          rotVelocity.current.x *= 0.935;
 
-          // 3. Gentle perpetual idle drift seamlessly maintained without sudden halt
-          const idleDrift = 0.0014 * (1.0 - m);
+          // 3. Subtle celestial idle drift
+          const idleDrift = 0.00045 * (1.0 - m);
           if (Math.abs(rotVelocity.current.y) < idleDrift) {
-            rotVelocity.current.y = THREE.MathUtils.lerp(rotVelocity.current.y, idleDrift, 0.06);
-          }
-        }
-
-        if (isAligningToCard.current && globeGroupRef.current) {
-          globeGroupRef.current.quaternion.slerp(targetQuaternion.current, 0.08);
-          if (globeGroupRef.current.quaternion.angleTo(targetQuaternion.current) < 0.01) {
-            isAligningToCard.current = false;
+            rotVelocity.current.y = THREE.MathUtils.lerp(rotVelocity.current.y, idleDrift, 0.04);
           }
         }
       } else {
@@ -738,11 +753,14 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       // Card scale increases in Grid mode to make designs larger and more prominent (both desktop and mobile)
       const isMobile = window.innerWidth <= 768;
-      const targetGridScale = isMobile ? 1.62 : 1.76;
+      const targetGridScale = isMobile ? 1.48 : 1.76;
       const cardScale = THREE.MathUtils.lerp(1.0, targetGridScale, m);
 
-      // Interpolate each card between Sphere position/rotation and Endless 3-Column Grid
+      // Interpolate each card between Sphere position/rotation and Responsive Endless Grid
       const cards = cardDataRef.current;
+      const loopH = loopHeightRef.current;
+      const halfLoopH = halfLoopHeightRef.current;
+
       for (let i = 0; i < cards.length; i++) {
         const item = cards[i];
 
@@ -750,7 +768,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         // Raw vertical position with continuous scroll
         const rawY = item.gridPos.y + gridScrollY.current;
         // Modulo wrap around loopHeight [-halfLoopHeight, +halfLoopHeight]
-        const wrappedY = ((rawY + halfLoopHeight) % loopHeight + loopHeight) % loopHeight - halfLoopHeight;
+        const wrappedY = ((rawY + halfLoopH) % loopH + loopH) % loopH - halfLoopH;
 
         tempGridVec.set(item.gridPos.x, wrappedY, item.gridPos.z);
 
@@ -771,7 +789,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       posAttr.needsUpdate = true;
 
       // Camera position interpolation (responsive to mobile zoom & grid view)
-      const baseCamZ = viewModeRef.current === 'grid' ? (isMobile ? 17.5 : 14.5) : targetCamZ.current;
+      const baseCamZ = viewModeRef.current === 'grid' ? (isMobile ? 16.5 : 14.5) : targetCamZ.current;
       const finalCamZ = isZoomedInRef.current ? (isMobile ? 12.0 : 10.5) : baseCamZ;
       camera.position.z += (finalCamZ - camera.position.z) * 0.08;
 
@@ -795,14 +813,9 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       container.removeEventListener('click', handleClick);
       container.removeEventListener('wheel', handleWheel);
 
-      videoCache.forEach((vid) => {
+      globalVideoCache.forEach((vid: HTMLVideoElement) => {
         vid.pause();
-        vid.src = '';
-        vid.load();
       });
-      videoCache.clear();
-      textureCache.forEach((tex) => tex.dispose());
-      textureCache.clear();
       cardGeo.dispose();
       renderer.dispose();
     };
@@ -851,7 +864,13 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       {/* ── 3. FOCUSED CARD HINT / QUICK ACTION (Sphere Mode) ── */}
       {!isOverlayActive && viewMode === 'sphere' && focusedProject && !isZoomedIn && (
-        <div className="celestial-focused-banner">
+        <div
+          className="celestial-focused-banner"
+          onClick={() => setIsZoomedIn(true)}
+          role="button"
+          tabIndex={0}
+          title="Click to dive into project"
+        >
           <div className="celestial-focused-text">
             <span className="celestial-focused-eyebrow">CLICK TO DIVE IN</span>
             <h3 className="celestial-focused-title">{focusedProject.title}</h3>
@@ -862,9 +881,13 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           <button
             type="button"
             className="celestial-focused-btn"
-            onClick={() => setIsZoomedIn(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsZoomedIn(true);
+            }}
           >
-            <span>Inspect Project</span>
+            <span className="celestial-btn-text-desktop">Inspect Project</span>
+            <span className="celestial-btn-text-mobile">View</span>
             <ArrowUpRight size={15} />
           </button>
         </div>
