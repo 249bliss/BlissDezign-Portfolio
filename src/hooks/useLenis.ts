@@ -40,17 +40,21 @@ export const useContainerLenis = (
   useEffect(() => {
     if (!enabled || !containerRef.current) return;
 
+    // Detect touch screens — never hijack touch scrolling on mobile/tablet so native 120Hz momentum scroll is preserved
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+    if (isTouch) return;
+
     const wrapper = containerRef.current;
     const content = (wrapper.firstElementChild as HTMLElement) || wrapper;
 
     const lenis = new Lenis({
       wrapper,
       content,
-      duration: 1.1,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true,
-      touchMultiplier: 1.3,
+      syncTouch: false,
     });
 
     let animId: number;

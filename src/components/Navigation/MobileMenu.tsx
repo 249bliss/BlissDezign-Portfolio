@@ -91,7 +91,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.22, ease: 'easeInOut' }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
           onClick={(e) => {
             if (e.target === e.currentTarget) onClose();
           }}
@@ -99,10 +99,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           {/* Frosted Glass Sheet Anchored from Nav */}
           <motion.div
             className="mobile-menu-sheet"
-            initial={{ y: 28, opacity: 0, scale: 0.95 }}
+            initial={{ y: 32, opacity: 0, scale: 0.98 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 20, opacity: 0, scale: 0.95 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+            exit={{ y: 24, opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
             role="dialog"
             aria-modal="true"
             aria-label="Navigation Menu"
@@ -137,15 +137,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 
             {/* Navigation Links */}
             <nav className="mobile-menu-nav">
-              {navItems.map((item, idx) => (
-                <motion.button
+              {navItems.map((item) => (
+                <button
                   key={item.num}
                   type="button"
                   className={`mobile-menu-item ${item.isActive ? 'is-active' : ''}`}
                   onClick={item.action}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.08 + idx * 0.06 }}
                 >
                   <div className="mobile-menu-item-left">
                     <span className="mobile-menu-item-num">{item.num}</span>
@@ -155,17 +152,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                     </div>
                   </div>
                   <ArrowUpRight size={18} className="mobile-menu-item-arrow" />
-                </motion.button>
+                </button>
               ))}
             </nav>
 
             {/* Nature Ambiance Sound Toggle Inside Menu */}
-            <motion.div
-              className="mobile-menu-sound-box"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28 }}
-            >
+            <div className="mobile-menu-sound-box">
               <div className="mobile-menu-sound-info">
                 <div className={`mobile-menu-sound-icon ${isSoundPlaying ? 'is-active' : ''}`}>
                   {isSoundPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
@@ -191,15 +183,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                 )}
                 <span>{isSoundPlaying ? 'Playing' : 'Muted'}</span>
               </button>
-            </motion.div>
+            </div>
 
             {/* Primary Action: Book a Call */}
-            <motion.div
-              className="mobile-menu-cta-wrap"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.34 }}
-            >
+            <div className="mobile-menu-cta-wrap">
               <button
                 type="button"
                 className="mobile-menu-cta-btn"
@@ -212,7 +199,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                 <span>Book a discovery call</span>
                 <ArrowUpRight size={16} />
               </button>
-            </motion.div>
+            </div>
 
             {/* Footer */}
             <div className="mobile-menu-footer">

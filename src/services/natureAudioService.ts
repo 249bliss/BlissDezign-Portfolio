@@ -52,7 +52,7 @@ class SkyAudioService {
         b3 = 0.86650 * b3 + white * 0.3104856;
         b4 = 0.55000 * b4 + white * 0.5329522;
         b5 = -0.7616 * b5 - white * 0.016898;
-        output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.06;
+        output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.15;
         b6 = white * 0.115926;
       }
     }
@@ -64,7 +64,7 @@ class SkyAudioService {
     // Dual cascading filters to give a deep, soft cloud atmosphere
     const lowFilter = ctx.createBiquadFilter();
     lowFilter.type = 'lowpass';
-    lowFilter.frequency.value = 280;
+    lowFilter.frequency.value = 360;
     lowFilter.Q.value = 2.0;
 
     const airyFilter = ctx.createBiquadFilter();
@@ -117,7 +117,7 @@ class SkyAudioService {
     // Master gain for this specific jet pass (boosted for audible presence on all devices)
     const jetMasterGain = ctx.createGain();
     jetMasterGain.gain.setValueAtTime(0.0001, now);
-    jetMasterGain.gain.linearRampToValueAtTime(0.24, peakTime);
+    jetMasterGain.gain.linearRampToValueAtTime(0.52, peakTime);
     jetMasterGain.gain.exponentialRampToValueAtTime(0.0001, endTime);
 
     // Stereo Panning for the flyby
@@ -177,7 +177,7 @@ class SkyAudioService {
     const jetNoiseBuffer = ctx.createBuffer(1, noiseBufferSize, ctx.sampleRate);
     const noiseData = jetNoiseBuffer.getChannelData(0);
     for (let i = 0; i < noiseBufferSize; i++) {
-      noiseData[i] = (Math.random() * 2 - 1) * 0.6;
+      noiseData[i] = (Math.random() * 2 - 1) * 0.85;
     }
 
     const jetNoise = ctx.createBufferSource();
@@ -193,7 +193,7 @@ class SkyAudioService {
     jetFilter.Q.value = 2.0;
 
     const roarGain = ctx.createGain();
-    roarGain.gain.value = 1.1;
+    roarGain.gain.value = 1.5;
 
     jetNoise.connect(jetFilter);
     jetFilter.connect(roarGain);
@@ -223,7 +223,7 @@ class SkyAudioService {
       this.playing = true;
       if (this.cloudGain) {
         // Smooth swell into the rolling cloud waves (increased volume)
-        this.cloudGain.gain.setTargetAtTime(0.16, this.ctx.currentTime, 0.8);
+        this.cloudGain.gain.setTargetAtTime(0.35, this.ctx.currentTime, 0.8);
       }
       // Trigger an initial jet pass-by after 1.2s so the user immediately hears the aircraft!
       this.initialJetTimer = window.setTimeout(() => {

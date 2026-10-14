@@ -400,6 +400,31 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       }
     };
 
+    // Instant Hyperspace Entrance Bloom on Page Load (0ms wait, smooth 60fps bloom)
+    camera.position.z = 7.0;
+    globeGroup.scale.set(0.22, 0.22, 0.22);
+    globeGroup.rotation.y = 1.6;
+
+    gsap.to(camera.position, {
+      z: initialCamZ,
+      duration: 1.35,
+      ease: 'expo.out',
+    });
+
+    gsap.to(globeGroup.scale, {
+      x: initialGlobeScale,
+      y: initialGlobeScale,
+      z: initialGlobeScale,
+      duration: 1.25,
+      ease: 'expo.out',
+    });
+
+    gsap.to(globeGroup.rotation, {
+      y: 0,
+      duration: 1.35,
+      ease: 'expo.out',
+    });
+
     // 6. Raycasting & Interaction
     const raycaster = new THREE.Raycaster();
     const mouseCoord = new THREE.Vector2();

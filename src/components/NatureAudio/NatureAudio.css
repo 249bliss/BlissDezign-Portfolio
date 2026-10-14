@@ -21,6 +21,8 @@
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 .nature-sound-toggle:hover {
@@ -31,21 +33,36 @@
 }
 
 .nature-sound-toggle.is-active {
-  background: #09090b;
-  border-color: #09090b;
-  color: #ffffff;
+  background: #09090b !important;
+  border-color: #09090b !important;
+  color: #ffffff !important;
   box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.22);
 }
 
 .nature-sound-toggle.is-active:hover {
-  background: #27272a;
-  color: #ffffff;
+  background: #27272a !important;
+  color: #ffffff !important;
+}
+
+.nature-sound-toggle.is-active .nature-sound-icon-wrap,
+.nature-sound-toggle.is-active .nature-sound-icon-wrap svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.nature-sound-toggle.is-active .nature-sound-label {
+  color: #ffffff !important;
 }
 
 .nature-sound-icon-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: inherit;
+}
+
+.nature-sound-icon-wrap svg {
+  stroke: currentColor;
 }
 
 .nature-sound-label {

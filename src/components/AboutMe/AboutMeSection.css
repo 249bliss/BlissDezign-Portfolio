@@ -16,7 +16,7 @@
   padding: 80px 32px 200px;
   box-sizing: border-box;
   color: #09090b;
-  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
 }
 

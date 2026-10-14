@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('sphere');
   const [isProcessOpen, setIsProcessOpen] = useState(false);
   const [isStudioOpen, setIsStudioOpen] = useState(false);
-  const [isIntroActive, setIsIntroActive] = useState(true);
+  const [isIntroActive, setIsIntroActive] = useState(false);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
 
