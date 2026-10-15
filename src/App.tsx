@@ -31,7 +31,6 @@ export const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('sphere');
   const [isProcessOpen, setIsProcessOpen] = useState(false);
   const [isStudioOpen, setIsStudioOpen] = useState(false);
-  const [isPortalExpanded, setIsPortalExpanded] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
@@ -162,7 +161,7 @@ export const App: React.FC = () => {
 
       {/* Top View Switcher (Sphere <-> Grid) */}
       <TopViewSwitcher
-        visible={isPortalExpanded && !selectedProject && !isProcessOpen && !isStudioOpen && !isPreviewModalOpen}
+        visible={!selectedProject && !isProcessOpen && !isStudioOpen && !isPreviewModalOpen}
         currentView={viewMode}
         onViewChange={(mode) => {
           setViewMode(mode);
@@ -182,8 +181,6 @@ export const App: React.FC = () => {
         <CelestialSphere
           viewMode={viewMode}
           isOverlayActive={isProcessOpen || isStudioOpen || !!selectedProject}
-          isPortalExpanded={isPortalExpanded}
-          onPortalExpandedChange={(exp) => setIsPortalExpanded(exp)}
           onPreviewModalChange={(open) => setIsPreviewModalOpen(open)}
           onSelectProject={handleSelectSupabaseProject}
           onHoverProject={(sbProj) => {
@@ -253,7 +250,7 @@ export const App: React.FC = () => {
 
       {/* ── PERSISTENT BOTTOM NAVIGATION DOCK (Hidden when project preview or case study modal is open) ── */}
       <LiquidDock
-        visible={isPortalExpanded && !selectedProject && !isPreviewModalOpen}
+        visible={!selectedProject && !isPreviewModalOpen}
         activeSection={
           isProcessOpen
             ? 'how-i-work'
