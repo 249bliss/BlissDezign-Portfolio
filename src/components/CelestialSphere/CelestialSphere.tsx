@@ -127,6 +127,9 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   const [focusedProject, setFocusedProject] = useState<SupabaseProject | null>(null);
   const [isZoomedIn, setIsZoomedIn] = useState<boolean>(false);
   const [focusedCardIdx, setFocusedCardIdx] = useState<number | null>(null);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const texturesLoadedCount = useRef(0);
+  const hasRevealedRef = useRef(false);
 
   // References to keep animation loop & events detached from React re-renders
   const viewModeRef = useRef<'sphere' | 'grid'>('sphere');
@@ -341,10 +344,54 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     };
     const skyPlaceholder = createSkyPlaceholder();
 
+    const triggerReveal = () => {
+      if (hasRevealedRef.current) return;
+      hasRevealedRef.current = true;
+      setIsLoaded(true);
+
+      camera.position.z = 7.0;
+      globeGroup.scale.set(0.22, 0.22, 0.22);
+      globeGroup.position.set(0, 0, 0);
+      globeGroup.rotation.y = 1.6;
+
+      gsap.to(camera.position, {
+        z: initialCamZ,
+        duration: 1.4,
+        ease: 'expo.out',
+      });
+
+      gsap.to(globeGroup.scale, {
+        x: initialGlobeScale,
+        y: initialGlobeScale,
+        z: initialGlobeScale,
+        duration: 1.3,
+        ease: 'expo.out',
+      });
+
+      gsap.to(globeGroup.rotation, {
+        y: 0,
+        duration: 1.4,
+        ease: 'expo.out',
+      });
+    };
+
+    const onMediaLoaded = () => {
+      texturesLoadedCount.current++;
+      if (texturesLoadedCount.current >= 3 && !hasRevealedRef.current) {
+        triggerReveal();
+      }
+    };
+
+    // Safety timeout: reveal after 2.4s max so portfolio always opens smoothly
+    const safetyTimeout = setTimeout(() => {
+      triggerReveal();
+    }, 2400);
+
     const getTextureForMedia = (mediaUrl: string): THREE.Texture => {
       const resolvedUrl = mediaUrl || '';
 
       if (globalTextureCache.has(resolvedUrl)) {
+        setTimeout(onMediaLoaded, 0);
         return globalTextureCache.get(resolvedUrl)!;
       }
 
@@ -358,8 +405,11 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           video.muted = true;
           video.playsInline = true;
           video.preload = 'auto';
+          video.addEventListener('loadeddata', onMediaLoaded, { once: true });
           video.play().catch(() => {});
           globalVideoCache.set(resolvedUrl, video);
+        } else {
+          setTimeout(onMediaLoaded, 0);
         }
         const videoTex = new THREE.VideoTexture(video);
         videoTex.colorSpace = THREE.SRGBColorSpace;
@@ -384,6 +434,10 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           img.onload = () => {
             (tex as any).image = img;
             tex.needsUpdate = true;
+            onMediaLoaded();
+          };
+          img.onerror = () => {
+            onMediaLoaded();
           };
         }
         globalTextureCache.set(resolvedUrl, tex);
@@ -481,31 +535,11 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       }
     };
 
-    // Instant Smooth Intro: sphere pushes forward into view immediately
+    // Initial sphere setup — smoothly blooms forward when triggerReveal fires
     camera.position.z = 7.0;
     globeGroup.scale.set(0.22, 0.22, 0.22);
     globeGroup.position.set(0, 0, 0);
     globeGroup.rotation.y = 1.6;
-
-    gsap.to(camera.position, {
-      z: initialCamZ,
-      duration: 1.4,
-      ease: 'expo.out',
-    });
-
-    gsap.to(globeGroup.scale, {
-      x: initialGlobeScale,
-      y: initialGlobeScale,
-      z: initialGlobeScale,
-      duration: 1.3,
-      ease: 'expo.out',
-    });
-
-    gsap.to(globeGroup.rotation, {
-      y: 0,
-      duration: 1.4,
-      ease: 'expo.out',
-    });
 
     // 6. Raycasting & Interaction
     const raycaster = new THREE.Raycaster();
@@ -926,6 +960,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       });
       cardGeo.dispose();
       renderer.dispose();
+      clearTimeout(safetyTimeout);
     };
   }, [projects]); // Only rebuilds when projects load
 
@@ -935,6 +970,14 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
   return (
     <div className="celestial-sky-stage">
+      {/* ── SMOOTH LOADING OVERLAY — covers screen until data & textures load ── */}
+      <div className={`celestial-loading-veil ${isLoaded ? 'loaded' : ''}`}>
+        <div className="celestial-loading-content">
+          <div className="celestial-loading-spinner" />
+          <span className="celestial-loading-text">Loading portfolio</span>
+        </div>
+      </div>
+
       {/* ── 1. LIVING BACKGROUND VIDEO ── */}
       <div className="sky-daylight-backdrop" aria-hidden="true">
         <video
