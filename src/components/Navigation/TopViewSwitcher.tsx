@@ -4,17 +4,23 @@ import './TopViewSwitcher.css';
 
 export type ViewMode = 'sphere' | 'grid';
 
-interface TopViewSwitcherProps {
+export interface TopViewSwitcherProps {
   currentView: ViewMode;
   onViewChange: (view: ViewMode) => void;
+  visible?: boolean;
 }
 
 export const TopViewSwitcher: React.FC<TopViewSwitcherProps> = ({
   currentView,
   onViewChange,
+  visible = true,
 }) => {
   return (
-    <div className="top-view-switcher-wrap" role="region" aria-label="View Mode Toggle">
+    <div
+      className={`top-view-switcher-wrap ${visible ? 'is-visible' : 'is-hidden'}`}
+      role="region"
+      aria-label="View Mode Toggle"
+    >
       <div className="top-view-switcher">
         <button
           type="button"

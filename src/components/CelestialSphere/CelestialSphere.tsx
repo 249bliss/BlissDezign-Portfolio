@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { fetchProjectsFromSupabase, SupabaseProject } from '../../services/supabaseClient';
 import { ArrowUpRight, X } from 'lucide-react';
@@ -11,6 +11,9 @@ interface CelestialSphereProps {
   onHoverProject?: (project: SupabaseProject | null) => void;
   onNavigateWorks?: () => void;
   isOverlayActive?: boolean;
+  isPortalExpanded?: boolean;
+  onPortalExpandedChange?: (expanded: boolean) => void;
+  onPreviewModalChange?: (isOpen: boolean) => void;
 }
 
 interface CardEntity {
@@ -121,11 +124,36 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   onSelectProject,
   onHoverProject,
   isOverlayActive = false,
+  isPortalExpanded: externalExpanded,
+  onPortalExpandedChange,
+  onPreviewModalChange,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const portalFrameRef = useRef<HTMLDivElement>(null);
+  const heroLeftRef = useRef<HTMLSpanElement>(null);
+  const heroRightRef = useRef<HTMLDivElement>(null);
+  const wingsLeftRef = useRef<HTMLDivElement>(null);
+  const wingsRightRef = useRef<HTMLDivElement>(null);
+  const heroHeaderRef = useRef<HTMLElement>(null);
+  const cardOverlayRef = useRef<HTMLDivElement>(null);
+  const heroOverlayRef = useRef<HTMLDivElement>(null);
+  const isAnimatingRef = useRef<boolean>(false);
+  const lastExpandedTimeRef = useRef<number>(0);
+  const lastCollapsedTimeRef = useRef<number>(0);
+  const updateGridLayoutRef = useRef<((isMobile: boolean) => void) | null>(null);
+
+  const [isPortalExpanded, setIsPortalExpanded] = useState<boolean>(externalExpanded ?? false);
+  const isPortalExpandedRef = useRef<boolean>(externalExpanded ?? false);
+  isPortalExpandedRef.current = isPortalExpanded;
+
   const [projects, setProjects] = useState<SupabaseProject[]>(INITIAL_PROJECTS);
   const [focusedProject, setFocusedProject] = useState<SupabaseProject | null>(null);
   const [isZoomedIn, setIsZoomedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    onPreviewModalChange?.(isZoomedIn);
+  }, [isZoomedIn, onPreviewModalChange]);
   const [focusedCardIdx, setFocusedCardIdx] = useState<number | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const texturesLoadedCount = useRef(0);
@@ -267,6 +295,309 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     };
   }, [isOverlayActive, onHoverProject]);
 
+  // Smooth Portal Expansion to Fullscreen
+  const expandPortal = useCallback(() => {
+    if (isPortalExpandedRef.current || isAnimatingRef.current) return;
+    isAnimatingRef.current = true;
+
+    const frame = portalFrameRef.current;
+    const anchor = anchorRef.current;
+    const heroLeft = heroLeftRef.current;
+    const heroRight = heroRightRef.current;
+    const wingsLeft = wingsLeftRef.current;
+    const wingsRight = wingsRightRef.current;
+    const heroHeader = heroHeaderRef.current;
+    const cardOverlay = cardOverlayRef.current;
+
+    // Lock starting position in viewport coords before expanding
+    if (frame && anchor) {
+      const rect = anchor.getBoundingClientRect();
+      gsap.set(frame, {
+        position: 'fixed',
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+        borderRadius: 22,
+        zIndex: 50,
+      });
+    }
+
+    let prevW = 0;
+    let prevH = 0;
+    const updateCanvasSize = () => {
+      if (frame && rendererRef.current && cameraRef.current) {
+        const curW = Math.round(frame.offsetWidth);
+        const curH = Math.round(frame.offsetHeight);
+        if (curW > 0 && curH > 0 && (curW !== prevW || curH !== prevH)) {
+          prevW = curW;
+          prevH = curH;
+          cameraRef.current.aspect = curW / curH;
+          cameraRef.current.updateProjectionMatrix();
+          rendererRef.current.setSize(curW, curH);
+        }
+      }
+    };
+
+    const tl = gsap.timeline({
+      onUpdate: updateCanvasSize,
+      onComplete: () => {
+        setIsPortalExpanded(true);
+        isPortalExpandedRef.current = true;
+        isAnimatingRef.current = false;
+        lastExpandedTimeRef.current = Date.now();
+        if (rendererRef.current && cameraRef.current) {
+          cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+          cameraRef.current.updateProjectionMatrix();
+          rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+        }
+        updateGridLayoutRef.current?.(window.innerWidth <= 768);
+        onPortalExpandedChange?.(true);
+      },
+    });
+
+    if (cardOverlay) {
+      tl.to(cardOverlay, { opacity: 0, duration: 0.2, ease: 'power2.out' }, 0);
+    }
+    if (heroLeft) {
+      tl.to(heroLeft, { x: -60, opacity: 0, duration: 0.6, ease: 'power3.inOut' }, 0);
+    }
+    if (heroRight) {
+      tl.to(heroRight, { x: 60, opacity: 0, duration: 0.6, ease: 'power3.inOut' }, 0);
+    }
+    if (wingsLeft) {
+      tl.to(wingsLeft, { x: -35, opacity: 0, scale: 0.85, duration: 0.5, ease: 'power2.inOut' }, 0);
+    }
+    if (wingsRight) {
+      tl.to(wingsRight, { x: 35, opacity: 0, scale: 0.85, duration: 0.5, ease: 'power2.inOut' }, 0);
+    }
+    if (heroHeader) {
+      tl.to(heroHeader, { y: -20, opacity: 0, duration: 0.5, ease: 'power2.inOut' }, 0);
+    }
+
+    if (frame) {
+      tl.to(
+        frame,
+        {
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          borderRadius: 0,
+          duration: 0.95,
+          ease: 'power3.inOut',
+        },
+        0
+      );
+    }
+
+    if (cameraRef.current && globeGroupRef.current) {
+      const isMobile = window.innerWidth <= 768;
+      const targetZ = viewModeRef.current === 'grid' ? (isMobile ? 16.5 : 14.5) : (isMobile ? 17.0 : 16.5);
+      const targetScale = isMobile ? 0.72 : 1.0;
+      targetCamZ.current = targetZ;
+
+      tl.to(
+        cameraRef.current.position,
+        {
+          z: targetZ,
+          duration: 0.95,
+          ease: 'power3.inOut',
+        },
+        0
+      );
+
+      tl.to(
+        globeGroupRef.current.scale,
+        {
+          x: targetScale,
+          y: targetScale,
+          z: targetScale,
+          duration: 0.95,
+          ease: 'power3.inOut',
+        },
+        0
+      );
+    }
+  }, [onPortalExpandedChange]);
+
+  // Smooth Portal Collapse back to Hero Card
+  const collapsePortal = useCallback(() => {
+    if (!isPortalExpandedRef.current || isAnimatingRef.current) return;
+    isAnimatingRef.current = true;
+
+    const frame = portalFrameRef.current;
+    const anchor = anchorRef.current;
+    const heroLeft = heroLeftRef.current;
+    const heroRight = heroRightRef.current;
+    const wingsLeft = wingsLeftRef.current;
+    const wingsRight = wingsRightRef.current;
+    const heroHeader = heroHeaderRef.current;
+    const cardOverlay = cardOverlayRef.current;
+
+    let prevW = 0;
+    let prevH = 0;
+    const updateCanvasSize = () => {
+      if (frame && rendererRef.current && cameraRef.current) {
+        const curW = Math.round(frame.offsetWidth);
+        const curH = Math.round(frame.offsetHeight);
+        if (curW > 0 && curH > 0 && (curW !== prevW || curH !== prevH)) {
+          prevW = curW;
+          prevH = curH;
+          cameraRef.current.aspect = curW / curH;
+          cameraRef.current.updateProjectionMatrix();
+          rendererRef.current.setSize(curW, curH);
+        }
+      }
+    };
+
+    const tl = gsap.timeline({
+      onUpdate: updateCanvasSize,
+      onComplete: () => {
+        setIsPortalExpanded(false);
+        isPortalExpandedRef.current = false;
+        isAnimatingRef.current = false;
+        lastCollapsedTimeRef.current = Date.now();
+        if (frame) {
+          gsap.set(frame, {
+            clearProps: 'position,top,left,width,height,borderRadius,zIndex',
+          });
+        }
+        if (anchor && rendererRef.current && cameraRef.current) {
+          const rect = anchor.getBoundingClientRect();
+          cameraRef.current.aspect = rect.width / rect.height;
+          cameraRef.current.updateProjectionMatrix();
+          rendererRef.current.setSize(rect.width, rect.height);
+        }
+        onPortalExpandedChange?.(false);
+      },
+    });
+
+    if (frame && anchor) {
+      const rect = anchor.getBoundingClientRect();
+      gsap.set(frame, {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        borderRadius: 0,
+        zIndex: 50,
+      });
+
+      tl.to(
+        frame,
+        {
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+          borderRadius: 22,
+          duration: 0.9,
+          ease: 'power3.inOut',
+        },
+        0
+      );
+    }
+
+    if (cameraRef.current && globeGroupRef.current) {
+      const isMobile = window.innerWidth <= 768;
+      const compactZ = isMobile ? 24.0 : 22.0;
+      const compactScale = isMobile ? 0.52 : 0.65;
+      targetCamZ.current = compactZ;
+
+      tl.to(
+        cameraRef.current.position,
+        {
+          z: compactZ,
+          duration: 0.9,
+          ease: 'power3.inOut',
+        },
+        0
+      );
+
+      tl.to(
+        globeGroupRef.current.scale,
+        {
+          x: compactScale,
+          y: compactScale,
+          z: compactScale,
+          duration: 0.9,
+          ease: 'power3.inOut',
+        },
+        0
+      );
+    }
+
+    if (cardOverlay) {
+      tl.to(cardOverlay, { opacity: 1, duration: 0.35, ease: 'power2.in' }, 0.45);
+    }
+    if (heroHeader) {
+      tl.to(heroHeader, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.35);
+    }
+    if (heroLeft) {
+      tl.to(heroLeft, { x: 0, opacity: 1, duration: 0.55, ease: 'power3.out' }, 0.35);
+    }
+    if (heroRight) {
+      tl.to(heroRight, { x: 0, opacity: 1, duration: 0.55, ease: 'power3.out' }, 0.35);
+    }
+    if (wingsLeft) {
+      tl.to(wingsLeft, { x: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' }, 0.35);
+    }
+    if (wingsRight) {
+      tl.to(wingsRight, { x: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' }, 0.35);
+    }
+  }, [onPortalExpandedChange]);
+
+  // Sync with external prop if provided
+  useEffect(() => {
+    if (externalExpanded !== undefined && externalExpanded !== isPortalExpandedRef.current) {
+      if (externalExpanded) {
+        expandPortal();
+      } else {
+        collapsePortal();
+      }
+    }
+  }, [externalExpanded, expandPortal, collapsePortal]);
+
+  // Window-level scroll wheel & touch listeners to expand portal from Hero state
+  useEffect(() => {
+    if (isPortalExpanded) return;
+
+    const handleGlobalWheel = (e: WheelEvent) => {
+      if (!isLoaded || isPortalExpandedRef.current || isAnimatingRef.current) return;
+      if (Date.now() - lastCollapsedTimeRef.current < 1200) return;
+      if (e.deltaY > 12) {
+        expandPortal();
+      }
+    };
+
+    let touchStartY = 0;
+    const handleGlobalTouchStart = (e: TouchEvent) => {
+      if (!isLoaded || isPortalExpandedRef.current || isAnimatingRef.current) return;
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleGlobalTouchMove = (e: TouchEvent) => {
+      if (!isLoaded || isPortalExpandedRef.current || isAnimatingRef.current) return;
+      if (Date.now() - lastCollapsedTimeRef.current < 1200) return;
+      const diff = touchStartY - e.touches[0].clientY;
+      if (diff > 25) {
+        expandPortal();
+      }
+    };
+
+    window.addEventListener('wheel', handleGlobalWheel, { passive: true });
+    window.addEventListener('touchstart', handleGlobalTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleGlobalTouchMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('wheel', handleGlobalWheel);
+      window.removeEventListener('touchstart', handleGlobalTouchStart);
+      window.removeEventListener('touchmove', handleGlobalTouchMove);
+    };
+  }, [isLoaded, isPortalExpanded, expandPortal]);
+
   // Initialize Three.js Celestial Globe ONCE when projects are loaded
   useEffect(() => {
     if (!mountRef.current || projects.length === 0) return;
@@ -276,7 +607,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    const isMobile = container.clientWidth <= 768;
+    const isMobile = window.innerWidth <= 768;
     const initialCamZ = isMobile ? 17.0 : 16.5;
     const initialGlobeScale = isMobile ? 0.72 : 1.0;
 
@@ -374,21 +705,29 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       hasRevealedRef.current = true;
       setIsLoaded(true);
 
+      const isMobile = window.innerWidth <= 768;
+      const compactZ = isMobile ? 24.0 : 22.0;
+      const compactScale = isMobile ? 0.52 : 0.65;
+      const targetZ = isPortalExpandedRef.current ? initialCamZ : compactZ;
+      const targetScale = isPortalExpandedRef.current ? initialGlobeScale : compactScale;
+
       camera.position.z = 7.0;
       globeGroup.scale.set(0.22, 0.22, 0.22);
       globeGroup.position.set(0, 0, 0);
       globeGroup.rotation.y = 1.6;
 
+      targetCamZ.current = targetZ;
+
       gsap.to(camera.position, {
-        z: initialCamZ,
+        z: targetZ,
         duration: 1.5,
         ease: 'expo.out',
       });
 
       gsap.to(globeGroup.scale, {
-        x: initialGlobeScale,
-        y: initialGlobeScale,
-        z: initialGlobeScale,
+        x: targetScale,
+        y: targetScale,
+        z: targetScale,
         duration: 1.4,
         ease: 'expo.out',
       });
@@ -545,8 +884,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       // B) Responsive Grid Target Calculation (2 Columns on Mobile, 3 Columns on Desktop)
       const cols = isMobile ? 2 : 3;
-      const spX = isMobile ? 4.0 : 4.45;
-      const spY = isMobile ? 2.65 : 2.85;
+      const spX = isMobile ? 3.90 : 5.85;
+      const spY = isMobile ? 2.80 : 4.10;
       const initialNumRows = Math.ceil(totalTiles / cols);
       const initialLoopH = initialNumRows * spY;
       const initialHalfLoopH = initialLoopH / 2;
@@ -596,8 +935,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     // Dynamic recalculation of grid coordinates for mobile (2-col) vs desktop (3-col)
     const updateGridLayout = (isMobileLayout: boolean) => {
       const cols = isMobileLayout ? 2 : 3;
-      const spX = isMobileLayout ? 4.0 : 4.45;
-      const spY = isMobileLayout ? 2.65 : 2.85;
+      const spX = isMobileLayout ? 3.90 : 5.85;
+      const spY = isMobileLayout ? 2.80 : 4.10;
       const rows = Math.ceil(totalTiles / cols);
       const lHeight = rows * spY;
       const halfLHeight = lHeight / 2;
@@ -614,6 +953,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         item.gridPos.set(xg, yg, 0);
       }
     };
+    updateGridLayoutRef.current = updateGridLayout;
 
     // Initial sphere setup — smoothly blooms forward when triggerReveal fires
     camera.position.z = 7.0;
@@ -628,6 +968,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     const handlePointerDown = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
+      if (!isPortalExpandedRef.current) return;
       if (isOverlayActiveRef.current || isZoomedInRef.current) return;
       if (globeGroupRef.current) {
         gsap.killTweensOf(globeGroupRef.current.rotation);
@@ -696,6 +1037,12 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     // Mobile Multi-Touch Gestures: 1-Finger Turn, 2-Finger Pinch to Zoom (Deep In & Out), 2-Finger Twist Roll
     const handleTouchStart = (e: TouchEvent) => {
+      if (!isPortalExpandedRef.current) {
+        if (e.touches.length > 0) {
+          touchDownPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+        return;
+      }
       if (isOverlayActiveRef.current || isZoomedInRef.current) return;
       if (globeGroupRef.current) {
         gsap.killTweensOf(globeGroupRef.current.rotation);
@@ -755,6 +1102,12 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      if (!isPortalExpandedRef.current) {
+        if (e.touches.length > 0 && touchDownPos.current.y - e.touches[0].clientY > 20) {
+          expandPortal();
+        }
+        return;
+      }
       if (isOverlayActiveRef.current || isZoomedInRef.current) return;
 
       if (e.touches.length === 2 && isPinching.current) {
@@ -823,6 +1176,10 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     };
 
     const handleClick = (e: MouseEvent) => {
+      if (!isPortalExpandedRef.current) {
+        expandPortal();
+        return;
+      }
       if (isOverlayActiveRef.current || isZoomedInRef.current) return;
       if (hasMoved) return; // Prevent click after drag motion
       const rect = container.getBoundingClientRect();
@@ -886,20 +1243,36 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     // 7. Mouse Wheel Scroll (Endless Grid Scroll or Sphere Camera Zoom)
     const handleWheel = (e: WheelEvent) => {
+      if (!isPortalExpandedRef.current) {
+        if (Date.now() - lastCollapsedTimeRef.current < 1200) return;
+        if (e.deltaY > 10) {
+          expandPortal();
+        }
+        return;
+      }
       if (isOverlayActiveRef.current || isZoomedInRef.current) return;
       e.preventDefault();
       if (viewModeRef.current === 'grid') {
         // Endless continuous scroll without boundaries
         targetScrollY.current += e.deltaY * 0.008;
       } else {
-        // Zoom in/out of the 3D globe (supports deep plunge down to 2.5 and far overview up to 34.0)
-        targetCamZ.current += e.deltaY * 0.006;
-        targetCamZ.current = Math.max(2.5, Math.min(34.0, targetCamZ.current));
+        // Zoom in/out of the 3D globe (supports deep plunge down to 2.5 and far overview up to 40.0)
+        targetCamZ.current += e.deltaY * 0.008;
+        if (targetCamZ.current > 42.0 && !isAnimatingRef.current) {
+          if (Date.now() - lastExpandedTimeRef.current < 1500) {
+            targetCamZ.current = 40.0;
+            return;
+          }
+          collapsePortal();
+          return;
+        }
+        targetCamZ.current = Math.max(2.5, Math.min(42.0, targetCamZ.current));
       }
     };
 
     // 8. Resize Handler
     const handleResize = () => {
+      if (isAnimatingRef.current) return;
       if (!container || !renderer || !camera) return;
       const width = container.clientWidth || window.innerWidth;
       const height = container.clientHeight || window.innerHeight;
@@ -910,8 +1283,10 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       renderer.setSize(width, height);
 
       if (globeGroupRef.current && !isZoomedInRef.current && !isOverlayActiveRef.current) {
-        const isMobileNow = width <= 768;
-        const s = isMobileNow ? 0.72 : 1.0;
+        const isMobileNow = window.innerWidth <= 768;
+        const s = !isPortalExpandedRef.current
+          ? (isMobileNow ? 0.52 : 0.65)
+          : (isMobileNow ? 0.72 : 1.0);
         globeGroupRef.current.scale.set(s, s, s);
         updateGridLayout(isMobileNow);
       }
@@ -985,7 +1360,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       // Card scale increases in Grid mode to make designs larger and more prominent (both desktop and mobile)
       const isMobile = window.innerWidth <= 768;
-      const targetGridScale = isMobile ? 1.48 : 1.76;
+      const targetGridScale = isMobile ? 1.35 : 2.0;
       const cardScale = THREE.MathUtils.lerp(1.0, targetGridScale, m);
 
       // Interpolate each card between Sphere position/rotation and Responsive Endless Grid
@@ -1011,9 +1386,11 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       }
 
       // Camera position interpolation (responsive to mobile zoom & grid view)
-      const baseCamZ = viewModeRef.current === 'grid' ? (isMobile ? 16.5 : 14.5) : targetCamZ.current;
-      const finalCamZ = isZoomedInRef.current ? (isMobile ? 12.0 : 10.5) : baseCamZ;
-      camera.position.z += (finalCamZ - camera.position.z) * 0.08;
+      if (!isAnimatingRef.current) {
+        const baseCamZ = viewModeRef.current === 'grid' ? (isMobile ? 20.0 : 15.2) : targetCamZ.current;
+        const finalCamZ = isZoomedInRef.current ? (isMobile ? 12.0 : 10.5) : baseCamZ;
+        camera.position.z += (finalCamZ - camera.position.z) * 0.08;
+      }
 
       renderer.render(scene, camera);
       animId = requestAnimationFrame(animate);
@@ -1060,7 +1437,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   };
 
   return (
-    <div className="celestial-sky-stage">
+    <div className={`celestial-sky-stage ${isPortalExpanded ? 'is-portal-expanded' : 'is-portal-compact'}`}>
       {/* ── SMOOTH LOADING OVERLAY — covers screen until data & textures load ── */}
       <div className={`celestial-loading-veil ${isLoaded ? 'loaded' : ''}`}>
         <div className="celestial-loading-content">
@@ -1069,68 +1446,174 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         </div>
       </div>
 
-      {/* ── 1. LIVING BACKGROUND VIDEO ── */}
-      <div className="sky-daylight-backdrop" aria-hidden="true">
-        <video
-          ref={(el) => {
-            bgVideoRef.current = el;
-            if (el) {
-              el.defaultMuted = true;
-              el.muted = true;
-              if (!isOverlayActive && el.paused) {
-                el.play().catch(() => {});
-              }
-            }
-          }}
-          className="sky-bg-video"
-          src="/assets/bg-video-new.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          onLoadedData={() => {
-            if (bgVideoRef.current && !isOverlayActive) {
-              bgVideoRef.current.defaultMuted = true;
-              bgVideoRef.current.muted = true;
-              bgVideoRef.current.play().catch(() => {});
-            }
-          }}
-          onCanPlay={() => {
-            if (bgVideoRef.current && !isOverlayActive) {
-              bgVideoRef.current.defaultMuted = true;
-              bgVideoRef.current.muted = true;
-              bgVideoRef.current.play().catch(() => {});
-            }
-          }}
-          onWaiting={() => {
-            if (bgVideoRef.current && !isOverlayActive) {
-              bgVideoRef.current.play().catch(() => {});
-            }
-          }}
-          onEnded={() => {
-            if (bgVideoRef.current) {
-              bgVideoRef.current.currentTime = 0;
-              bgVideoRef.current.play().catch(() => {});
-            }
-          }}
-        />
+      {/* ── HERO EDITORIAL OVERLAY (Shown in Hero compact mode) ── */}
+      <div
+        ref={heroOverlayRef}
+        className="celestial-hero-editorial"
+        style={{
+          pointerEvents: isPortalExpanded ? 'none' : 'auto',
+        }}
+      >
+        <header ref={heroHeaderRef} className="celestial-hero-header">
+          <div className="celestial-hero-brand">
+            <span className="hero-brand-name">Emmanuel Bliss</span>
+          </div>
+        </header>
+
+        <div className="celestial-hero-center">
+          <div className="celestial-hero-headline">
+            <span ref={heroLeftRef} className="hero-headline-word hero-word-left">
+              a
+            </span>
+
+            {/* Portal Anchor Box: holds 3D slice wings and anchors the compact portal */}
+            <div
+              ref={anchorRef}
+              className="celestial-portal-anchor"
+              onClick={expandPortal}
+              role="button"
+              tabIndex={0}
+              title="Click or scroll to enter sphere"
+            >
+              {/* Left Accordion 3D Perspective Slice Wings */}
+              <div ref={wingsLeftRef} className="portal-slice-wing portal-slice-left" aria-hidden="true">
+                <div className="slice-card slice-3">
+                  <div className="slice-shimmer" />
+                </div>
+                <div className="slice-card slice-2">
+                  <div className="slice-shimmer" />
+                </div>
+                <div className="slice-card slice-1">
+                  <div className="slice-shimmer" />
+                </div>
+              </div>
+
+              {/* ── THE LIVING PORTAL FRAME (Canvas & Video live here - NEVER hidden by opacity!) ── */}
+              <div
+                ref={portalFrameRef}
+                className={`celestial-portal-frame ${isPortalExpanded ? 'is-expanded' : 'is-compact'}`}
+                onClick={(e) => {
+                  if (!isPortalExpandedRef.current) {
+                    e.stopPropagation();
+                    expandPortal();
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                title={isPortalExpanded ? '' : 'Click or scroll to enter 3D sphere'}
+              >
+                {/* 1. LIVING BACKGROUND VIDEO */}
+                <div className="sky-daylight-backdrop" aria-hidden="true">
+                  <video
+                    ref={(el) => {
+                      bgVideoRef.current = el;
+                      if (el) {
+                        el.defaultMuted = true;
+                        el.muted = true;
+                        if (!isOverlayActive && el.paused) {
+                          el.play().catch(() => {});
+                        }
+                      }
+                    }}
+                    className="sky-bg-video"
+                    src="/assets/bg-video-new.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    onLoadedData={() => {
+                      if (bgVideoRef.current && !isOverlayActive) {
+                        bgVideoRef.current.defaultMuted = true;
+                        bgVideoRef.current.muted = true;
+                        bgVideoRef.current.play().catch(() => {});
+                      }
+                    }}
+                    onCanPlay={() => {
+                      if (bgVideoRef.current && !isOverlayActive) {
+                        bgVideoRef.current.defaultMuted = true;
+                        bgVideoRef.current.muted = true;
+                        bgVideoRef.current.play().catch(() => {});
+                      }
+                    }}
+                    onWaiting={() => {
+                      if (bgVideoRef.current && !isOverlayActive) {
+                        bgVideoRef.current.play().catch(() => {});
+                      }
+                    }}
+                    onEnded={() => {
+                      if (bgVideoRef.current) {
+                        bgVideoRef.current.currentTime = 0;
+                        bgVideoRef.current.play().catch(() => {});
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* 2. THREE.JS 3D CANVAS */}
+                <div
+                  ref={mountRef}
+                  className="celestial-globe-canvas"
+                  style={{
+                    cursor: !isPortalExpanded
+                      ? 'pointer'
+                      : isDragging.current
+                      ? 'grabbing'
+                      : 'grab',
+                    opacity: isOverlayActive ? 0 : 1,
+                    pointerEvents: isOverlayActive ? 'none' : 'auto',
+                    transition: 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                />
+
+                {/* 3. COMPACT BADGE OVERLAY INSIDE PORTAL CARD */}
+                <div
+                  ref={cardOverlayRef}
+                  className="portal-frame-badge-overlay"
+                  style={{
+                    opacity: isPortalExpanded ? 0 : 1,
+                    pointerEvents: isPortalExpanded ? 'none' : 'auto',
+                  }}
+                >
+                  <div className="portal-badge-bottom">
+                    <span className="portal-badge-name">Meet Emmanuel Bliss</span>
+                    <span className="portal-badge-enter">
+                      <span className="badge-text-desktop">Scroll or click to enter</span>
+                      <span className="badge-text-mobile">Scroll or tap to enter</span>
+                      <ArrowUpRight size={13} />
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Accordion 3D Perspective Slice Wings */}
+              <div ref={wingsRightRef} className="portal-slice-wing portal-slice-right" aria-hidden="true">
+                <div className="slice-card slice-1">
+                  <div className="slice-shimmer" />
+                </div>
+                <div className="slice-card slice-2">
+                  <div className="slice-shimmer" />
+                </div>
+                <div className="slice-card slice-3">
+                  <div className="slice-shimmer" />
+                </div>
+              </div>
+            </div>
+
+            <div ref={heroRightRef} className="hero-word-right-container">
+              <span className="hero-headline-word hero-word-right">
+                Product Designer
+              </span>
+              <p className="hero-subtext">
+                Human-first designer, bringing clarity to what is existing and what is yet to exist.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ── 2. THREE.JS 3D CANVAS (SPHERE ⟷ 3-COLUMN ENDLESS GRID MORPH) ── */}
-      <div
-        ref={mountRef}
-        className="celestial-globe-canvas"
-        style={{
-          cursor: isDragging.current ? 'grabbing' : 'grab',
-          opacity: isOverlayActive ? 0 : 1,
-          pointerEvents: isOverlayActive ? 'none' : 'auto',
-          transition: 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
-      />
-
-      {/* ── 3. FOCUSED CARD HINT / QUICK ACTION (Sphere Mode) ── */}
-      {!isOverlayActive && viewMode === 'sphere' && focusedProject && !isZoomedIn && (
+      {/* ── 3. FOCUSED CARD HINT / QUICK ACTION (Sphere Mode, when expanded) ── */}
+      {isPortalExpanded && !isOverlayActive && viewMode === 'sphere' && focusedProject && !isZoomedIn && (
         <div
           className="celestial-focused-banner"
           onClick={() => setIsZoomedIn(true)}

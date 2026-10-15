@@ -6,6 +6,20 @@
   transform: translateX(-50%);
   z-index: 100;
   pointer-events: auto;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.top-view-switcher-wrap.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-24px);
+}
+
+.top-view-switcher-wrap.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
 }
 
 .top-view-switcher {
@@ -58,11 +72,20 @@
 
 @media (max-width: 768px) {
   .top-view-switcher-wrap {
-    top: 18px;
+    top: 16px;
     right: 16px;
     left: auto;
     transform: none;
   }
+
+  .top-view-switcher-wrap.is-visible {
+    transform: none;
+  }
+
+  .top-view-switcher-wrap.is-hidden {
+    transform: translateY(-20px);
+  }
+
   .top-view-btn {
     padding: 5px 11px;
     font-size: 11px;
