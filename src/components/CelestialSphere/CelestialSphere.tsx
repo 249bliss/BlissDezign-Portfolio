@@ -398,6 +398,15 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         duration: 1.5,
         ease: 'expo.out',
       });
+
+      // Ensure all card videos are actively playing
+      globalVideoCache.forEach((vid) => {
+        vid.defaultMuted = true;
+        vid.muted = true;
+        if (vid.paused) {
+          vid.play().catch(() => {});
+        }
+      });
     };
 
     // Deliberate pacing: ensures assets have at least 2.5s to stream in before revealing
@@ -431,6 +440,14 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       if (globalTextureCache.has(resolvedUrl)) {
         setTimeout(onMediaLoaded, 0);
+        const cachedVideo = globalVideoCache.get(resolvedUrl);
+        if (cachedVideo) {
+          cachedVideo.defaultMuted = true;
+          cachedVideo.muted = true;
+          if (cachedVideo.paused) {
+            cachedVideo.play().catch(() => {});
+          }
+        }
         return globalTextureCache.get(resolvedUrl)!;
       }
 
@@ -442,10 +459,19 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           video.crossOrigin = 'anonymous';
           video.loop = true;
           video.muted = true;
+          video.defaultMuted = true;
           video.playsInline = true;
           video.preload = 'auto';
-          video.play().catch(() => {});
+          video.setAttribute('muted', '');
+          video.setAttribute('playsinline', '');
+          video.setAttribute('autoplay', '');
           globalVideoCache.set(resolvedUrl, video);
+        }
+
+        video.defaultMuted = true;
+        video.muted = true;
+        if (video.paused) {
+          video.play().catch(() => {});
         }
 
         const videoTex = new THREE.VideoTexture(video);
@@ -995,10 +1021,24 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     animId = requestAnimationFrame(animate);
 
+    const resumeAllVideos = () => {
+      globalVideoCache.forEach((vid: HTMLVideoElement) => {
+        vid.defaultMuted = true;
+        vid.muted = true;
+        if (vid.paused) {
+          vid.play().catch(() => {});
+        }
+      });
+    };
+    window.addEventListener('pointerdown', resumeAllVideos, { passive: true });
+    window.addEventListener('touchstart', resumeAllVideos, { passive: true });
+
     return () => {
       cancelAnimationFrame(animId);
       resizeObserver?.disconnect();
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('pointerdown', resumeAllVideos);
+      window.removeEventListener('touchstart', resumeAllVideos);
       container.removeEventListener('pointerdown', handlePointerDown as EventListener);
       window.removeEventListener('pointermove', handlePointerMove as EventListener);
       window.removeEventListener('pointerup', handlePointerUp as EventListener);
@@ -1009,9 +1049,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       container.removeEventListener('click', handleClick);
       container.removeEventListener('wheel', handleWheel);
 
-      globalVideoCache.forEach((vid: HTMLVideoElement) => {
-        vid.pause();
-      });
       cardGeo.dispose();
       renderer.dispose();
       clearTimeout(safetyTimeout);
