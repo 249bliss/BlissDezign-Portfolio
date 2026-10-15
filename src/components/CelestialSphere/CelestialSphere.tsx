@@ -39,6 +39,11 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   const [focusedProject, setFocusedProject] = useState<SupabaseProject | null>(null);
   const [isZoomedIn, setIsZoomedIn] = useState<boolean>(false);
   const [focusedCardIdx, setFocusedCardIdx] = useState<number | null>(null);
+  const [texturesReady, setTexturesReady] = useState<boolean>(false);
+  const texturesLoadedCount = useRef(0);
+  const totalUniqueTextures = useRef(0);
+  const hasRevealedRef = useRef(false);
+  const allCardMaterials = useRef<THREE.MeshBasicMaterial[]>([]);
 
   // References to keep animation loop & events detached from React re-renders
   const viewModeRef = useRef<'sphere' | 'grid'>('sphere');
@@ -74,6 +79,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   const lastTapTime = useRef(0);
   const lastTapPos = useRef({ x: 0, y: 0 });
   const previousMouse = useRef({ x: 0, y: 0 });
+  const pointerDownPos = useRef({ x: 0, y: 0 });
+  const touchDownPos = useRef({ x: 0, y: 0 });
   const rotVelocity = useRef({ x: 0, y: 0 });
   const isAligningToCard = useRef(false);
 
@@ -210,28 +217,10 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 3. Floating Breeze Particles (warm golden sunlight motes)
-    const particleCount = 50;
-    const particleGeo = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      particlePositions[i] = (Math.random() - 0.5) * 28;
-      particlePositions[i + 1] = (Math.random() - 0.5) * 18;
-      particlePositions[i + 2] = (Math.random() - 0.5) * 22;
-    }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0xfef08a,
-      size: 0.12,
-      transparent: true,
-      opacity: 0.45,
-    });
-    const particles = new THREE.Points(particleGeo, particleMat);
-    scene.add(particles);
-
-    // 4. Globe / Card Master Group
+    // 3. Globe / Card Master Group — starts hidden until triggerReveal
     const globeGroup = new THREE.Group();
-    globeGroup.scale.set(initialGlobeScale, initialGlobeScale, initialGlobeScale);
+    globeGroup.scale.set(0.18, 0.18, 0.18);
+    globeGroup.position.set(0, 0, -10);
     globeGroupRef.current = globeGroup;
     scene.add(globeGroup);
 
@@ -255,19 +244,96 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     const cardGeo = createCurvedCardGeometry(2.4, 1.5, sphereRadius);
 
-    // High-Resolution Authentic Design Fallbacks (Guaranteeing no card ever displays an empty or generic canvas box)
-    const LOCAL_DESIGN_FALLBACKS = [
-      '/assets/Selected Project/nURAKICK.webp',
-      '/assets/Selected Project/rICKI ai.webp',
-      '/assets/Selected Project/sWYCHR.webp',
-      '/assets/Selected Project/Hevy.webp',
-    ];
+    // Texture loading tracker — triggers reveal once enough textures are ready
+    texturesLoadedCount.current = 0;
+    hasRevealedRef.current = false;
+    allCardMaterials.current = [];
+
+    // Collect unique media URLs to know when loading is "done enough"
+    const uniqueMediaUrls = new Set<string>();
+    for (let i = 0; i < totalTiles; i++) {
+      const p = projects[i % projects.length];
+      if (p.hero_image) uniqueMediaUrls.add(p.hero_image);
+    }
+    totalUniqueTextures.current = uniqueMediaUrls.size;
+
+    const triggerReveal = () => {
+      if (hasRevealedRef.current) return;
+      hasRevealedRef.current = true;
+
+      // Fade all card materials to full opacity
+      allCardMaterials.current.forEach((mat) => {
+        gsap.to(mat, {
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+          onUpdate: () => { mat.needsUpdate = true; },
+          onComplete: () => {
+            mat.transparent = false;
+            mat.needsUpdate = true;
+          },
+        });
+      });
+
+      // Play the entrance animation
+      const isMob = window.innerWidth <= 768;
+      const targetScale = isMob ? 0.72 : 1.0;
+      const targetZ = isMob ? 17.0 : 16.5;
+
+      camera.position.z = 7.0;
+      globeGroup.scale.set(0.22, 0.22, 0.22);
+      globeGroup.rotation.y = 1.6;
+
+      gsap.to(camera.position, {
+        z: targetZ,
+        duration: 1.6,
+        ease: 'expo.out',
+      });
+
+      gsap.to(globeGroup.scale, {
+        x: targetScale,
+        y: targetScale,
+        z: targetScale,
+        duration: 1.5,
+        ease: 'expo.out',
+      });
+
+      gsap.to(globeGroup.rotation, {
+        y: 0,
+        duration: 1.6,
+        ease: 'expo.out',
+      });
+
+      gsap.to(globeGroup.position, {
+        z: 0,
+        duration: 1.5,
+        ease: 'expo.out',
+      });
+
+      rotVelocity.current.y = 0.025;
+      setTexturesReady(true);
+    };
+
+    const onTextureLoaded = () => {
+      texturesLoadedCount.current++;
+      // Reveal once we've loaded at least 3 textures or all unique ones
+      const threshold = Math.min(3, totalUniqueTextures.current);
+      if (texturesLoadedCount.current >= threshold) {
+        triggerReveal();
+      }
+    };
+
+    // Safety timeout: reveal after 4s max even if images are slow
+    const revealTimeout = setTimeout(() => {
+      triggerReveal();
+    }, 4000);
 
     const getTextureForMedia = (mediaUrl: string, cardIndex: number = 0): THREE.Texture => {
-      const fallbackSrc = LOCAL_DESIGN_FALLBACKS[cardIndex % LOCAL_DESIGN_FALLBACKS.length];
-      const resolvedUrl = mediaUrl || fallbackSrc;
+      const resolvedUrl = mediaUrl || '';
 
       if (globalTextureCache.has(resolvedUrl)) {
+        // Already cached — count as loaded immediately
+        setTimeout(onTextureLoaded, 0);
         return globalTextureCache.get(resolvedUrl)!;
       }
 
@@ -281,8 +347,11 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           video.muted = true;
           video.playsInline = true;
           video.preload = 'auto';
+          video.addEventListener('loadeddata', onTextureLoaded, { once: true });
           video.play().catch(() => {});
           globalVideoCache.set(resolvedUrl, video);
+        } else {
+          setTimeout(onTextureLoaded, 0);
         }
         const videoTex = new THREE.VideoTexture(video);
         videoTex.colorSpace = THREE.SRGBColorSpace;
@@ -292,28 +361,21 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         globalTextureCache.set(resolvedUrl, videoTex);
         return videoTex;
       } else {
-        const loader = new THREE.TextureLoader();
-        loader.setCrossOrigin('anonymous');
-        const tex = loader.load(
-          resolvedUrl,
-          () => {
-            tex.needsUpdate = true;
-          },
-          undefined,
-          () => {
-            // If remote Cloudinary fails or drops offline, gracefully heal to verified authentic local design artwork
-            const fallbackLoader = new THREE.TextureLoader();
-            fallbackLoader.load(fallbackSrc, (fbTex) => {
-              fbTex.colorSpace = THREE.SRGBColorSpace;
-              tex.image = fbTex.image;
-              tex.needsUpdate = true;
-            });
-          }
-        );
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = resolvedUrl;
+        const tex = new THREE.Texture(img);
         tex.colorSpace = THREE.SRGBColorSpace;
         tex.minFilter = THREE.LinearFilter;
         tex.magFilter = THREE.LinearFilter;
         tex.generateMipmaps = false;
+        img.onload = () => {
+          tex.needsUpdate = true;
+          onTextureLoaded();
+        };
+        img.onerror = () => {
+          onTextureLoaded(); // Still count errors so we don't block forever
+        };
         globalTextureCache.set(resolvedUrl, tex);
         return tex;
       }
@@ -355,13 +417,16 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       const gridPos = new THREE.Vector3(xg, yg, zg);
       const gridQuat = new THREE.Quaternion(0, 0, 0, 1); // Identity facing forward
 
-      // C) Mesh & Container Setup
+      // C) Mesh & Container Setup — cards start fully transparent to prevent black flash
       const texture = getTextureForMedia(project.hero_image, i);
       const cardMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         map: texture,
         side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0,
       });
+      allCardMaterials.current.push(cardMat);
 
       const cardContainer = new THREE.Group();
       cardContainer.position.copy(spherePos);
@@ -410,30 +475,11 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       }
     };
 
-    // Instant Hyperspace Entrance Bloom on Page Load (0ms wait, smooth 60fps bloom)
+    // Globe starts small & far — entrance animation is deferred until textures load (triggerReveal)
     camera.position.z = 7.0;
-    globeGroup.scale.set(0.22, 0.22, 0.22);
+    globeGroup.scale.set(0.18, 0.18, 0.18);
+    globeGroup.position.set(0, 0, -10);
     globeGroup.rotation.y = 1.6;
-
-    gsap.to(camera.position, {
-      z: initialCamZ,
-      duration: 1.35,
-      ease: 'expo.out',
-    });
-
-    gsap.to(globeGroup.scale, {
-      x: initialGlobeScale,
-      y: initialGlobeScale,
-      z: initialGlobeScale,
-      duration: 1.25,
-      ease: 'expo.out',
-    });
-
-    gsap.to(globeGroup.rotation, {
-      y: 0,
-      duration: 1.35,
-      ease: 'expo.out',
-    });
 
     // 6. Raycasting & Interaction
     const raycaster = new THREE.Raycaster();
@@ -449,6 +495,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       isDragging.current = true;
       hasMoved = false;
       isAligningToCard.current = false;
+      pointerDownPos.current = { x: e.clientX, y: e.clientY };
       previousMouse.current = { x: e.clientX, y: e.clientY };
       rotVelocity.current = { x: 0, y: 0 };
     };
@@ -462,7 +509,11 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       if (isDragging.current) {
         const dx = clientX - previousMouse.current.x;
         const dy = clientY - previousMouse.current.y;
-        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        const totalDist = Math.hypot(
+          clientX - pointerDownPos.current.x,
+          clientY - pointerDownPos.current.y
+        );
+        if (totalDist > 14) {
           hasMoved = true;
         }
 
@@ -547,6 +598,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
         lastTapTime.current = now;
         lastTapPos.current = { x: t.clientX, y: t.clientY };
+        touchDownPos.current = { x: t.clientX, y: t.clientY };
         previousMouse.current = { x: t.clientX, y: t.clientY };
         rotVelocity.current = { x: 0, y: 0 };
       } else if (e.touches.length === 2) {
@@ -592,8 +644,12 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         const t = e.touches[0];
         const dx = t.clientX - previousMouse.current.x;
         const dy = t.clientY - previousMouse.current.y;
+        const totalDist = Math.hypot(
+          t.clientX - touchDownPos.current.x,
+          t.clientY - touchDownPos.current.y
+        );
 
-        if (Math.hypot(dx, dy) > 3) {
+        if (totalDist > 14) {
           hasMoved = true;
         }
 
@@ -814,16 +870,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         item.container.scale.setScalar(cardScale);
       }
 
-      // Floating breeze particles drift
-      const posAttr = particleGeo.attributes.position;
-      for (let i = 1; i < particleCount * 3; i += 3) {
-        posAttr.array[i] += 0.006;
-        if (posAttr.array[i] > 10) {
-          posAttr.array[i] = -10;
-        }
-      }
-      posAttr.needsUpdate = true;
-
       // Camera position interpolation (responsive to mobile zoom & grid view)
       const baseCamZ = viewModeRef.current === 'grid' ? (isMobile ? 16.5 : 14.5) : targetCamZ.current;
       const finalCamZ = isZoomedInRef.current ? (isMobile ? 12.0 : 10.5) : baseCamZ;
@@ -854,6 +900,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       });
       cardGeo.dispose();
       renderer.dispose();
+      clearTimeout(revealTimeout);
     };
   }, [projects]); // Only rebuilds when projects load
 
@@ -863,6 +910,21 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
   return (
     <div className="celestial-sky-stage">
+      {/* ── SMOOTH LOADING OVERLAY — covers everything until textures are ready ── */}
+      <div
+        className="celestial-loading-veil"
+        style={{
+          opacity: texturesReady ? 0 : 1,
+          pointerEvents: texturesReady ? 'none' : 'all',
+          transition: 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        <div className="celestial-loading-content">
+          <div className="celestial-loading-spinner" />
+          <span className="celestial-loading-text">Loading portfolio</span>
+        </div>
+      </div>
+
       {/* ── 1. LIVING BACKGROUND VIDEO ── */}
       <div className="sky-daylight-backdrop" aria-hidden="true">
         <video
@@ -878,7 +940,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           }}
           className="sky-bg-video"
           src="/assets/bg-video-new.mp4"
-          poster="/assets/sky-poster.jpg"
           autoPlay
           muted
           loop

@@ -79,32 +79,6 @@ export interface SupabaseAnalytics {
 
 // ─── QUERY HELPERS ──────────────────────────────────────────────
 
-const DUMMY_PROJECT_IDS = new Set([
-  'neura',
-  'wysahealth',
-  'logistiq',
-  'wayve - app store screenshot',
-  'health-in-tech',
-  'riki-ai',
-  'swychr',
-  'skin&soul',
-  'dr portfolio',
-  'vaulta wallet',
-  'avenor landingpage',
-  'wagestream redesign',
-]);
-
-const REVIEW_AVATAR_HEAL_MAP: Record<string, string> = {
-  'Aaron Munga': '/assets/Aaron.webp',
-  'はたけやま Hatake': '/assets/Hatake.jpg',
-  'Hatake': '/assets/Hatake.jpg',
-  'Favour Augustine': '/assets/favour.avif',
-  'Rafael Ribeiro': '/assets/Trusted by team at/xoria.png',
-  'Alexandre Erzadeoglu': '/assets/Trusted by team at/Frame 1487627493.png',
-  'Boluwatife Ojo': '/assets/Trusted by team at/Tife Ojo Consults.png',
-  'Kre8mind Team': '/assets/Trusted by team at/krea8 x banner new 2.png',
-};
-
 export async function fetchProjectsFromSupabase(): Promise<SupabaseProject[]> {
   try {
     const { data, error } = await supabase
@@ -118,38 +92,14 @@ export async function fetchProjectsFromSupabase(): Promise<SupabaseProject[]> {
       return [];
     }
 
-    // Filter out dummy/placeholder seeds and broken legacy storage links
-    const authentic = data.filter((p) => {
-      if (DUMMY_PROJECT_IDS.has(p.id)) return false;
-      if (p.hero_image && p.hero_image.includes('tqryfaoihqblcgfnoqgc.supabase.co')) return false;
-      return true;
-    });
-
-    return authentic;
+    return data;
   } catch (err) {
     console.warn('Failed to connect to Supabase:', err);
     return [];
   }
 }
 
-const CASE_STUDY_AUTHENTIC_CHUNKS: Record<string, string[]> = {
-  'wagestream-redesign': [
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922454/case_studies/fwvmkps9ff9zdiejg35j.webp',
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922460/case_studies/fe2xox7f9snxj1rqenkl.webp',
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922465/case_studies/ijhhoaghbg9ngueop99b.webp',
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922470/case_studies/pr5ce9n3bsoxa1dohj7w.webp',
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922473/case_studies/idbfbofsd1eqrtkdqstd.webp',
-  ],
-  'avenor-landingpage': [
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922478/case_studies/qeabhbfivw2i7lj62rud.webp',
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922485/case_studies/nfgnuppdut71edbx0f6i.webp',
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922492/case_studies/wqd11ylqaxt05dabtpv6.webp',
-    'https://res.cloudinary.com/adfxi8js/image/upload/v1791922493/case_studies/abzfr9179ybb5eymgktz.webp',
-  ],
-};
-
 export async function fetchCaseStudyFromSupabase(id: string): Promise<SupabaseCaseStudy | null> {
-  const authenticSlices = CASE_STUDY_AUTHENTIC_CHUNKS[id];
   try {
     const { data, error } = await supabase
       .from('case_studies')
@@ -158,24 +108,10 @@ export async function fetchCaseStudyFromSupabase(id: string): Promise<SupabaseCa
       .single();
 
     if (!error && data) {
-      if (authenticSlices && (!data.full_image_chunks || data.full_image_chunks.length < authenticSlices.length)) {
-        data.full_image_chunks = authenticSlices;
-      }
       return data;
     }
   } catch (err) {
     console.warn('Supabase case study fetch failed:', err);
-  }
-
-  if (authenticSlices) {
-    return {
-      id,
-      role: 'Product Designer (UX UI)',
-      duration: '2 weeks',
-      tools: 'Figma, AI',
-      industry: id.includes('wagestream') ? 'Fintech & Financial Wellness' : 'Real Estate',
-      full_image_chunks: authenticSlices,
-    };
   }
 
   return null;
@@ -193,17 +129,7 @@ export async function fetchReviewsFromSupabase(): Promise<SupabaseReview[]> {
       console.warn('Error fetching reviews from Supabase:', error);
       return [];
     }
-    return (data || []).map((r) => {
-      const fallback = REVIEW_AVATAR_HEAL_MAP[r.author_name];
-      let avatar = r.avatar_url;
-      if (!avatar || avatar.includes('tqryfaoihqblcgfnoqgc.supabase.co')) {
-        avatar = fallback || avatar;
-      }
-      return {
-        ...r,
-        avatar_url: avatar,
-      };
-    });
+    return data || [];
   } catch (err) {
     console.warn('Failed to fetch reviews:', err);
     return [];

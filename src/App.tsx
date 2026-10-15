@@ -9,7 +9,6 @@ import { AboutMeSection } from './components/AboutMe/AboutMeSection';
 import { LiquidDock } from './components/InteractiveHero/LiquidDock';
 import { CaseStudyModal } from './components/CaseStudyModal/CaseStudyModal';
 import { CustomCursor } from './components/Cursor/CustomCursor';
-import { IntroSequence } from './components/IntroSequence/IntroSequence';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
 import { ProjectData } from './data/projectsData';
 import './styles/index.css';
@@ -32,7 +31,6 @@ export const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('sphere');
   const [isProcessOpen, setIsProcessOpen] = useState(false);
   const [isStudioOpen, setIsStudioOpen] = useState(false);
-  const [isIntroActive, setIsIntroActive] = useState(true);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
 
@@ -148,22 +146,17 @@ export const App: React.FC = () => {
         color: '#09090b',
       }}
     >
-      {/* Dynamic Cursor Badge (Suppressed when overlays or modals or intro are open) */}
+      {/* Dynamic Cursor Badge (Suppressed when overlays or modals are open) */}
       <CustomCursor
-        hoveredProject={(!isProcessOpen && !isStudioOpen && !selectedProject && !isIntroActive) ? hoveredProject : null}
-        enabled={!isProcessOpen && !isStudioOpen && !selectedProject && !isIntroActive}
+        hoveredProject={(!isProcessOpen && !isStudioOpen && !selectedProject) ? hoveredProject : null}
+        enabled={!isProcessOpen && !isStudioOpen && !selectedProject}
       />
-
-      {/* ── CINEMATIC INTRO SEQUENCE (DESIGNS FLIP ➔ CURSOR DRAG ➔ HYPERSPACE PLUNGE) ── */}
-      {isIntroActive && (
-        <IntroSequence onComplete={() => setIsIntroActive(false)} />
-      )}
 
       {/* Nature Ambiance Sound Toggle (Birdsong & Breeze) */}
       <NatureAudio />
 
       {/* Top Left Social Links Capsule (X & LinkedIn) - Hidden when modal/case study is open */}
-      <TopSocialLinks visible={!selectedProject && !isProcessOpen && !isStudioOpen && !isIntroActive} />
+      <TopSocialLinks visible={!selectedProject && !isProcessOpen && !isStudioOpen} />
 
       {/* Top View Switcher (Sphere <-> Grid) */}
       <TopViewSwitcher
@@ -185,7 +178,7 @@ export const App: React.FC = () => {
       >
         <CelestialSphere
           viewMode={viewMode}
-          isOverlayActive={isProcessOpen || isStudioOpen || !!selectedProject || isIntroActive}
+          isOverlayActive={isProcessOpen || isStudioOpen || !!selectedProject}
           onSelectProject={handleSelectSupabaseProject}
           onHoverProject={(sbProj) => {
             if (sbProj) {
@@ -254,7 +247,7 @@ export const App: React.FC = () => {
 
       {/* ── PERSISTENT BOTTOM NAVIGATION DOCK (MUST APPEAR ON ALL PAGES) ── */}
       <LiquidDock
-        visible={!isIntroActive}
+        visible={true}
         activeSection={
           isProcessOpen
             ? 'how-i-work'

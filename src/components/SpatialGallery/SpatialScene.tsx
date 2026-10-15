@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { PROJECTS, ProjectData } from '../../data/projectsData';
+import { ProjectData } from '../../data/projectsData';
 import { PerspectiveSpatialGallery } from './PerspectiveSpatialGallery';
 
 export type SpatialMode = 'RINGS' | 'SPIRAL' | 'SPHERE' | 'FLOW';

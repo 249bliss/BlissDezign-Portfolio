@@ -14,7 +14,7 @@ interface ProcessSectionProps {
 const METRICS = [
   { value: '17+', label: 'Product Designs', sub: 'Shipped & Validated' },
   { value: '2+', label: 'Years Experience', sub: 'End-to-End Product Design' },
-  { value: '8+', label: 'Global Clients', sub: 'Across 4+ Timezones' },
+  { value: '6+', label: 'Global Clients', sub: 'Across 4+ Timezones' },
   { value: '48h', label: 'Average Response', sub: 'Fast Async Turnaround' },
 ];
 

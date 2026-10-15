@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { PROJECTS, ProjectData } from '../../data/projectsData';
+import { ProjectData } from '../../data/projectsData';
 import { ArrowUpRight, X } from 'lucide-react';
 import './SpatialSphere.css';
 
