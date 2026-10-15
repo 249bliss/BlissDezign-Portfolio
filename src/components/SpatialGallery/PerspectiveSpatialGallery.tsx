@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ProjectData } from '../../data/projectsData';
+import { ProjectData, PROJECTS } from '../../data/projectsData';
 import type { SpatialMode } from './SpatialScene';
 import './PerspectiveSpatialGallery.css';
 

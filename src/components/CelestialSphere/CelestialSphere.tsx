@@ -28,6 +28,94 @@ interface CardEntity {
 const globalTextureCache = new Map<string, THREE.Texture>();
 const globalVideoCache = new Map<string, HTMLVideoElement>();
 
+// Verified initial projects from Supabase admin board to enable 0ms instant mount
+const INITIAL_PROJECTS: SupabaseProject[] = [
+  {
+    id: 'avenor-landingpage',
+    title: 'AVENOR - Real Estate Landing Page',
+    subtitle: 'A luxury real estate landing page designed in Figma and prototyped in Jitter.',
+    hero_image: 'https://res.cloudinary.com/adfxi8js/video/upload/v1791915317/projects/xqhh6vxyqqrpeqy5pc06.mp4',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Websites', 'Real Estate', 'Landing Page', 'Case Study'],
+    is_featured: true,
+    display_order: 0,
+    grid_layout: 'standard',
+  },
+  {
+    id: 'wagestream-redesign',
+    title: 'WageStream Onboarding Redesign',
+    subtitle: "A UX-driven onboarding redesign that transforms WageStream's first-time experience from feature-focused to trust-focused.",
+    hero_image: 'https://res.cloudinary.com/adfxi8js/image/upload/v1791918523/projects/giljpuzculsd1iqqrhaf.webp',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Mobile Apps', 'Fintech', 'UI/UX Strategy', 'Casestudy'],
+    is_featured: true,
+    display_order: 3,
+    grid_layout: 'standard',
+  },
+  {
+    id: 'wayve---app-store-screenshot',
+    title: 'Wayve AppScreenshot Redesign',
+    subtitle: "I redesigned Wayve’s App Store and Google Play screenshots to communicate the product’s value within the few seconds",
+    hero_image: 'https://res.cloudinary.com/adfxi8js/video/upload/v1791925442/projects/qhgj0v0csrykldtsodgi.mp4',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Product Design', 'UI/UX', 'Appscreenshot'],
+    is_featured: true,
+    display_order: 3,
+    grid_layout: 'standard',
+  },
+  {
+    id: 'wysa-health-chat-redesign',
+    title: 'Wysa - Mental Health Chat Redesign',
+    subtitle: "A redesign of Wysa's chat experience, reducing visual clutter and creating a calmer, more supportive conversation interface for emotionally vulnerable users.",
+    hero_image: 'https://res.cloudinary.com/adfxi8js/image/upload/v1791925995/projects/og2yexpzoedtkrtbxgro.jpg',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Healthcare', 'Product Design', 'Mobileapp'],
+    is_featured: true,
+    display_order: 4,
+    grid_layout: 'standard',
+  },
+  {
+    id: 'xoria-webredesign',
+    title: 'Website Redesign for Xoria',
+    subtitle: "UX Audit & Redesigned Xoria's website to improve product presentation and communication.",
+    hero_image: 'https://res.cloudinary.com/adfxi8js/image/upload/v1791926472/projects/fc0imy7uxe4qsqzzdlqn.png',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Product Design', 'UX Design', 'SAAS', 'AI'],
+    is_featured: true,
+    display_order: 5,
+    grid_layout: 'standard',
+  },
+  {
+    id: 'hit-webredesign',
+    title: 'Health In Tech - Website Redesign',
+    subtitle: "Concept redesign of Health In Tech's website, transforming a feature-heavy experience into a trust-driven digital presence",
+    hero_image: 'https://res.cloudinary.com/adfxi8js/video/upload/v1791927409/projects/gjpii1z9acxyxevgyyzn.mp4',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['HealthTech', 'UX Design', 'Redesign'],
+    is_featured: true,
+    display_order: 6,
+    grid_layout: 'standard',
+  },
+  {
+    id: '1p-algo',
+    title: '1P Algorithms',
+    subtitle: 'Hero section redesign for an AI trading platform, shifting from a text-heavy page to a product-led experience that builds trust instantly.',
+    hero_image: 'https://res.cloudinary.com/adfxi8js/video/upload/v1791927912/projects/ypw8dioexjbk0leojqgx.mp4',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Fintech', 'Redesign', 'UX Audit'],
+    is_featured: true,
+    display_order: 7,
+    grid_layout: 'standard',
+  },
+];
+
 export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   viewMode = 'sphere',
   onSelectProject,
@@ -35,15 +123,10 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   isOverlayActive = false,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
-  const [projects, setProjects] = useState<SupabaseProject[]>([]);
+  const [projects, setProjects] = useState<SupabaseProject[]>(INITIAL_PROJECTS);
   const [focusedProject, setFocusedProject] = useState<SupabaseProject | null>(null);
   const [isZoomedIn, setIsZoomedIn] = useState<boolean>(false);
   const [focusedCardIdx, setFocusedCardIdx] = useState<number | null>(null);
-  const [texturesReady, setTexturesReady] = useState<boolean>(false);
-  const texturesLoadedCount = useRef(0);
-  const totalUniqueTextures = useRef(0);
-  const hasRevealedRef = useRef(false);
-  const allCardMaterials = useRef<THREE.MeshBasicMaterial[]>([]);
 
   // References to keep animation loop & events detached from React re-renders
   const viewModeRef = useRef<'sphere' | 'grid'>('sphere');
@@ -244,96 +327,24 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
     const cardGeo = createCurvedCardGeometry(2.4, 1.5, sphereRadius);
 
-    // Texture loading tracker — triggers reveal once enough textures are ready
-    texturesLoadedCount.current = 0;
-    hasRevealedRef.current = false;
-    allCardMaterials.current = [];
-
-    // Collect unique media URLs to know when loading is "done enough"
-    const uniqueMediaUrls = new Set<string>();
-    for (let i = 0; i < totalTiles; i++) {
-      const p = projects[i % projects.length];
-      if (p.hero_image) uniqueMediaUrls.add(p.hero_image);
-    }
-    totalUniqueTextures.current = uniqueMediaUrls.size;
-
-    const triggerReveal = () => {
-      if (hasRevealedRef.current) return;
-      hasRevealedRef.current = true;
-
-      // Fade all card materials to full opacity
-      allCardMaterials.current.forEach((mat) => {
-        gsap.to(mat, {
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          onUpdate: () => { mat.needsUpdate = true; },
-          onComplete: () => {
-            mat.transparent = false;
-            mat.needsUpdate = true;
-          },
-        });
-      });
-
-      // Play the entrance animation
-      const isMob = window.innerWidth <= 768;
-      const targetScale = isMob ? 0.72 : 1.0;
-      const targetZ = isMob ? 17.0 : 16.5;
-
-      camera.position.z = 7.0;
-      globeGroup.scale.set(0.22, 0.22, 0.22);
-      globeGroup.rotation.y = 1.6;
-
-      gsap.to(camera.position, {
-        z: targetZ,
-        duration: 1.6,
-        ease: 'expo.out',
-      });
-
-      gsap.to(globeGroup.scale, {
-        x: targetScale,
-        y: targetScale,
-        z: targetScale,
-        duration: 1.5,
-        ease: 'expo.out',
-      });
-
-      gsap.to(globeGroup.rotation, {
-        y: 0,
-        duration: 1.6,
-        ease: 'expo.out',
-      });
-
-      gsap.to(globeGroup.position, {
-        z: 0,
-        duration: 1.5,
-        ease: 'expo.out',
-      });
-
-      rotVelocity.current.y = 0.025;
-      setTexturesReady(true);
-    };
-
-    const onTextureLoaded = () => {
-      texturesLoadedCount.current++;
-      // Reveal once we've loaded at least 3 textures or all unique ones
-      const threshold = Math.min(3, totalUniqueTextures.current);
-      if (texturesLoadedCount.current >= threshold) {
-        triggerReveal();
+    // Soft sky placeholder canvas so cards never render black WebGL pixels while loading
+    const createSkyPlaceholder = (): HTMLCanvasElement => {
+      const c = document.createElement('canvas');
+      c.width = 64;
+      c.height = 40;
+      const ctx = c.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#e2ecf8';
+        ctx.fillRect(0, 0, 64, 40);
       }
+      return c;
     };
+    const skyPlaceholder = createSkyPlaceholder();
 
-    // Safety timeout: reveal after 4s max even if images are slow
-    const revealTimeout = setTimeout(() => {
-      triggerReveal();
-    }, 4000);
-
-    const getTextureForMedia = (mediaUrl: string, cardIndex: number = 0): THREE.Texture => {
+    const getTextureForMedia = (mediaUrl: string): THREE.Texture => {
       const resolvedUrl = mediaUrl || '';
 
       if (globalTextureCache.has(resolvedUrl)) {
-        // Already cached — count as loaded immediately
-        setTimeout(onTextureLoaded, 0);
         return globalTextureCache.get(resolvedUrl)!;
       }
 
@@ -347,11 +358,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           video.muted = true;
           video.playsInline = true;
           video.preload = 'auto';
-          video.addEventListener('loadeddata', onTextureLoaded, { once: true });
           video.play().catch(() => {});
           globalVideoCache.set(resolvedUrl, video);
-        } else {
-          setTimeout(onTextureLoaded, 0);
         }
         const videoTex = new THREE.VideoTexture(video);
         videoTex.colorSpace = THREE.SRGBColorSpace;
@@ -361,21 +369,23 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         globalTextureCache.set(resolvedUrl, videoTex);
         return videoTex;
       } else {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = resolvedUrl;
-        const tex = new THREE.Texture(img);
+        // Initialize with soft sky placeholder so card is immediately light & clean
+        const tex = new THREE.Texture(skyPlaceholder);
         tex.colorSpace = THREE.SRGBColorSpace;
         tex.minFilter = THREE.LinearFilter;
         tex.magFilter = THREE.LinearFilter;
         tex.generateMipmaps = false;
-        img.onload = () => {
-          tex.needsUpdate = true;
-          onTextureLoaded();
-        };
-        img.onerror = () => {
-          onTextureLoaded(); // Still count errors so we don't block forever
-        };
+        tex.needsUpdate = true;
+
+        if (resolvedUrl) {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.src = resolvedUrl;
+          img.onload = () => {
+            (tex as any).image = img;
+            tex.needsUpdate = true;
+          };
+        }
         globalTextureCache.set(resolvedUrl, tex);
         return tex;
       }
@@ -417,16 +427,13 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       const gridPos = new THREE.Vector3(xg, yg, zg);
       const gridQuat = new THREE.Quaternion(0, 0, 0, 1); // Identity facing forward
 
-      // C) Mesh & Container Setup — cards start fully transparent to prevent black flash
-      const texture = getTextureForMedia(project.hero_image, i);
+      // C) Mesh & Container Setup — crisp light card material
+      const texture = getTextureForMedia(project.hero_image);
       const cardMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         map: texture,
         side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0,
       });
-      allCardMaterials.current.push(cardMat);
 
       const cardContainer = new THREE.Group();
       cardContainer.position.copy(spherePos);
@@ -434,7 +441,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       const cardMesh = new THREE.Mesh(cardGeo, cardMat);
       cardContainer.add(cardMesh);
-
 
       cardMesh.userData = { project, index: i, container: cardContainer };
 
@@ -475,11 +481,31 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       }
     };
 
-    // Globe starts small & far — entrance animation is deferred until textures load (triggerReveal)
+    // Instant Smooth Intro: sphere pushes forward into view immediately
     camera.position.z = 7.0;
-    globeGroup.scale.set(0.18, 0.18, 0.18);
-    globeGroup.position.set(0, 0, -10);
+    globeGroup.scale.set(0.22, 0.22, 0.22);
+    globeGroup.position.set(0, 0, 0);
     globeGroup.rotation.y = 1.6;
+
+    gsap.to(camera.position, {
+      z: initialCamZ,
+      duration: 1.4,
+      ease: 'expo.out',
+    });
+
+    gsap.to(globeGroup.scale, {
+      x: initialGlobeScale,
+      y: initialGlobeScale,
+      z: initialGlobeScale,
+      duration: 1.3,
+      ease: 'expo.out',
+    });
+
+    gsap.to(globeGroup.rotation, {
+      y: 0,
+      duration: 1.4,
+      ease: 'expo.out',
+    });
 
     // 6. Raycasting & Interaction
     const raycaster = new THREE.Raycaster();
@@ -900,7 +926,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       });
       cardGeo.dispose();
       renderer.dispose();
-      clearTimeout(revealTimeout);
     };
   }, [projects]); // Only rebuilds when projects load
 
@@ -910,21 +935,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
   return (
     <div className="celestial-sky-stage">
-      {/* ── SMOOTH LOADING OVERLAY — covers everything until textures are ready ── */}
-      <div
-        className="celestial-loading-veil"
-        style={{
-          opacity: texturesReady ? 0 : 1,
-          pointerEvents: texturesReady ? 'none' : 'all',
-          transition: 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
-      >
-        <div className="celestial-loading-content">
-          <div className="celestial-loading-spinner" />
-          <span className="celestial-loading-text">Loading portfolio</span>
-        </div>
-      </div>
-
       {/* ── 1. LIVING BACKGROUND VIDEO ── */}
       <div className="sky-daylight-backdrop" aria-hidden="true">
         <video
