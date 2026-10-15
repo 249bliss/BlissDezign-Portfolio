@@ -27,7 +27,7 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(180deg, #e8f0fe 0%, #dce8f8 40%, #c7d8ef 100%);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity;
 }
 

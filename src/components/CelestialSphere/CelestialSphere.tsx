@@ -130,6 +130,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const texturesLoadedCount = useRef(0);
   const hasRevealedRef = useRef(false);
+  const mountTimeRef = useRef(Date.now());
 
   // References to keep animation loop & events detached from React re-renders
   const viewModeRef = useRef<'sphere' | 'grid'>('sphere');
@@ -328,21 +329,45 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       return geo;
     };
 
-    const cardGeo = createCurvedCardGeometry(2.4, 1.5, sphereRadius);
+    const cardWidth = 2.4;
+    const cardHeight = 1.6;
+    const cardAspect = cardWidth / cardHeight; // 1.5 aspect ratio
+
+    const cardGeo = createCurvedCardGeometry(cardWidth, cardHeight, sphereRadius);
+
+    // Prevents cards from being crushed vertically: scales and center-crops UVs like CSS object-fit: cover
+    const applyCoverToTexture = (texture: THREE.Texture, mediaAspect: number) => {
+      if (!mediaAspect || !isFinite(mediaAspect) || mediaAspect <= 0) return;
+      if (mediaAspect > cardAspect) {
+        // Media is wider than card -> crop horizontal edges, keep full vertical height intact
+        const repeatX = cardAspect / mediaAspect;
+        texture.repeat.set(repeatX, 1);
+        texture.offset.set((1 - repeatX) / 2, 0);
+      } else {
+        // Media is taller than card -> crop vertical edges, keep full horizontal width intact (never crushed vertically!)
+        const repeatY = mediaAspect / cardAspect;
+        texture.repeat.set(1, repeatY);
+        texture.offset.set(0, (1 - repeatY) / 2);
+      }
+      texture.needsUpdate = true;
+    };
 
     // Soft sky placeholder canvas so cards never render black WebGL pixels while loading
     const createSkyPlaceholder = (): HTMLCanvasElement => {
       const c = document.createElement('canvas');
       c.width = 64;
-      c.height = 40;
+      c.height = 42;
       const ctx = c.getContext('2d');
       if (ctx) {
         ctx.fillStyle = '#e2ecf8';
-        ctx.fillRect(0, 0, 64, 40);
+        ctx.fillRect(0, 0, 64, 42);
       }
       return c;
     };
     const skyPlaceholder = createSkyPlaceholder();
+
+    const uniqueMediaCount = new Set(projects.map((p) => p.hero_image).filter(Boolean)).size;
+    const requiredMediaThreshold = Math.max(1, Math.min(uniqueMediaCount, 5));
 
     const triggerReveal = () => {
       if (hasRevealedRef.current) return;
@@ -356,7 +381,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
 
       gsap.to(camera.position, {
         z: initialCamZ,
-        duration: 1.4,
+        duration: 1.5,
         ease: 'expo.out',
       });
 
@@ -364,28 +389,42 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         x: initialGlobeScale,
         y: initialGlobeScale,
         z: initialGlobeScale,
-        duration: 1.3,
+        duration: 1.4,
         ease: 'expo.out',
       });
 
       gsap.to(globeGroup.rotation, {
         y: 0,
-        duration: 1.4,
+        duration: 1.5,
         ease: 'expo.out',
       });
     };
 
-    const onMediaLoaded = () => {
-      texturesLoadedCount.current++;
-      if (texturesLoadedCount.current >= 3 && !hasRevealedRef.current) {
+    // Deliberate pacing: ensures assets have at least 2.5s to stream in before revealing
+    const tryReveal = () => {
+      if (hasRevealedRef.current) return;
+      const elapsed = Date.now() - mountTimeRef.current;
+      const minDisplayTime = 2500;
+      if (elapsed < minDisplayTime) {
+        setTimeout(() => {
+          triggerReveal();
+        }, minDisplayTime - elapsed);
+      } else {
         triggerReveal();
       }
     };
 
-    // Safety timeout: reveal after 2.4s max so portfolio always opens smoothly
+    const onMediaLoaded = () => {
+      texturesLoadedCount.current++;
+      if (texturesLoadedCount.current >= requiredMediaThreshold && !hasRevealedRef.current) {
+        tryReveal();
+      }
+    };
+
+    // Safety timeout: 4.5s max so slow networks get ample time, but never hang indefinitely
     const safetyTimeout = setTimeout(() => {
       triggerReveal();
-    }, 2400);
+    }, 4500);
 
     const getTextureForMedia = (mediaUrl: string): THREE.Texture => {
       const resolvedUrl = mediaUrl || '';
@@ -405,17 +444,30 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           video.muted = true;
           video.playsInline = true;
           video.preload = 'auto';
-          video.addEventListener('loadeddata', onMediaLoaded, { once: true });
           video.play().catch(() => {});
           globalVideoCache.set(resolvedUrl, video);
-        } else {
-          setTimeout(onMediaLoaded, 0);
         }
+
         const videoTex = new THREE.VideoTexture(video);
         videoTex.colorSpace = THREE.SRGBColorSpace;
         videoTex.minFilter = THREE.LinearFilter;
         videoTex.magFilter = THREE.LinearFilter;
         videoTex.generateMipmaps = false;
+
+        const updateVideoCover = () => {
+          if (video && video.videoWidth && video.videoHeight) {
+            applyCoverToTexture(videoTex, video.videoWidth / video.videoHeight);
+          }
+        };
+
+        if (video.readyState >= 1) {
+          updateVideoCover();
+          setTimeout(onMediaLoaded, 0);
+        } else {
+          video.addEventListener('loadedmetadata', updateVideoCover, { once: true });
+          video.addEventListener('loadeddata', onMediaLoaded, { once: true });
+        }
+
         globalTextureCache.set(resolvedUrl, videoTex);
         return videoTex;
       } else {
@@ -432,6 +484,8 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
           img.crossOrigin = 'anonymous';
           img.src = resolvedUrl;
           img.onload = () => {
+            const aspect = (img.naturalWidth || img.width) / (img.naturalHeight || img.height);
+            applyCoverToTexture(tex, aspect);
             (tex as any).image = img;
             tex.needsUpdate = true;
             onMediaLoaded();
@@ -455,7 +509,7 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       const theta = Math.sqrt(totalTiles * Math.PI) * phi;
 
       const xs = sphereRadius * Math.sin(phi) * Math.cos(theta);
-      const ys = sphereRadius * Math.cos(phi) * 0.92;
+      const ys = sphereRadius * Math.cos(phi);
       const zs = sphereRadius * Math.sin(phi) * Math.sin(theta);
       const spherePos = new THREE.Vector3(xs, ys, zs);
 
