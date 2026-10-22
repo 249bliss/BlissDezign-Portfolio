@@ -66,9 +66,9 @@ export const StudioSection: React.FC<StudioSectionProps> = ({ onClose, onOpenCon
         <section className="studio-venture-card">
           <div>
             <div className="studio-eyebrow" style={{ marginBottom: '0.5rem' }}>INDEPENDENT VENTURE LAB</div>
-            <h2 className="venture-title">Beyond Individual Craft: Kre8mind Studio</h2>
+            <h2 className="venture-title">Beyond Individual Craft: Kre8mind</h2>
             <p className="venture-text">
-              I also direct <strong>Kre8mind</strong>, an independent product design studio and venture incubator. We help early-stage to series-A founders rapidly discover product-market fit through tight 3-week design sprints.
+              I direct <strong>Kre8mind</strong>, an independent product design studio focused on turning complex ideas into clear, useful digital experiences and helping ambitious teams bring products to life.
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <a

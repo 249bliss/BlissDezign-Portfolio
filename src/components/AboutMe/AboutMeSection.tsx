@@ -28,7 +28,7 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
   // Silky smooth momentum scrolling with Lenis
   useContainerLenis(containerRef, true);
 
-  const email = 'bliss@kre8mind.com';
+  const email = 'blissstudio44@gmail.com';
   const phone = '+2348164702370';
   const whatsappUrl = 'https://wa.me/2348164702370';
   const calComUrl = 'https://cal.com/blissdezigns/discovery-call';
@@ -39,25 +39,25 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
       num: '01',
       title: 'Product Architecture',
       tag: 'Interaction Mechanics',
-      desc: 'End-to-end UX/UI architecture for high-velocity software products, building accessible component systems and intuitive user journeys.',
+      desc: 'End-to-end UX/UI design for digital products, building clear user journeys, accessible interfaces, Design system and scalable product experiences.',
     },
     {
       num: '02',
       title: 'UX Consulting & Strategy',
       tag: 'Problem Clarity',
-      desc: 'Interrogating user friction, eliminating cognitive overload, and turning complex product logic into effortless workflows.',
+      desc: 'Identifying user friction, simplifying complex product logic, and turning unclear workflows into clear, effective experiences.',
     },
     {
       num: '03',
-      title: 'Design Systems Architecture',
-      tag: 'Cohesive Scale',
-      desc: 'Comprehensive Figma libraries, token architecture, and structured design-to-production pipelines that keep products consistent.',
+      title: 'AI Product Building',
+      tag: 'Functional MVPs',
+      desc: 'Turning ideas and designs into functional product experiences using AI-assisted development, from rapid prototypes to working MVPs.',
     },
     {
       num: '04',
       title: 'Cross-Functional Collaboration',
       tag: 'Unified Alignment',
-      desc: 'Collaboration is fundamental when building enduring products. I champion active communication, early design alignment, and seamless synergy across founders, developers, and stakeholders.',
+      desc: 'Working closely with founders, developers, and stakeholders to align product goals, design decisions, and implementation.',
     },
   ];
 
@@ -153,7 +153,7 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
       opacity: 0,
     });
 
-    gsap.set('.about-dossier-card', {
+    gsap.set('.about-dossier-layout .about-card', {
       transformPerspective: 1600,
       y: 40,
       z: -300,
@@ -169,12 +169,16 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
       duration: 0.85,
     }, '-=0.1');
 
-    tl.to('.about-dossier-card', {
+    tl.to('.about-dossier-layout .about-card', {
       y: 0,
       z: 0,
       scale: 1,
       opacity: 1,
       duration: 0.9,
+      stagger: 0.08,
+      onComplete: () => {
+        gsap.set('.about-dossier-layout .about-card', { clearProps: 'transform' });
+      },
     }, '-=0.55');
 
     // Cards entrance
@@ -238,44 +242,57 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
           </p>
         </header>
 
-        {/* ── Editorial Dossier Card (Portrait + Story Split) ── */}
-        <div className="about-dossier-card">
-          <div className="about-dossier-grid">
-            {/* Left: Portrait Frame & Location Meta */}
-            <div className="about-portrait-col">
-              <div className="about-portrait-frame">
-                <img
-                  src="/assets/MY UPDATED PICS.png"
-                  alt="Emmanuel Bliss - Product Designer"
-                  className="about-portrait-img"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/Profile12341.png';
-                  }}
-                />
-              </div>
-
-              <div className="about-portrait-meta">
-                <div className="about-meta-name">Emmanuel Bliss</div>
-                <div className="about-meta-role">Product Designer, UI/UX</div>
-                <div className="about-meta-loc">Global Remote</div>
-              </div>
+        {/* ── Editorial Dossier (Divided Cards Aligned in Grid) ── */}
+        <div className="about-dossier-layout">
+          {/* Left Card: Portrait + Name + Role + Location */}
+          <div
+            className="about-card about-portrait-card"
+            style={{ '--dossier-idx': 0 } as React.CSSProperties}
+          >
+            <div className="about-portrait-frame">
+              <img
+                src="/assets/MY UPDATED PICS.png"
+                alt="Emmanuel Bliss - Product Designer (UI/UX) & AI Builder"
+                className="about-portrait-img"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/assets/Profile12341.png';
+                }}
+              />
             </div>
 
-            {/* Right: Narrative Story & Core Conviction */}
-            <div className="about-story-col">
+            <div className="about-portrait-meta">
+              <div className="about-meta-name">Emmanuel Bliss</div>
+              <div className="about-meta-role">Product Designer (UI/UX) &amp; AI Builder</div>
+              <div className="about-meta-loc">Global Remote</div>
+            </div>
+          </div>
+
+          {/* Right Column: 2 Stacked Cards (Intro on top, Philosophy + Studio note on bottom) */}
+          <div className="about-story-stack">
+            {/* 1. Introduction Card */}
+            <div
+              className="about-card about-intro-card"
+              style={{ '--dossier-idx': 1 } as React.CSSProperties}
+            >
               <h2 className="about-story-heading">
-                I&apos;m Emmanuel Bliss, a product designer who cares about how people experience digital products and how those experiences help businesses grow.
+                I&apos;m Emmanuel Bliss, a product designer and AI builder who cares about how people experience digital products and how those experiences help businesses grow.
               </h2>
 
               <p className="about-story-p">
-                Over the last few years, I have partnered with founders, startups, teams, coaches, and agencies to bring clarity to complex problems and help digital products scale and grow.
+                I partner with founders, startups, and product teams to bring clarity to complex products, turn new ideas into working digital experiences, and create products that retain users and drive business growth.
               </p>
+            </div>
 
-              <div className="about-quote-callout">
+            {/* 2. Philosophy & Studio Card */}
+            <div
+              className="about-card about-philosophy-card"
+              style={{ '--dossier-idx': 2 } as React.CSSProperties}
+            >
+              <div className="about-philosophy-quote">
                 &ldquo;Design is not how a product is decorated. Design is how the system communicates, builds confidence, and converts friction into effortless flow.&rdquo;
               </div>
 
-              <p className="about-story-p" style={{ marginBottom: 0 }}>
+              <p className="about-philosophy-note">
                 Beyond individual consulting, I lead <strong>Kre8mind</strong>, a design studio built around the same conviction: shipping products with uncompromising clarity and structural integrity.
               </p>
             </div>
@@ -365,7 +382,7 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
             <div className="about-venture-copy">
               <h2 className="about-venture-title">Beyond Individual Craft: Kre8mind</h2>
               <p className="about-venture-p">
-                I direct <strong>Kre8mind</strong>, an independent product design studio and venture incubator. We help early-stage to series-A founders rapidly discover product-market fit.
+                I direct <strong>Kre8mind</strong>, an independent product design studio focused on turning complex ideas into clear, useful digital experiences and helping ambitious teams bring products to life.
               </p>
               <div className="about-venture-actions">
                 <a
@@ -398,9 +415,9 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
 
         {/* ── Scope of Craft (Neutral 4-Grid with Collaboration) ── */}
         <div className="about-capabilities-wrap">
-          <h2 className="about-capabilities-heading">Where I bring the highest leverage.</h2>
+          <h2 className="about-capabilities-heading">Where I Bring the Highest Leverage</h2>
           <p className="about-capabilities-sub">
-            Structured design craft tailored for high-growth software and ambitious teams.
+            Product design and AI building for high-growth software and ambitious teams..
           </p>
 
           <div className="about-capabilities-grid">
@@ -472,9 +489,9 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
             </div>
 
             <div className="about-partner-text-group">
-              <span className="about-partner-text">Your all-in-one design partner.</span>
+              <span className="about-partner-text">Your All-in-One Design Partner.</span>
               <span className="about-partner-sub">
-                Operating across product architecture, UX consulting, and design systems.
+                Operating across product architecture, UX consulting, and AI product building.
               </span>
             </div>
           </div>

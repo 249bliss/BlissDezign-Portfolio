@@ -10,7 +10,7 @@ interface ContactSectionProps {
 export const ContactSection: React.FC<ContactSectionProps> = ({ onClose }) => {
   const [copied, setCopied] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const email = 'bliss@kre8mind.com';
+  const email = 'blissstudio44@gmail.com';
 
   useEffect(() => {
     if (containerRef.current) {

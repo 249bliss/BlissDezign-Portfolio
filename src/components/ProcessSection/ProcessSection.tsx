@@ -591,9 +591,9 @@ export const ProcessSection: React.FC<ProcessSectionProps> = () => {
             </div>
 
             <div className="brand-partner-text-group">
-              <span className="brand-partner-text">Your all-in-one design partner.</span>
+              <span className="brand-partner-text">Your All-in-One Design Partner.</span>
               <span className="brand-partner-sub">
-                Operating across product architecture, UX consulting, and design systems.
+                Operating across product architecture, UX consulting, and AI product building.
               </span>
             </div>
           </div>

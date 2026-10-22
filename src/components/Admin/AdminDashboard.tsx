@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import './AdminDashboard.css';
 
-const WHITELISTED_ADMINS = ['bliss@kre8mind.com', 'workwithblissdezign@gmail.com'];
+const WHITELISTED_ADMINS = ['bliss@kre8mind.com', 'blissstudio44@gmail.com', 'workwithblissdezign@gmail.com'];
 
 interface Props {
   onExit?: () => void;

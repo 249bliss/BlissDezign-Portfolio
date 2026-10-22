@@ -5,7 +5,7 @@ import './ContactView.css';
 
 export const ContactView: React.FC = () => {
   const [copied, setCopied] = useState(false);
-  const email = 'bliss@kre8mind.com';
+  const email = 'blissstudio44@gmail.com';
 
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.preventDefault();
