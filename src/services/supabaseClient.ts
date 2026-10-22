@@ -75,6 +75,10 @@ export interface SupabaseAnalytics {
   created_at: string;
   page_path: string;
   event_type: string;
+  country?: string | null;
+  country_code?: string | null;
+  device_type?: 'Desktop' | 'Mobile' | 'Tablet' | string | null;
+  browser?: string | null;
 }
 
 // ─── QUERY HELPERS ──────────────────────────────────────────────

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, Check, Calendar } from 'lucide-react';
+import { trackLeadEvent } from '../../services/analyticsTracker';
 import './ContactView.css';
 
 export const ContactView: React.FC = () => {
@@ -10,6 +11,7 @@ export const ContactView: React.FC = () => {
     e.preventDefault();
     navigator.clipboard.writeText(email);
     setCopied(true);
+    trackLeadEvent('email_copy', 'contact_view_copy_email');
     setTimeout(() => setCopied(false), 2500);
   };
 
@@ -65,6 +67,7 @@ export const ContactView: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
+                onClick={() => trackLeadEvent('booking', 'contact_view_booking_call')}
               >
                 <Calendar size={16} />
                 <span>Book a call</span>

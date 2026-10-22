@@ -9,6 +9,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import gsap from 'gsap';
+import { trackLeadEvent } from '../../services/analyticsTracker';
 import { useContainerLenis } from '../../hooks/useLenis';
 import './AboutMeSection.css';
 
@@ -496,6 +497,7 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
                   rel="noopener noreferrer"
                   className="contra-hire-me-custom-btn"
                   title="Hire Emmanuel Bliss on Contra"
+                  onClick={() => trackLeadEvent('lead', 'about_me_contra_hire')}
                 >
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" className="contra-sparkle-icon" aria-hidden="true">
                     <path
@@ -528,6 +530,7 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="about-cta-secondary-btn"
+                onClick={() => trackLeadEvent('booking', 'about_me_discovery_call')}
               >
                 <Calendar size={15} />
                 <span>Book a call</span>

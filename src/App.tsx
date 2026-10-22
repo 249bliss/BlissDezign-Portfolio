@@ -11,6 +11,7 @@ import { CaseStudyModal } from './components/CaseStudyModal/CaseStudyModal';
 import { CustomCursor } from './components/Cursor/CustomCursor';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
 import { ProjectData } from './data/projectsData';
+import { trackPageView, trackLeadEvent } from './services/analyticsTracker';
 import './styles/index.css';
 import './components/WorksView/WorksView.css';
 import './components/StudioView/StudioView.css';
@@ -54,6 +55,13 @@ export const App: React.FC = () => {
       }
     });
   }, []);
+
+  // Track visitor impression automatically for public portfolio views
+  useEffect(() => {
+    if (!isAdmin) {
+      trackPageView();
+    }
+  }, [isAdmin]);
 
   const handleSelectSupabaseProject = useCallback(async (sbProj: SupabaseProject) => {
     const cs = await fetchCaseStudyFromSupabase(sbProj.id);
@@ -271,6 +279,7 @@ export const App: React.FC = () => {
           setIsStudioOpen(true);
         }}
         onBookCall={() => {
+          trackLeadEvent('booking', 'liquid_dock_discovery_call');
           window.open('https://cal.com/blissdezigns/discovery-call', '_blank');
         }}
       />

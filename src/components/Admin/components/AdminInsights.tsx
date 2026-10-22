@@ -50,8 +50,9 @@ export const AdminInsights: React.FC = () => {
       if (dateFilter) sQuery = sQuery.gte('created_at', dateFilter);
       const { data: sData } = await sQuery;
 
-      const views = aData?.filter((r) => r.event_type === 'view').length || aData?.length || 0;
-      const leads = mData?.length || 0;
+      const views = aData?.filter((r) => r.event_type === 'view' || !r.event_type).length || 0;
+      const leadsFromEvents = aData?.filter((r) => r.event_type === 'lead' || r.event_type === 'booking').length || 0;
+      const leads = (mData?.length || 0) + leadsFromEvents;
       const subs = sData?.length || 0;
 
       setViewsCount(views);
@@ -68,8 +69,9 @@ export const AdminInsights: React.FC = () => {
         const dateStr = targetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         const dateMatch = targetDate.toDateString();
 
-        const dayViews = aData?.filter((item) => new Date(item.created_at).toDateString() === dateMatch).length || 0;
+        const dayViews = aData?.filter((item) => new Date(item.created_at).toDateString() === dateMatch && (item.event_type === 'view' || !item.event_type)).length || 0;
         const dayLeads = (mData?.filter((item) => new Date(item.created_at).toDateString() === dateMatch).length || 0) +
+                         (aData?.filter((item) => new Date(item.created_at).toDateString() === dateMatch && (item.event_type === 'lead' || item.event_type === 'booking')).length || 0) +
                          (sData?.filter((item) => new Date(item.created_at).toDateString() === dateMatch).length || 0);
 
         points.push({

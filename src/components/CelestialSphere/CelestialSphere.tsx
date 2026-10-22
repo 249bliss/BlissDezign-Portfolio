@@ -115,6 +115,30 @@ const INITIAL_PROJECTS: SupabaseProject[] = [
     display_order: 7,
     grid_layout: 'standard',
   },
+  {
+    id: 'swychr_global',
+    title: 'Swychr Global - Finance',
+    subtitle: 'Financial infrastructure and global money transfer experience redesign.',
+    hero_image: 'https://res.cloudinary.com/adfxi8js/video/upload/v1792613673/projects/t2futpqniapt0va3r1ki.mp4',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Fintech', 'Mobile Apps', 'Case Study'],
+    is_featured: true,
+    display_order: 8,
+    grid_layout: 'standard',
+  },
+  {
+    id: 'talorify',
+    title: 'Talorify-Landing Page',
+    subtitle: 'Modern AI-driven landing page architecture and responsive web experience.',
+    hero_image: 'https://res.cloudinary.com/adfxi8js/image/upload/v1792626147/projects/oizyfqblglk50f1jaaij.webp',
+    is_case_study: true,
+    layout_type: 'standard',
+    category_tags: ['Websites', 'Landing Page', 'AI'],
+    is_featured: true,
+    display_order: 9,
+    grid_layout: 'standard',
+  },
 ];
 
 export const CelestialSphere: React.FC<CelestialSphereProps> = ({
@@ -359,20 +383,6 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
       texture.needsUpdate = true;
     };
 
-    // Soft sky placeholder canvas so cards never render black WebGL pixels while loading
-    const createSkyPlaceholder = (): HTMLCanvasElement => {
-      const c = document.createElement('canvas');
-      c.width = 64;
-      c.height = 42;
-      const ctx = c.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = '#e2ecf8';
-        ctx.fillRect(0, 0, 64, 42);
-      }
-      return c;
-    };
-    const skyPlaceholder = createSkyPlaceholder();
-
     const uniqueMediaCount = new Set(projects.map((p) => p.hero_image).filter(Boolean)).size;
     const requiredMediaThreshold = Math.max(1, Math.min(uniqueMediaCount, 5));
 
@@ -504,29 +514,38 @@ export const CelestialSphere: React.FC<CelestialSphereProps> = ({
         globalTextureCache.set(resolvedUrl, videoTex);
         return videoTex;
       } else {
-        // Initialize with soft sky placeholder so card is immediately light & clean
-        const tex = new THREE.Texture(skyPlaceholder);
+        const loader = new THREE.TextureLoader();
+        loader.setCrossOrigin('anonymous');
+
+        const tex = loader.load(
+          resolvedUrl,
+          (loadedTex) => {
+            const img = loadedTex.image;
+            if (img) {
+              const aspect = (img.naturalWidth || img.width) / (img.naturalHeight || img.height);
+              applyCoverToTexture(loadedTex, aspect);
+            }
+            loadedTex.needsUpdate = true;
+            cardMeshesRef.current.forEach((m) => {
+              const mat = m.material as THREE.MeshBasicMaterial;
+              if (mat && mat.map === loadedTex) {
+                mat.needsUpdate = true;
+              }
+            });
+            onMediaLoaded();
+          },
+          undefined,
+          (err) => {
+            console.warn('Failed to load project image texture:', resolvedUrl, err);
+            onMediaLoaded();
+          }
+        );
+
         tex.colorSpace = THREE.SRGBColorSpace;
         tex.minFilter = THREE.LinearFilter;
         tex.magFilter = THREE.LinearFilter;
         tex.generateMipmaps = false;
-        tex.needsUpdate = true;
 
-        if (resolvedUrl) {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.src = resolvedUrl;
-          img.onload = () => {
-            const aspect = (img.naturalWidth || img.width) / (img.naturalHeight || img.height);
-            applyCoverToTexture(tex, aspect);
-            (tex as any).image = img;
-            tex.needsUpdate = true;
-            onMediaLoaded();
-          };
-          img.onerror = () => {
-            onMediaLoaded();
-          };
-        }
         globalTextureCache.set(resolvedUrl, tex);
         return tex;
       }

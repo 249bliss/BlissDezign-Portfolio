@@ -4,6 +4,7 @@ import { motion, useMotionValue, animate, PanInfo } from 'framer-motion';
 import gsap from 'gsap';
 import { useContainerLenis } from '../../hooks/useLenis';
 import { fetchReviewsFromSupabase, SupabaseReview } from '../../services/supabaseClient';
+import { trackLeadEvent } from '../../services/analyticsTracker';
 import './ProcessSection.css';
 
 interface ProcessSectionProps {
@@ -648,6 +649,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="brand-cta-secondary-btn"
+                onClick={() => trackLeadEvent('booking', 'process_section_discovery_call')}
               >
                 <Calendar size={15} />
                 <span>Book a call</span>
