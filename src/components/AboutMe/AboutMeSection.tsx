@@ -65,7 +65,7 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
     {
       year: '2026',
       client: 'Kre8mind Studio',
-      project: 'Founder & Lead Designer',
+      project: 'Product Designer',
       role: 'Collaborating with founders, startups, coaches, and agencies to build systems that work.',
       highlight: 'Design Studio',
     },
@@ -228,7 +228,7 @@ export const AboutMeSection: React.FC<AboutMeSectionProps> = () => {
         {/* ── Section Header ── */}
         <header className="about-header">
           <div className="about-eyebrow">
-            <span>FOUNDER &amp; PRODUCT DESIGNER // ABOUT ME</span>
+            <span>PRODUCT DESIGNER // ABOUT ME</span>
           </div>
 
           <h1 className="about-title">Clarity by design.</h1>

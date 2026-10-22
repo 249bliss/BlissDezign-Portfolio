@@ -41,7 +41,7 @@ export const StudioView: React.FC<StudioViewProps> = ({ onOpenContact }) => {
     { year: '2025', client: 'Nurakick Studio', project: 'AI 3D Sneaker Configurator', role: 'Senior Interaction Designer' },
     { year: '2025', client: 'Hevy Labs', project: 'Performance Telemetry Platform', role: 'Principal Product Designer' },
     { year: '2025', client: 'Ricki Labs Inc.', project: 'Autonomous Knowledge Graph', role: 'Founding Product Designer' },
-    { year: '2024 - 2026', client: 'Kre8mind Lab', project: 'Venture Incubation Studio', role: 'Founder & Design Director' },
+    { year: '2024 - 2026', client: 'Kre8mind Lab', project: 'Venture Incubation Studio', role: 'Lead Product Designer' },
     { year: '2024', client: 'Xoria Protocol', project: 'Institutional DeFi Interface', role: 'Lead UX Strategist' }
   ];
 

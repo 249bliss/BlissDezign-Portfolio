@@ -80,7 +80,7 @@ export const ContactView: React.FC = () => {
             <span className="contact-col-title">02 // STUDIO BASE &amp; TIMEZONE</span>
             <p className="contact-col-text">
               <strong>Emmanuel Bliss</strong><br />
-              Founder at Kre8mind Lab<br />
+              Product Designer at Kre8mind Lab<br />
               Global Remote // Operating across GMT, EST, and CET timezones.
             </p>
           </div>
