@@ -1,6 +1,28 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/projects(.html)?",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/blog(.html)?",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/my-story(.html)?",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/get-in-touch(.html)?",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
